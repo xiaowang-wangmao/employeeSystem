@@ -11,13 +11,13 @@ import { RequestEnum, ContentTypeEnum } from '../../enums/httpEnum';
 import { isString } from '../is/is';
 import { getToken } from '../auth';
 import { isObject } from '../is/is';
-import  router  from '../../router';
+import router from '../../router';
 import { joinTimestamp, formatRequestDate } from './helper';
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import { message, Modal } from 'ant-design-vue';
 import { h } from 'vue';
-const  showMessageModal = Modal.confirm
-const showMessage  = message.error;
+const showMessageModal = Modal.confirm
+const showMessage = message.error;
 declare type Recordable<T = any> = Record<string, T>;
 
 /**
@@ -73,7 +73,7 @@ const transform: AxiosTransform = {
     //         if (currentRoute.path !== '/' && currentRoute.path !== PageEnum.BASE_LOGIN) {
     //           path = path + '?redirect=' + currentRoute.fullPath;
     //         }
-        
+
     //         router.replace(path);
     //       }
     //       setTimeout(() => (isShowMessage = false), 1000);
@@ -204,21 +204,23 @@ const transform: AxiosTransform = {
 };
 
 function setObjToUrlParams(baseUrl: string, obj: any): string {
-    let parameters = '';
-    for (const key in obj) {
-      parameters += key + '=' + encodeURIComponent(obj[key]) + '&';
-    }
-    parameters = parameters.replace(/&$/, '');
-    return /\?$/.test(baseUrl) ? baseUrl + parameters : baseUrl.replace(/\/?$/, '?') + parameters;
+  let parameters = '';
+  for (const key in obj) {
+    parameters += key + '=' + encodeURIComponent(obj[key]) + '&';
   }
-
+  parameters = parameters.replace(/&$/, '');
+  return /\?$/.test(baseUrl) ? baseUrl + parameters : baseUrl.replace(/\/?$/, '?') + parameters;
+}
+/**
+ * @description: 深度合并，相同属性覆盖
+ */
 function deepMerge<T = any>(src: any = {}, target: any = {}): T {
-    let key: string;
-    for (key in target) {
-      src[key] = isObject(src[key]) ? deepMerge(src[key], target[key]) : (src[key] = target[key]);
-    }
-    return src;
+  let key: string;
+  for (key in target) {
+    src[key] = isObject(src[key]) ? deepMerge(src[key], target[key]) : (src[key] = target[key]);
   }
+  return src;
+}
 
 function createAxios(opt?: Partial<CreateAxiosOptions>) {
   return new Axios(
@@ -273,10 +275,10 @@ function createAxios(opt?: Partial<CreateAxiosOptions>) {
   );
 }
 export const defHttp = createAxios({
-    requestOptions: {
-        apiUrl: 'http://localhost:5173',
-        urlPrefix: '',
-      },
+  requestOptions: {
+    apiUrl: 'http://localhost:5173',
+    urlPrefix: '',
+  },
 });
 
 // other api url

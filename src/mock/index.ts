@@ -16,6 +16,22 @@ const mock: Array<MockMethod> = [
                 data: 'Hello World'
             }
         }
+    },
+    {
+        // 接口路径
+        url: '/register',
+        
+        // 接口方法
+        method: 'post',
+ 
+        // 返回数据
+        response: () => {
+            return {
+                status: 200,
+                message: 'success',
+                data: '注册成功'
+            }
+        }
     }
 ]
  

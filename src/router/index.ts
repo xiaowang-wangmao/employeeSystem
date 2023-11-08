@@ -5,16 +5,24 @@ const routes: Array<RouteRecordRaw> = [
     {
         // 路由重定向配置
         path: '/',
-        redirect: '/Home'
+        redirect: '/login'
     }, 
     {
         path: '/Home',
-        component: () => import('../components/HelloWorld.vue')
+        component: () => import('@/components/HelloWorld.vue')
     },
     {
-        path: '/Login',
-        component: () => import('../views/login.vue')
-    }
+        path: '/login',
+        component: () => import('@/views/login/Login.vue')
+    },
+    {
+        path: '/regist',
+        name: 'regist',
+        meta: {
+            title: '用户注册'
+        },
+        component: () => import('@/views/login/Regist.vue')
+    },
 ]
  
 // 路由对象
