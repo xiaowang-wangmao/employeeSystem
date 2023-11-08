@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-
-defineProps<{ msg: string }>()
-
+import { useRouter } from 'vue-router';
+const router = useRouter()
+const login = () => {
+  router.push('/Login')
+}
 const count = ref(0)
+defineProps<{ msg: string }>()
 </script>
 
 <template>
@@ -29,6 +32,8 @@ const count = ref(0)
     in your IDE for a better DX
   </p>
   <p class="read-the-docs">Click on the Vite and Vue logos to learn more</p>
+
+  <div @click="login">跳转登录</div>
 </template>
 
 <style scoped>

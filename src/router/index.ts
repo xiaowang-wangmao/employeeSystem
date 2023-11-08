@@ -9,7 +9,7 @@ const routes: Array<RouteRecordRaw> = [
     }, 
     {
         path: '/Home',
-        component: () => import('..//components/HelloWorld.vue')
+        component: () => import('../components/HelloWorld.vue')
     },
     {
         path: '/Login',

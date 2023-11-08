@@ -274,7 +274,7 @@ function createAxios(opt?: Partial<CreateAxiosOptions>) {
 }
 export const defHttp = createAxios({
     requestOptions: {
-        apiUrl: 'https://mock.apifox.cn/m1/3130280-0-default',
+        apiUrl: 'http://localhost:5173',
         urlPrefix: '',
       },
 });
@@ -282,7 +282,7 @@ export const defHttp = createAxios({
 // other api url
 export const otherHttp = createAxios({
   requestOptions: {
-    apiUrl: 'https://mock.apifox.cn/m1/3130280-0-default',
+    apiUrl: 'http://localhost:5173',
     urlPrefix: '',
   },
 });

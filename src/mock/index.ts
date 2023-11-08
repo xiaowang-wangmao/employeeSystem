@@ -3,10 +3,10 @@ import { MockMethod } from "vite-plugin-mock"
 const mock: Array<MockMethod> = [
     {
         // 接口路径
-        url: '/api/test',
+        url: '/login',
         
         // 接口方法
-        method: 'get',
+        method: 'post',
  
         // 返回数据
         response: () => {
