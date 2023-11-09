@@ -2,6 +2,9 @@
   <div class="login">
     <Particles id="tsparticles" class="login__particles" :options="options" />
     <div class="loginPart">
+      <div @click="Login">
+        邓丽
+      </div>
       <div>
         <p >登录</p>
         <p >每一次登录都是与你の邂逅。</p>
@@ -48,8 +51,8 @@ import { login, loginReq } from '../../api/user';
 import { tokenStore, accountStore, loginStore } from '../../store/modules/user';
 import { ElMessage, type FormInstance } from 'element-plus'
 import { encode } from 'js-base64';
+import { log } from 'console';
 const router = useRouter()
-
 onMounted(() => {
 
 })
@@ -102,6 +105,11 @@ const resetImg = () => {
   imgUrl.value = "http://localhost:5173/api/user/verifyCode?time=" + new Date();
 }
 
+const Login = () => {
+  login({}).then(res => {
+    console.log(res)
+  })
+}
 const onSubmit = (formEl: FormInstance | undefined) => {
   if (!formEl) return
   formEl.validate((valid) => {

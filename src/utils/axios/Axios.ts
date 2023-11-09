@@ -9,9 +9,19 @@ import { ContentTypeEnum, RequestEnum } from '../../enums/httpEnum';
 import qs from 'qs';
 
 export class Axios {
-  // axios 实例
+    /**
+   * @description: axios 实例
+   */
   private axiosInstance: AxiosInstance
 
+   /**
+   * @description: 缓存请求数组
+   */
+  private cacheRequestArr :Promise<any>[] = []
+
+ /**
+   * @description: 请求配置
+   */
   private readonly options: CreateAxiosOptions;
 
   constructor(options: CreateAxiosOptions) {
@@ -27,6 +37,38 @@ export class Axios {
     this.axiosInstance = axios.create(config);
   }
 
+  /**
+   * @description:  获得缓存请求数组
+   */
+  getRequsetArr() {
+    return this.cacheRequestArr
+  }
+
+  /**
+   * /**
+   * @description:  添加请求到缓存请求数组
+   */
+  addRequsetArrItem(item: Promise<any>) {
+   this.cacheRequestArr.push(item)
+  }
+
+  /**
+   * /**
+   * @description:  从缓存请求数组中删除
+   */
+  deleteRequsetArrItem(item: Promise<any>) {
+    let newArr = this.cacheRequestArr.filter(arr => arr !== item);
+    this.cacheRequestArr = newArr
+   }
+
+   /**
+   * /**
+   * @description:  清空缓存请求数组
+   */
+  clearRequsetArrItem() {
+    this.cacheRequestArr = []
+   }
+   
   /**
    * @description: Reconfigure axios
    */

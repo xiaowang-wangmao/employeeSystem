@@ -197,7 +197,7 @@ const transform: AxiosTransform = {
     } catch (error: any) {
       throw new Error(error);
     }
-
+    console.log("error", error)
     checkStatus(error?.response?.status, msg, errorMessageMode);
     return Promise.reject(error);
   },
