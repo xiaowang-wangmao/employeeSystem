@@ -3,7 +3,6 @@ import type { ErrorMessageMode } from '../../types/axios';
 // import { useUserStoreWithOut } from '/@/store/modules/user';
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import { message, Modal } from 'ant-design-vue';
-import { log } from 'console';
 import { h } from 'vue';
 const  showMessageModal = Modal.confirm
 const showMessage  = message.error;

@@ -23,6 +23,22 @@ const routes: Array<RouteRecordRaw> = [
         },
         component: () => import('@/views/login/Regist.vue')
     },
+    {
+        path: '/index',
+        name: 'index',
+        meta: {
+            title: '用户注册'
+        },
+        component: () => import('@/views/login/testA.vue')
+    },
+    {
+        path: '/plan',
+        name: 'plan',
+        meta: {
+            title: '用户注册'
+        },
+        component: () => import('@/views/login/plan.vue')
+    },
 ]
  
 // 路由对象

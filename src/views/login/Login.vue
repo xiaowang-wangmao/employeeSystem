@@ -2,26 +2,23 @@
   <div class="login">
     <Particles id="tsparticles" class="login__particles" :options="options" />
     <div class="loginPart">
-      <div @click="Login">
-        邓丽
-      </div>
-      <div>
-        <p >登录</p>
-        <p >每一次登录都是与你の邂逅。</p>
+      <div class="title">
+        <div class="loginText">登录</div>
+        <div class="describe">每一次登录都是与你の邂逅。</div>
       </div>
       <form>
         <div>
           <div >
             <input
-              placeholder="邮箱" type="email">
+              placeholder="账号" type="email" class="input">
           </div>
           <div>
-            <input placeholder="密码" type="password">
+            <input placeholder="密码" type="password" class="input">
           </div>
           <div>
             <div>
               <label>
-                <input type="checkbox" name="checked-demo" value="1">
+                <input type="checkbox" name="checked-demo" value="1" id="check">
                 <span>记住密码</span>
               </label>
             </div>
@@ -33,7 +30,7 @@
         </div>
         <div>
           <button
-            type="submit">登 录</button>
+            type="submit" class="button">登 录</button>
         </div>
 
       </form>
@@ -51,7 +48,6 @@ import { login, loginReq } from '../../api/user';
 import { tokenStore, accountStore, loginStore } from '../../store/modules/user';
 import { ElMessage, type FormInstance } from 'element-plus'
 import { encode } from 'js-base64';
-import { log } from 'console';
 const router = useRouter()
 onMounted(() => {
 
@@ -227,7 +223,7 @@ const options = reactive({
   detectRetina: true
 })
 </script>
-<style scoped>
+<style lang="less" scoped>
 .footer {
   position: fixed;
   bottom: 0;
@@ -278,17 +274,67 @@ const options = reactive({
   /*边框圆角，四个角均为15px*/
 }
 
-h2 {
-  margin: 0 0 30px;
-  padding: 0;
-  color: #fff;
-  text-align: center;
-  /*文字居中*/
+.loginText {
+    color: rgba(255, 204, 255, 1);
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+}
+.describe {
+  color: rgba(107, 114, 128, 1)
+}
+.title {
+  width: 234px;
+  height: 78px;
+}
+.input {
+  width: 284px;
+  height: 40px;
+  border-color: transparent;
+  border-radius: 0.5rem;
+  padding-left: 0.5rem;
+  padding: 0.25rem;
+  color: rgba(255, 204, 255, 1);
+  font-size: 16px;
+  margin: 12px 0;
+}
+.input:focus {  
+  outline: 0;
+  border-color:  rgba(255, 204, 255, 1);
+}
+input[type='checkbox'] {
+  cursor: pointer;
+  position: relative;
+  width: 15px;
+  height: 15px;
+  border-radius: 3px;
+  font-size: 14px;
 }
 
-.btn {
-  transform: translate(170px);
-  width: 80px;
-  height: 40px;
-  font-size: 15px;
-}</style>
+input[type='checkbox']::after {
+  position: absolute;
+  top: 0;
+  background-color: white;
+  color: #000;
+  width: 15px;
+  height: 15px;
+  display: inline-block;
+  visibility: visible;
+  padding-left: 0px;
+  text-align: center;
+  content: ' ';
+  border-radius: 3px;
+  box-sizing: border-box;
+  border: 1pxsolidblack;
+}
+input[type='checkbox']:checked::after {
+  content: '';
+  font-size: 2px;
+  border-radius: 3px;
+  font-weight: bold;
+  background-color: rgba(255, 204, 255, 1);
+}
+
+.button {
+  font-family: 'qiantu';
+}
+</style>
