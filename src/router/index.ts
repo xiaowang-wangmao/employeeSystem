@@ -1,50 +1,38 @@
 import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router'
- 
+
 // 静态路由表
 const routes: Array<RouteRecordRaw> = [
     {
         // 路由重定向配置
         path: '/',
         redirect: '/login'
-    }, 
-    {
-        path: '/Home',
-        component: () => import('@/components/HelloWorld.vue')
     },
     {
         path: '/login',
         component: () => import('@/views/login/Login.vue')
     },
     {
-        path: '/regist',
-        name: 'regist',
-        meta: {
-            title: '用户注册'
-        },
-        component: () => import('@/views/login/Regist.vue')
-    },
-    {
         path: '/index',
         name: 'index',
         meta: {
-            title: '用户注册'
+            title: '首页'
         },
-        component: () => import('@/views/login/testA.vue')
+        component: () => import('@/views/home/index.vue')
     },
     {
-        path: '/plan',
-        name: 'plan',
+        path: '/timeSheet',
+        name: 'timeSheet',
         meta: {
-            title: '用户注册'
+            title: '工时表'
         },
-        component: () => import('@/views/login/plan.vue')
+        component: () => import('@/views/timeSheet/index.vue')
     },
 ]
- 
+
 // 路由对象
 const router = createRouter({
     history: createWebHistory(),
     routes
 })
- 
+
 export default router

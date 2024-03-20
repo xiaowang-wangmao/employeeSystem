@@ -6,22 +6,24 @@ import { AntDesignVueResolver } from 'unplugin-vue-components/resolvers';
 import AutoImport from 'unplugin-auto-import/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import { resolve } from 'path';
+
+
 // https://vitejs.dev/config/
-export default defineConfig(({ command, mode, ssrBuild }) =>{
+export default defineConfig(({ command, mode, ssrBuild }) => {
   const env = loadEnv(mode, process.cwd(), '')
   return {
     resolve: {
       //设置别名:src路劲转化@....
       alias: {
-          '@': resolve(__dirname, 'src'),
-          components: resolve(__dirname, './src/components'),
-          assets: resolve(__dirname, './src/assets'),
-          '#': resolve(__dirname, 'types'),
-          build: resolve(__dirname, 'build'),
+        '@': resolve(__dirname, 'src'),
+        components: resolve(__dirname, './src/components'),
+        assets: resolve(__dirname, './src/assets'),
+        '#': resolve(__dirname, 'types'),
+        build: resolve(__dirname, 'build'),
       },
       // 省略文件扩展名
       extensions: ['.js', '.ts', '.jsx', '.tsx', '.json', '.vue']
-  }, 
+    },
     plugins: [
       vue(),
       // mock服务
@@ -31,10 +33,14 @@ export default defineConfig(({ command, mode, ssrBuild }) =>{
         mockPath: "./src/mock/",
       }),
       AutoImport({
-        resolvers: [ElementPlusResolver()],
+        imports:['vue'],
+        // resolvers: [ElementPlusResolver()],
+        resolvers: [AntDesignVueResolver()],
       }),
       //按需加载Antd组件
       Components({
+        dirs: ['src/components/'],
+        extensions:['vue','md'],
         resolvers: [
           AntDesignVueResolver({
             importStyle: false, // css in js
@@ -50,12 +56,12 @@ export default defineConfig(({ command, mode, ssrBuild }) =>{
       port: 5173,//启动端口
       //proxy: createProxy(env.VITE_APP_API_HOST),
       proxy: {
-          '/api': {
-              target:  env.VITE_APP_API_HOST,//'http://localhost:8080' 后端服务实际地址
-              changeOrigin: true,//开启代理
-              rewrite: path => path.replace(/^\/api/,'') // 将请求中/api用空值替换重写
-          },
+        '/api': {
+          target: env.VITE_APP_API_HOST,//'http://localhost:8080' 后端服务实际地址
+          changeOrigin: true,//开启代理
+          rewrite: path => path.replace(/^\/api/, '') // 将请求中/api用空值替换重写
+        },
       }
-  }
+    }
   }
 })

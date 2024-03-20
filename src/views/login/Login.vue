@@ -6,191 +6,186 @@
         <div class="loginText">登录</div>
         <div class="describe">每一次登录都是与你の邂逅。</div>
       </div>
-      <form>
-        <div>
-          <div >
-            <input
-              placeholder="账号" type="email" class="input">
-          </div>
-          <div>
-            <input placeholder="密码" type="password" class="input">
-          </div>
-          <div>
-            <div>
-              <label>
-                <input type="checkbox" name="checked-demo" value="1" id="check">
-                <span>记住密码</span>
-              </label>
-            </div>
-            <div>
-              <a href="">忘记密码</a>
-              <router-link to="/regist" class="text-primary">注册</router-link>
-            </div>
-          </div>
-        </div>
-        <div>
-          <button
-            type="submit" class="button">登 录</button>
-        </div>
+      <a-form
+        :model="formState"
+        name="basic"
+        :label-col="{ span: 8 }"
+        :wrapper-col="{ span: 16 }"
+        autocomplete="off"
+        @finish="onFinish"
+        @finishFailed="onFinishFailed"
+      >
+        <a-form-item
+          label="Username"
+          name="username"
+          :rules="[{ required: true, message: 'Please input your username!' }]"
+        >
+          <a-input v-model:value="formState.username" />
+        </a-form-item>
 
-      </form>
+        <a-form-item
+          label="Password"
+          name="password"
+          :rules="[{ required: true, message: 'Please input your password!' }]"
+        >
+          <a-input-password v-model:value="formState.password" />
+        </a-form-item>
+
+        <a-form-item name="remember" :wrapper-col="{ offset: 8, span: 16 }">
+          <a-checkbox v-model:checked="formState.remember"
+            >Remember me</a-checkbox
+          >
+        </a-form-item>
+
+        <a-form-item :wrapper-col="{ offset: 8, span: 16 }">
+          <a-button type="primary" html-type="submit">Submit</a-button>
+        </a-form-item>
+      </a-form>
     </div>
-    <div class="footer">
-      © 2023 LJJie. All rights reserved.
-    </div>
+    <div class="footer">© 2023 LJJie. All rights reserved.</div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, onMounted } from 'vue'
+import { reactive, ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { login, loginReq } from '../../api/user';
 import { tokenStore, accountStore, loginStore } from '../../store/modules/user';
-import { ElMessage, type FormInstance } from 'element-plus'
-import { encode } from 'js-base64';
-const router = useRouter()
-onMounted(() => {
+const router = useRouter();
 
-})
-//from表单校验
-const ruleFormRef = ref<FormInstance>()
+interface FormState {
+  username: string;
+  password: string;
+  remember: boolean;
+}
+const formState = reactive<FormState>({
+  username: '',
+  password: '',
+  remember: true,
+});
+const onFinish = (values: any) => {
+  console.log('Success:', values);
+  router.push({
+    name: 'index',
+  });
+};
+
+const onFinishFailed = (errorInfo: any) => {
+  console.log('Failed:', errorInfo);
+};
+
 // 这里存放数据
 const user = reactive<loginReq>({
   account: '',
   password: '',
-  verifyCode: ''
-})
-const users = reactive<loginReq>({
-  account: '',
-  password: '',
-  verifyCode: ''
-})
-//校验
-const validatePassword = (rule: any, value: any, callback: any) => {
-  if (value === '') {
-    callback(new Error('请输入密码'))
-  } else {
-    callback()
-  }
-}
-const validateAccount = (rule: any, value: any, callback: any) => {
-  if (value === '') {
-    callback(new Error('请输入账号'))
-  } else {
-    callback()
-  }
-}
-const validateVerification = (rule: any, value: any, callback: any) => {
-  if (value === '') {
-    callback(new Error('请输入验证码'))
-  } else {
-    callback()
-  }
-}
-//校验
-const rules = reactive({
-  password: [{ validator: validatePassword, trigger: 'blur' }],
-  account: [{ validator: validateAccount, trigger: 'blur' }],
-  verifyCode: [{ validator: validateVerification, trigger: 'blur' }],
-})
+  verifyCode: '',
+});
+
 const changeRegist = () => {
-  router.replace('/regist')
-}
-let imgUrl = ref("http://localhost:5173/api/user/verifyCode?time=" + new Date());
+  router.replace('/regist');
+};
+let imgUrl = ref(
+  'http://localhost:5173/api/user/verifyCode?time=' + new Date()
+);
 const resetImg = () => {
-  imgUrl.value = "http://localhost:5173/api/user/verifyCode?time=" + new Date();
-}
+  imgUrl.value = 'http://localhost:5173/api/user/verifyCode?time=' + new Date();
+};
 
 const Login = () => {
-  login({}).then(res => {
-    console.log(res)
-  })
-}
+  login({}).then((res) => {
+    console.log(res);
+  });
+};
 const onSubmit = (formEl: FormInstance | undefined) => {
-  if (!formEl) return
-  formEl.validate((valid) => {
-    if (valid) {
-      Object.keys(user).forEach((key) => {
-        if (key == 'account' || key == 'password') {
-          users[key] = encode(user[key])
-        } else {
-          users[key] = user[key]
-        }
-      })
-      login(users).then((res) => {
-        if (res.data.code == 90000) {
-          ElMessage({
-            message: '登录成功',
-            type: 'success'
-          })
-          // 把信息存储到全局变量中
-          // tokenStore().setToken(res.data.data.token)
-          // accountStore().setAccount(res.data.data.account)
-          // loginStore().setLoginStatus(true)
-          // 2. 跳转到  elem 后台！！！
-          router.push('/homePage')
-          // window.location.href="../../../public/backgroudhtml/backgroud.html"
-        } else {
-          ElMessage.error("账号或验证码错误！")
-        }
-      }).catch(error => {
-        ElMessage.error("账号或验证码错误！")
-      })
-    } else {
-      ElMessage.error("错误的提交！")
-      return false
-    }
-  })
-}
+  // if (!formEl) return
+  // formEl.validate((valid) => {
+  //   if (valid) {
+  //     Object.keys(user).forEach((key) => {
+  //       if (key == 'account' || key == 'password') {
+  //         users[key] = encode(user[key])
+  //       } else {
+  //         users[key] = user[key]
+  //       }
+  //     })
+  //     login(users).then((res) => {
+  //       if (res.data.code == 90000) {
+  //         ElMessage({
+  //           message: '登录成功',
+  //           type: 'success'
+  //         })
+  //         // 把信息存储到全局变量中
+  //         // tokenStore().setToken(res.data.data.token)
+  //         // accountStore().setAccount(res.data.data.account)
+  //         // loginStore().setLoginStatus(true)
+  //         // 2. 跳转到  elem 后台！！！
+  //         router.push('/homePage')
+  //         // window.location.href="../../../public/backgroudhtml/backgroud.html"
+  //       } else {
+  //         ElMessage.error("账号或验证码错误！")
+  //       }
+  //     }).catch(error => {
+  //       ElMessage.error("账号或验证码错误！")
+  //     })
+  //   } else {
+  //     ElMessage.error("错误的提交！")
+  //     return false
+  //   }
+  // })
+  console.log(user);
+};
 const options = reactive({
   fpsLimit: 60,
   interactivity: {
     detectsOn: 'canvas',
     events: {
-      onClick: { // 开启鼠标点击的效果
+      onClick: {
+        // 开启鼠标点击的效果
         enable: true,
-        mode: 'push'
+        mode: 'push',
       },
-      onHover: { // 开启鼠标悬浮的效果(线条跟着鼠标移动)
+      onHover: {
+        // 开启鼠标悬浮的效果(线条跟着鼠标移动)
         enable: true,
-        mode: 'grab'
+        mode: 'grab',
       },
-      resize: true
+      resize: true,
     },
-    modes: { // 配置动画效果
+    modes: {
+      // 配置动画效果
       bubble: {
         distance: 400,
         duration: 2,
         opacity: 0.8,
-        size: 40
+        size: 40,
       },
       push: {
-        quantity: 4
+        quantity: 4,
       },
       grab: {
         distance: 200,
-        duration: 0.4
+        duration: 0.4,
       },
-      attract: { // 鼠标悬浮时，集中于一点，鼠标移开时释放产生涟漪效果
+      attract: {
+        // 鼠标悬浮时，集中于一点，鼠标移开时释放产生涟漪效果
         distance: 200,
         duration: 0.4,
-        factor: 5
-      }
-    }
+        factor: 5,
+      },
+    },
   },
   particles: {
     color: {
-      value: '#BA55D3' // 粒子点的颜色
+      value: '#BA55D3', // 粒子点的颜色
     },
     links: {
       color: '#FFBBFF', // 线条颜色
-      distance: 150,//线条距离
+      distance: 150, //线条距离
       enable: true,
       opacity: 0.4, // 不透明度
-      width: 1.2 // 线条宽度
+      width: 1.2, // 线条宽度
     },
     collisions: {
-      enable: true
+      enable: true,
     },
     move: {
       attract: { enable: false, rotateX: 600, rotateY: 1200 },
@@ -200,28 +195,31 @@ const options = reactive({
       out_mode: 'out',
       random: false,
       speed: 0.5, // 移动速度
-      straight: false
+      straight: false,
     },
     number: {
       density: {
         enable: true,
-        value_area: 800
+        value_area: 800,
       },
-      value: 80//粒子数
+      value: 80, //粒子数
     },
-    opacity: {//粒子透明度
-      value: 0.7
+    opacity: {
+      //粒子透明度
+      value: 0.7,
     },
-    shape: {//粒子样式
-      type: 'star'
+    shape: {
+      //粒子样式
+      type: 'star',
     },
-    size: {//粒子大小
+    size: {
+      //粒子大小
       random: true,
-      value: 3
-    }
+      value: 3,
+    },
   },
-  detectRetina: true
-})
+  detectRetina: true,
+});
 </script>
 <style lang="less" scoped>
 .footer {
@@ -230,7 +228,7 @@ const options = reactive({
   left: 0;
   width: 100%;
   padding: 10px;
-  background-color: #FFF0F5;
+  background-color: #fff0f5;
   text-align: center;
   font-size: 12px;
   color: #999;
@@ -263,24 +261,24 @@ const options = reactive({
   /*实现块元素百分比下居中*/
   width: 450px;
   padding: 50px;
-  background: rgba(255, 204, 255, .3);
+  background: rgba(255, 204, 255, 0.3);
   /*背景颜色为黑色，透明度为0.8*/
   box-sizing: border-box;
   /*box-sizing设置盒子模型的解析模式为怪异盒模型，
     将border和padding划归到width范围内*/
-  box-shadow: 0px 15px 25px rgba(0, 0, 0, .5);
+  box-shadow: 0px 15px 25px rgba(0, 0, 0, 0.5);
   /*边框阴影  水平阴影0 垂直阴影15px 模糊25px 颜色黑色透明度0.5*/
   border-radius: 15px;
   /*边框圆角，四个角均为15px*/
 }
 
 .loginText {
-    color: rgba(255, 204, 255, 1);
-    font-size: 2.25rem;
-    line-height: 2.5rem;
+  // color: rgba(255, 204, 255, 1);
+  font-size: 2.25rem;
+  line-height: 2.5rem;
 }
 .describe {
-  color: rgba(107, 114, 128, 1)
+  color: rgba(107, 114, 128, 1);
 }
 .title {
   width: 234px;
@@ -297,9 +295,9 @@ const options = reactive({
   font-size: 16px;
   margin: 12px 0;
 }
-.input:focus {  
+.input:focus {
   outline: 0;
-  border-color:  rgba(255, 204, 255, 1);
+  border-color: rgba(255, 204, 255, 1);
 }
 input[type='checkbox'] {
   cursor: pointer;
