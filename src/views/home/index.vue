@@ -3,15 +3,70 @@
     <TopBar />
 
     <div class="main">
-      <div class="left">1</div>
+      <div class="left">
+        <div>logo-----工作任务</div>
+        <div class="top-actions">
+          <div class="refresh">
+            刷新
+            <redo-outlined />
+            <icon-font type="icon-refresh" />
+          </div>
+          <div class="search">
+            <a-input-search
+              v-model:value="searchKey"
+              placeholder="申请人/类型"
+              allow-clear
+              style="width: 200px"
+              @search="onSearch"
+            />
+          </div>
+        </div>
+
+        <div>
+          <a-tabs v-model:activeKey="activeKey">
+            <a-tab-pane key="1" tab="待办">
+              <ListCard
+                :columns="columns"
+                :needParamsCache="true"
+                :fixHeader="false"
+                :fixFooter="false"
+                ref="list"
+              />
+            </a-tab-pane>
+            <a-tab-pane key="2" tab="已办" force-render>
+              <ListCard
+                :columns="columns"
+                :needParamsCache="true"
+                :fixHeader="false"
+                :fixFooter="false"
+                ref="list"
+              />
+              ></a-tab-pane
+            >
+          </a-tabs>
+        </div>
+      </div>
       <div class="right">
         <div class="menu">
-          <div class="menu-item" @click="router.push({name:'timeSheet'})">TimeSheet</div>
-          <div class="menu-item">信息管理</div>
-          <div class="menu-item">入职培训资料</div>
-          <div class="menu-item">休假系统</div>
+          <div
+            v-for="(item, index) in menuList"
+            :key="index"
+            @click="item.link"
+          >
+            <div>logo</div>
+            {{ item.title }}
+          </div>
         </div>
-        <div class="notification">222</div>
+        <div class="notification">
+          <ListCard
+            title="系统公告"
+            :columns="columns"
+            :needParamsCache="true"
+            :fixHeader="false"
+            :fixFooter="false"
+            ref="list"
+          />
+        </div>
       </div>
     </div>
 
@@ -20,16 +75,49 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, onMounted } from 'vue';
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-// import { login, loginReq } from '../../api/user';
+import { createFromIconfontCN } from '@ant-design/icons-vue';
+import { RedoOutlined } from '@ant-design/icons-vue';
+
+const IconFont = createFromIconfontCN({
+  scriptUrl: '//at.alicdn.com/t/font_8d5l8fzk5b87iudi.js',
+});
 const router = useRouter();
 
-let imgUrl = ref(
-  'http://localhost:5173/api/user/verifyCode?time=' + new Date()
-);
-const resetImg = () => {
-  imgUrl.value = 'http://localhost:5173/api/user/verifyCode?time=' + new Date();
+const menuList = ref([
+  { title: 'Daily-TimeSheet', link: () => router.push({ name: 'timeSheet' }) },
+  {
+    title: 'Employee-SelfService',
+    link: () => router.push({ name: 'employeeMsg' }),
+  },
+  { title: 'Leave-Manangenment', link: () => router.push({ name: 'leave' }) },
+  { title: 'Onboaring', link: () => router.push({ name: 'onboard' }) },
+]);
+const activeKey = ref('1');
+const columns = [
+  {
+    title: '单号',
+  },
+  {
+    title: '主题',
+  },
+  {
+    title: '类型',
+  },
+  {
+    title: '申请日期',
+  },
+  {
+    title: '申请人',
+  },
+];
+
+const searchKey = ref<string>('');
+
+const onSearch = (searchValue: string) => {
+  console.log('use value', searchValue);
+  console.log('or use this.value', searchKey.value);
 };
 </script>
 <style lang="less" scoped>
@@ -50,25 +138,41 @@ const resetImg = () => {
   // width: 1000px;
   /* overflow: hidden; */
   display: flex;
-  margin: 0 2%;
+  padding: 1% 2%;
+  margin: 5px 0;
   // justify-content: ;
-  background-color: #808080;
+  background-color: #eeeeee;
   justify-content: space-between;
   .left {
     width: 48%;
-    background-color: aqua;
+    border: #808080 1px solid;
     margin-right: 3%;
     height: 90vh;
+    background-color: white;
+
+    .top-actions {
+      position: relative;
+      top: 40px;
+      left: 120px;
+      display: flex;
+      justify-content: space-between;
+      width: 35vw;
+      z-index: 99;
+      .refresh {
+        // border: 1px solid black;
+        cursor: pointer;
+      }
+    }
   }
   .right {
     width: 48%;
-    background-color: aquamarine;
+    border: #808080 1px solid;
+    background-color: white;
     .menu {
       height: 20%;
-      background-color: dodgerblue;
       display: flex;
       justify-content: space-around;
-      margin-bottom: 20px;
+      margin-bottom: 50px;
       .menu-item {
         height: 100px;
         width: 100px;
@@ -79,7 +183,6 @@ const resetImg = () => {
     }
     .notification {
       height: 70%;
-      background-color: darkkhaki;
     }
   }
 }

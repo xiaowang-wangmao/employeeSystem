@@ -1,12 +1,10 @@
 <template>
   <div>
      <TopBar />
-    time{{ value }}
+    time3
   </div>
 </template>
 
-<script lang="ts" setup>
-
-const value = '22'
+<script lang="ts">
 
 </script>

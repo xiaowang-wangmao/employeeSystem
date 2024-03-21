@@ -27,6 +27,30 @@ const routes: Array<RouteRecordRaw> = [
         },
         component: () => import('@/views/timeSheet/index.vue')
     },
+    {
+        path: '/employeeMsg',
+        name: 'employeeMsg',
+        meta: {
+            title: '个人信息'
+        },
+        component: () => import('@/views/employeeMsg/index.vue')
+    },
+    {
+        path: '/onboard',
+        name: 'onboard',
+        meta: {
+            title: '培训'
+        },
+        component: () => import('@/views/onboarding/index.vue')
+    },
+    {
+        path: '/leave',
+        name: 'leave',
+        meta: {
+            title: '休假'
+        },
+        component: () => import('@/views/leave/index.vue')
+    },
 ]
 
 // 路由对象

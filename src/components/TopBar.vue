@@ -3,7 +3,7 @@
     <div class="left">Deloitte</div>
     <div class="right">
       <div>wangmao</div>
-      <div>设置</div>
+      <div>消息</div>
       <div>帮助</div>
       <div>退出</div>
     </div>

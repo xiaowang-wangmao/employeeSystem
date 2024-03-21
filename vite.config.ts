@@ -33,7 +33,7 @@ export default defineConfig(({ command, mode, ssrBuild }) => {
         mockPath: "./src/mock/",
       }),
       AutoImport({
-        imports:['vue'],
+        imports: ['vue','vue-router'],
         // resolvers: [ElementPlusResolver()],
         resolvers: [AntDesignVueResolver()],
       }),
