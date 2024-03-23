@@ -33,14 +33,50 @@ export default defineConfig(({ command, mode, ssrBuild }) => {
         mockPath: "./src/mock/",
       }),
       AutoImport({
-        imports: ['vue','vue-router'],
-        // resolvers: [ElementPlusResolver()],
+        imports: [
+          // presets
+          'vue',
+          'vue-router',
+          // custom
+          {
+            '@vueuse/core': [
+              // named imports
+              'useMouse', // import { useMouse } from '@vueuse/core',
+              // alias
+              ['useFetch', 'useMyFetch'], // import { useFetch as useMyFetch } from '@vueuse/core',
+            ],
+            'axios': [
+              // default imports
+              ['default', 'axios'], // import { default as axios } from 'axios',
+            ],
+            '[package-name]': [
+              '[import-names]',
+              // alias
+              ['[from]', '[alias]'],
+            ],
+          },
+          // example type import
+          {
+            from: 'vue-router',
+            imports: ['RouteLocationRaw'],
+            type: true,
+          },
+        ],
+        dts: './src/auto-imports.d.ts',
         resolvers: [AntDesignVueResolver()],
+        vueTemplate: false,
+        injectAtEnd: true,
+        eslintrc: {
+          enabled: true, // Default false
+          filepath: './.eslintrc-auto-import.json', // Default ./.eslintrc-auto-import.json
+          globalsPropValue: true, // Default true, (true | false | 'readonly' | 'readable' | 'writable' | 'writeable')
+        },
       }),
       //按需加载Antd组件
       Components({
         dirs: ['src/components/'],
-        extensions:['vue','md'],
+        dts: './src/components.d.ts',
+        extensions: ['vue', 'md'],
         resolvers: [
           AntDesignVueResolver({
             importStyle: false, // css in js

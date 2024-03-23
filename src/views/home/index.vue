@@ -52,6 +52,7 @@
             v-for="(item, index) in menuList"
             :key="index"
             @click="item.link"
+            class="menu-item"
           >
             <div>logo</div>
             {{ item.title }}
@@ -179,6 +180,7 @@ const onSearch = (searchValue: string) => {
         background-color: saddlebrown;
         margin: 5px;
         padding: 10px;
+        cursor: pointer;
       }
     }
     .notification {

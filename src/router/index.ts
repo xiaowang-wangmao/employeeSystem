@@ -25,7 +25,59 @@ const routes: Array<RouteRecordRaw> = [
         meta: {
             title: '工时表'
         },
-        component: () => import('@/views/timeSheet/index.vue')
+        component: () => import('@/views/timeSheet/index.vue'),
+        children: [
+            { path: '', redirect: '/FillDailyTimeSheet' },// 默认指向
+            {
+                path: '/FillDailyTimeSheet',
+                name: 'fillDaily',
+                meta: {
+                    title: ''
+                },
+                component: () => import('@/views/timeSheet/Daily/FillTable.vue'),
+            },
+            {
+                path: '/ApprovalDailyTimeSheet',
+                name: 'approvalDaily',
+                meta: {
+                    title: ''
+                },
+                component: () => import('@/views/timeSheet/Daily/Approval.vue'),
+            },
+            {
+                path: '/MyList',
+                name: 'myList',
+                meta: {
+                    title: ''
+                },
+                component: () => import('@/views/timeSheet/Daily/MyRecord.vue'),
+            },
+            {
+                path: '/FillOT',
+                name: 'fillOT',
+                meta: {
+                    title: ''
+                },
+                component: () => import('@/views/timeSheet/Overtime/FillTable.vue'),
+            },
+            {
+                path: '/ApprovalOT',
+                name: 'approvalOT',
+                meta: {
+                    title: ''
+                },
+                component: () => import('@/views/timeSheet/Overtime/Approval.vue'),
+            },
+            {
+                path: '/OTHistory',
+                name: 'OTHistory',
+                meta: {
+                    title: ''
+                },
+                component: () => import('@/views/timeSheet/Overtime/MyRecord.vue'),
+            },
+
+        ],
     },
     {
         path: '/employeeMsg',
