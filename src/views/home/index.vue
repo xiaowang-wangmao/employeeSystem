@@ -94,6 +94,7 @@ const menuList = ref([
   },
   { title: 'Leave-Manangenment', link: () => router.push({ name: 'leave' }) },
   { title: 'Onboaring', link: () => router.push({ name: 'onboard' }) },
+  { title: 'person-mag', link: () => router.push({ name: 'onboard' }) },
 ]);
 const activeKey = ref('1');
 const columns = [

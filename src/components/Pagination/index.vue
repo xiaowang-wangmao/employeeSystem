@@ -7,11 +7,11 @@
       <section>
         总共
         {{ props.total }}
-        ，，
+       条
       </section>
 
       <section>
-        <span>m</span>
+        <span>每页展示</span>
         <a-dropdown placement="topLeft">
           <template #overlay>
             <a-menu @click="pageSizeChange">
@@ -32,7 +32,7 @@
             <caret-down-outlined :size="7" />
           </a-button>
         </a-dropdown>
-        <span>tgh</span>
+        <span>条</span>
       </section>
     </div>
 

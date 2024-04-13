@@ -1,6 +1,8 @@
 <template>
   <div class="topBar">
-    <div class="left">Deloitte</div>
+    <div class="left">
+      <span @click="router.push({path:'/index'})">Deloitte</span>
+    </div>
     <div class="right">
       <div>wangmao</div>
       <div>消息</div>
@@ -11,21 +13,10 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 // import { login, loginReq } from '../../api/user';
 import { tokenStore, accountStore, loginStore } from '../../store/modules/user';
 const router = useRouter();
-
-const changeRegist = () => {
-  router.replace('/regist');
-};
-let imgUrl = ref(
-  'http://localhost:5173/api/user/verifyCode?time=' + new Date()
-);
-const resetImg = () => {
-  imgUrl.value = 'http://localhost:5173/api/user/verifyCode?time=' + new Date();
-};
 </script>
 <style lang="less" scoped>
 .topBar {
@@ -40,13 +31,15 @@ const resetImg = () => {
   padding: 10px;
   // height: 30px;
   .left {
-     width: 10%;
-      // background-color: aqua;
+    width: 10%;
+    cursor: pointer;
+    // background-color: aqua;
   }
   .right {
     width: 25%;
     display: flex;
     justify-content: space-around;
+    
     // background-color: aqua;
   }
 }

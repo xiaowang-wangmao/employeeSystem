@@ -38,6 +38,8 @@ declare module 'vue' {
     ATable: typeof import('ant-design-vue/es')['Table']
     ATabPane: typeof import('ant-design-vue/es')['TabPane']
     ATabs: typeof import('ant-design-vue/es')['Tabs']
+    DCCascader: typeof import('./components/DCCascader/index.vue')['default']
+    EditTable: typeof import('./components/EditTable/index.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     ListCard: typeof import('./components/ListCard/index.vue')['default']
     Pagination: typeof import('./components/Pagination/index.vue')['default']

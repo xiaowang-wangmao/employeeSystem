@@ -85,7 +85,59 @@ const routes: Array<RouteRecordRaw> = [
         meta: {
             title: '个人信息'
         },
-        component: () => import('@/views/employeeMsg/index.vue')
+        component: () => import('@/views/employeeMsg/index.vue'),
+        children: [
+            { path: '', redirect: '/BasicInformation' },// 默认指向
+            {
+                path: '/BasicInformation',
+                name: 'BasicInformation',
+                meta: {
+                    title: ''
+                },
+                component: () => import('@/views/employeeMsg/BasicInfo.vue'),
+            },
+            {
+                path: '/EmergencyContact',
+                name: 'EmergencyContact',
+                meta: {
+                    title: ''
+                },
+                component: () => import('@/views/employeeMsg/EmergencyContact.vue'),
+            },
+            {
+                path: '/EducationBackground',
+                name: 'EducationBackground',
+                meta: {
+                    title: ''
+                },
+                component: () => import('@/views/employeeMsg/EducationBg.vue'),
+            },
+            {
+                path: '/Professional',
+                name: 'Professional',
+                meta: {
+                    title: ''
+                },
+                component: () => import('@/views/employeeMsg/Professional.vue'),
+            },
+            {
+                path: '/BankAccount',
+                name: 'BankAccount',
+                meta: {
+                    title: ''
+                },
+                component: () => import('@/views/employeeMsg/BankAccount.vue'),
+            },
+            {
+                path: '/Payslip',
+                name: 'Payslip',
+                meta: {
+                    title: ''
+                },
+                component: () => import('@/views/employeeMsg/Payslip.vue'),
+            },
+            
+        ]
     },
     {
         path: '/onboard',
