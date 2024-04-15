@@ -8,11 +8,12 @@
       <a-form
         :model="formState"
         name="basic"
-        :label-col="{ span: 8 }"
+        :label-col="{ span: 6 }"
         :wrapper-col="{ span: 16 }"
         autocomplete="off"
         @finish="onFinish"
         @finishFailed="onFinishFailed"
+        class="form"
       >
         <a-form-item
           label="staffCode"
@@ -100,61 +101,15 @@ const onFinishFailed = (errorInfo: any) => {
 const user = reactive<loginReq>({
   account: '',
   password: '',
-  verifyCode: '',
 });
 
-const changeRegist = () => {
-  router.replace('/regist');
-};
-let imgUrl = ref(
-  'http://localhost:5173/api/user/verifyCode?time=' + new Date()
-);
-const resetImg = () => {
-  imgUrl.value = 'http://localhost:5173/api/user/verifyCode?time=' + new Date();
-};
+// let imgUrl = ref(
+//   'http://localhost:5173/api/user/verifyCode?time=' + new Date()
+// );
+// const resetImg = () => {
+//   imgUrl.value = 'http://localhost:5173/api/user/verifyCode?time=' + new Date();
+// };
 
-const Login = () => {
-  login({}).then((res) => {
-    console.log(res);
-  });
-};
-const onSubmit = (formEl: FormInstance | undefined) => {
-  // if (!formEl) return
-  // formEl.validate((valid) => {
-  //   if (valid) {
-  //     Object.keys(user).forEach((key) => {
-  //       if (key == 'account' || key == 'password') {
-  //         users[key] = encode(user[key])
-  //       } else {
-  //         users[key] = user[key]
-  //       }
-  //     })
-  //     login(users).then((res) => {
-  //       if (res.data.code == 90000) {
-  //         ElMessage({
-  //           message: '登录成功',
-  //           type: 'success'
-  //         })
-  //         // 把信息存储到全局变量中
-  //         // tokenStore().setToken(res.data.data.token)
-  //         // accountStore().setAccount(res.data.data.account)
-  //         // loginStore().setLoginStatus(true)
-  //         // 2. 跳转到  elem 后台！！！
-  //         router.push('/homePage')
-  //         // window.location.href="../../../public/backgroudhtml/backgroud.html"
-  //       } else {
-  //         ElMessage.error("账号或验证码错误！")
-  //       }
-  //     }).catch(error => {
-  //       ElMessage.error("账号或验证码错误！")
-  //     })
-  //   } else {
-  //     ElMessage.error("错误的提交！")
-  //     return false
-  //   }
-  // })
-  console.log(user);
-};
 const options = reactive({
   fpsLimit: 60,
   interactivity: {
@@ -267,7 +222,7 @@ const options = reactive({
   width: 100%;
   background-size: cover;
   background-repeat: no-repeat;
-  background-image: url('@/assets/0001.jpg');
+  background-image: url('@/assets/back.jpg');
   opacity: 0.9;
   position: fixed;
   pointer-events: none;
@@ -277,13 +232,13 @@ const options = reactive({
   position: absolute;
   /*定位方式绝对定位absolute*/
   top: 50%;
-  left: 80%;
+  left: 50%;
   /*顶和高同时设置50%实现的是同时水平垂直居中效果*/
   transform: translate(-50%, -50%);
   /*实现块元素百分比下居中*/
   width: 450px;
   padding: 50px;
-  background: rgba(255, 204, 255, 0.3);
+  background: rgba(255, 204, 255, 0.5);
   /*背景颜色为黑色，透明度为0.8*/
   box-sizing: border-box;
   /*box-sizing设置盒子模型的解析模式为怪异盒模型，
@@ -292,6 +247,7 @@ const options = reactive({
   /*边框阴影  水平阴影0 垂直阴影15px 模糊25px 颜色黑色透明度0.5*/
   border-radius: 15px;
   /*边框圆角，四个角均为15px*/
+
 }
 
 .loginText {
