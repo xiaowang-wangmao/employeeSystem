@@ -11,7 +11,6 @@ import { RequestEnum, ContentTypeEnum } from '../../enums/httpEnum';
 import { isString } from '../is/is';
 import { getToken } from '../auth';
 import { isObject } from '../is/is';
-import router from '../../router';
 import { joinTimestamp, formatRequestDate } from './helper';
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import { message, Modal } from 'ant-design-vue';
@@ -146,15 +145,15 @@ const transform: AxiosTransform = {
    */
   requestInterceptors: (config: Recordable, options) => {
     // 请求之前处理config
-    const token = getToken();
+    const token = localStorage.getItem('token');
     if (token && config?.requestOptions?.withToken !== false) {
-      // // jwt token
-      // config.headers.Authorization = options.authenticationScheme
-      //   ? `${options.authenticationScheme} ${token}`
-      //   : token;
-      config.headers['x-token'] = options.authenticationScheme
+      // jwt token
+      config.headers.Authorization = options.authenticationScheme
         ? `${options.authenticationScheme} ${token}`
         : token;
+      // config.headers['x-token'] = options.authenticationScheme
+      //   ? `${options.authenticationScheme} ${token}`
+      //   : token;
     }
     return config;
   },
@@ -276,7 +275,7 @@ function createAxios(opt?: Partial<CreateAxiosOptions>) {
 }
 export const defHttp = createAxios({
   requestOptions: {
-    apiUrl: 'http://localhost:5173',
+    apiUrl: 'http://localhost:8088',
     urlPrefix: '',
   },
 });

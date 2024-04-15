@@ -4,7 +4,6 @@
     <div class="loginPart">
       <div class="title">
         <div class="loginText">登录</div>
-        <div class="describe">每一次登录都是与你の邂逅。</div>
       </div>
       <a-form
         :model="formState"
@@ -15,6 +14,13 @@
         @finish="onFinish"
         @finishFailed="onFinishFailed"
       >
+        <a-form-item
+          label="staffCode"
+          name="staffCode"
+          :rules="[{ required: true, message: 'Please input your staffCode!' }]"
+        >
+          <a-input v-model:value="formState.staffCode" />
+        </a-form-item>
         <a-form-item
           label="Username"
           name="username"
@@ -50,23 +56,39 @@
 import { reactive, ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { login, loginReq } from '../../api/user';
-import { tokenStore, accountStore, loginStore } from '../../store/modules/user';
+import {
+  tokenStore,
+  accountStore,
+  loginStore,
+} from '../../store/modules/userStore';
 const router = useRouter();
 
 interface FormState {
+  staffCode: string;
   username: string;
   password: string;
   remember: boolean;
 }
 const formState = reactive<FormState>({
+  staffCode: '',
   username: '',
   password: '',
   remember: true,
 });
 const onFinish = (values: any) => {
   console.log('Success:', values);
-  router.push({
-    name: 'index',
+  login(values).then((res) => {
+    console.log('11111', res);
+
+    if (res.code == 0) {
+      tokenStore().setToken(res.data.token);
+      accountStore().setAccount(res.data.user.account);
+      accountStore().setStaffCode(res.data.user.code + '');
+      localStorage.setItem('token', res.data.token);
+      router.push({
+        name: 'index',
+      });
+    }
   });
 };
 

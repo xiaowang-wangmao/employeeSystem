@@ -1,11 +1,13 @@
 import { defineStore } from 'pinia';
-import { store } from '@/store/index';
+import store  from '@/store/index';
 
 export interface tokenValue {
     token: string;
 }
 export interface accountValue {
-    account: string;
+    // account: string;
+    userName: string;
+    staffCode: string;
 }
 export interface loginStatus {
     isLogin: boolean;
@@ -26,42 +28,29 @@ export const tokenStore = defineStore({
             this.token = token;
         },
     },
-    persist: {
-        enabled: true,
-        strategies: [
-          {
-            key: 'token',  //自定义 Key值
-            storage: localStorage,  // 选择存储方式
-            paths: ['token']
-          },
-        ],
-      },
 });
 export const accountStore = defineStore({
     id: 'app-account',
     state: (): accountValue => ({
-        account: '',
+        userName: '',
+        staffCode:'',
     }),
     getters: {
         getAccount(): string {
-            return this.account;
+            return this.userName;
         },
+        getStaffCode(): string{
+            return this.staffCode;
+        }
     },
     actions: {
-        setAccount(account: string) {
-            this.account = account;
+        setAccount(userName: string) {
+            this.userName = userName;
         },
+        setStaffCode(code: string) {
+            this.staffCode = code;
+        }
     },
-    persist: {
-        enabled: true,
-        strategies: [
-          {
-            key: 'account',  //自定义 Key值
-            storage: localStorage,  // 选择存储方式
-            paths: ['account']
-          },
-        ],
-      },
 });
 export const loginStore = defineStore({
     id: 'app-login',
@@ -78,16 +67,6 @@ export const loginStore = defineStore({
             this.isLogin = isLogin;
         },
     },
-    persist: {
-        enabled: true,
-        strategies: [
-          {
-            key: 'isLogin',  //自定义 Key值
-            storage: localStorage,  // 选择存储方式
-            paths: ['isLogin']
-          },
-        ],
-      },
 });
 
 // Need to be used outside the setup

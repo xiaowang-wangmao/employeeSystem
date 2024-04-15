@@ -1,5 +1,5 @@
 import axios from "axios";
-import store from "@/store";
+import { store } from "@/store/index";
 class Axios {
     //定义一个空数组，用来缓存请求
     isRefreshToken : Boolean = false
@@ -7,8 +7,7 @@ class Axios {
     baseUrl: String
     timeout: Number
     constructor() {
-        this.baseUrl = 'http://6md8gj.natappfree.cc';
-        // this.baseUrl = 'http://localhost:80';
+        this.baseUrl = 'http://localhost:8088';
         this.timeout = 30000;
     }
     setInterceptors = (instance : any, url: any) => {

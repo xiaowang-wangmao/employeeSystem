@@ -80,6 +80,8 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { createFromIconfontCN } from '@ant-design/icons-vue';
 import { RedoOutlined } from '@ant-design/icons-vue';
+import { getSystemNoticeList } from '@/api/notice';
+import { log } from 'console';
 
 const IconFont = createFromIconfontCN({
   scriptUrl: '//at.alicdn.com/t/font_8d5l8fzk5b87iudi.js',
@@ -121,6 +123,13 @@ const onSearch = (searchValue: string) => {
   console.log('use value', searchValue);
   console.log('or use this.value', searchKey.value);
 };
+
+onMounted(() => {
+  getSystemNoticeList({ current: 1, size: 5 }).then((res) => {
+    console.log('notice-list',res);
+    
+  })
+})
 </script>
 <style lang="less" scoped>
 .footer {
