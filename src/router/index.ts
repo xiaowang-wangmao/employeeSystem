@@ -27,9 +27,9 @@ const routes: Array<RouteRecordRaw> = [
         },
         component: () => import('@/views/timeSheet/index.vue'),
         children: [
-            { path: '', redirect: '/FillDailyTimeSheet' },// 默认指向
+            { path: '', redirect: '/timeSheet/FillDailyTimeSheet' },// 默认指向
             {
-                path: '/FillDailyTimeSheet',
+                path: 'FillDailyTimeSheet',
                 name: 'fillDaily',
                 meta: {
                     title: ''
@@ -37,7 +37,7 @@ const routes: Array<RouteRecordRaw> = [
                 component: () => import('@/views/timeSheet/Daily/FillTable.vue'),
             },
             {
-                path: '/ApprovalDailyTimeSheet',
+                path: 'ApprovalDailyTimeSheet',
                 name: 'approvalDaily',
                 meta: {
                     title: ''
@@ -45,7 +45,7 @@ const routes: Array<RouteRecordRaw> = [
                 component: () => import('@/views/timeSheet/Daily/Approval.vue'),
             },
             {
-                path: '/MyList',
+                path: 'MyList',
                 name: 'myList',
                 meta: {
                     title: ''
@@ -53,7 +53,7 @@ const routes: Array<RouteRecordRaw> = [
                 component: () => import('@/views/timeSheet/Daily/MyRecord.vue'),
             },
             {
-                path: '/FillOT',
+                path: 'FillOT',
                 name: 'fillOT',
                 meta: {
                     title: ''
@@ -61,7 +61,7 @@ const routes: Array<RouteRecordRaw> = [
                 component: () => import('@/views/timeSheet/Overtime/FillTable.vue'),
             },
             {
-                path: '/ApprovalOT',
+                path: 'ApprovalOT',
                 name: 'approvalOT',
                 meta: {
                     title: ''
@@ -69,7 +69,7 @@ const routes: Array<RouteRecordRaw> = [
                 component: () => import('@/views/timeSheet/Overtime/Approval.vue'),
             },
             {
-                path: '/OTHistory',
+                path: 'OTHistory',
                 name: 'OTHistory',
                 meta: {
                     title: ''
@@ -87,9 +87,9 @@ const routes: Array<RouteRecordRaw> = [
         },
         component: () => import('@/views/employeeMsg/index.vue'),
         children: [
-            { path: '', redirect: '/BasicInformation' },// 默认指向
+            { path: '', redirect: '/employeeMsg/BasicInformation' },// 默认指向
             {
-                path: '/BasicInformation',
+                path: 'BasicInformation',
                 name: 'BasicInformation',
                 meta: {
                     title: ''
@@ -97,7 +97,7 @@ const routes: Array<RouteRecordRaw> = [
                 component: () => import('@/views/employeeMsg/BasicInfo.vue'),
             },
             {
-                path: '/EmergencyContact',
+                path: 'EmergencyContact',
                 name: 'EmergencyContact',
                 meta: {
                     title: ''
@@ -105,7 +105,7 @@ const routes: Array<RouteRecordRaw> = [
                 component: () => import('@/views/employeeMsg/EmergencyContact.vue'),
             },
             {
-                path: '/EducationBackground',
+                path: 'EducationBackground',
                 name: 'EducationBackground',
                 meta: {
                     title: ''
@@ -113,7 +113,7 @@ const routes: Array<RouteRecordRaw> = [
                 component: () => import('@/views/employeeMsg/EducationBg.vue'),
             },
             {
-                path: '/Professional',
+                path: 'Professional',
                 name: 'Professional',
                 meta: {
                     title: ''
@@ -121,7 +121,7 @@ const routes: Array<RouteRecordRaw> = [
                 component: () => import('@/views/employeeMsg/Professional.vue'),
             },
             {
-                path: '/BankAccount',
+                path: 'BankAccount',
                 name: 'BankAccount',
                 meta: {
                     title: ''
@@ -129,7 +129,7 @@ const routes: Array<RouteRecordRaw> = [
                 component: () => import('@/views/employeeMsg/BankAccount.vue'),
             },
             {
-                path: '/Payslip',
+                path: 'Payslip',
                 name: 'Payslip',
                 meta: {
                     title: ''

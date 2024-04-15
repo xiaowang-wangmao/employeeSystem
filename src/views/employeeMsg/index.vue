@@ -9,27 +9,27 @@
       <a-menu v-model:selectedKeys="selectedKeys" theme="light" mode="inline">
         <a-menu-item key="1">
           <pie-chart-outlined />
-          <router-link :to="'/BasicInformation'"> 基础信息</router-link>
+          <router-link :to="'/employeeMsg/BasicInformation'"> 基础信息</router-link>
         </a-menu-item>
         <a-menu-item key="2">
           <desktop-outlined />
-          <router-link :to="'/EmergencyContact'">紧急联系人</router-link>
+          <router-link :to="'/employeeMsg/EmergencyContact'">紧急联系人</router-link>
         </a-menu-item>
         <a-menu-item key="3">
           <file-outlined />
-          <router-link :to="'/EducationBackground'">教育背景</router-link>
+          <router-link :to="'/employeeMsg/EducationBackground'">教育背景</router-link>
         </a-menu-item>
         <a-menu-item key="4">
           <file-outlined />
-          <router-link :to="'/Professional'"> 职业资格证书</router-link>
+          <router-link :to="'/employeeMsg/Professional'"> 职业资格证书</router-link>
         </a-menu-item>
         <a-menu-item key="5">
           <file-outlined />
-          <router-link :to="'/BankAccount'">银行账户</router-link>
+          <router-link :to="'/employeeMsg/BankAccount'">银行账户</router-link>
         </a-menu-item>
         <a-menu-item key="6">
           <file-outlined />
-          <router-link :to="'/Payslip'">工资条</router-link>
+          <router-link :to="'/employeeMsg/Payslip'">工资条</router-link>
         </a-menu-item>
       </a-menu>
     </a-layout-sider>
@@ -38,7 +38,9 @@
         <div
           :style="{ padding: '24px', background: '#fff', minHeight: '360px' }"
         >
-          <router-view></router-view>
+          <keep-alive>
+            <router-view></router-view>
+          </keep-alive>
         </div>
       </a-layout-content>
       <a-layout-footer style="text-align: center">
@@ -56,6 +58,13 @@ import {
 import { ref } from 'vue';
 const collapsed = ref<boolean>(false);
 const selectedKeys = ref<string[]>(['1']);
+const router = useRouter();
+
+function showContent(path:string) {
+  router.push({
+    path:path
+  })
+}
 </script>
 <style lang="less" scoped>
 :deep(.ant-layout-sider-trigger) {

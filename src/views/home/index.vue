@@ -78,21 +78,20 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { createFromIconfontCN } from '@ant-design/icons-vue';
+// import { createFromIconfontCN } from '@ant-design/icons-vue';
 import { RedoOutlined } from '@ant-design/icons-vue';
 import { getSystemNoticeList } from '@/api/notice';
-import { log } from 'console';
 
-const IconFont = createFromIconfontCN({
-  scriptUrl: '//at.alicdn.com/t/font_8d5l8fzk5b87iudi.js',
-});
+// const IconFont = createFromIconfontCN({
+//   scriptUrl: '//at.alicdn.com/t/font_8d5l8fzk5b87iudi.js',
+// });
 const router = useRouter();
 
 const menuList = ref([
-  { title: 'Daily-TimeSheet', link: () => router.push({ name: 'timeSheet' }) },
+  { title: 'Daily-TimeSheet', link: () => router.push({ path: '/timeSheet' }) },
   {
     title: 'Employee-SelfService',
-    link: () => router.push({ name: 'employeeMsg' }),
+    link: () => router.push({ path: '/employeeMsg' }),
   },
   { title: 'Leave-Manangenment', link: () => router.push({ name: 'leave' }) },
   { title: 'Onboaring', link: () => router.push({ name: 'onboard' }) },
@@ -149,15 +148,16 @@ onMounted(() => {
   // width: 1000px;
   /* overflow: hidden; */
   display: flex;
-  padding: 1% 2%;
+  // padding: 1% 2%;
   margin: 5px 0;
   // justify-content: ;
-  background-color: #eeeeee;
+  // background-color: #eeeeee;
   justify-content: space-between;
   .left {
     width: 48%;
+    padding: 1% 1%;
     border: #808080 1px solid;
-    margin-right: 3%;
+    // margin-right: 2px;
     height: 90vh;
     background-color: white;
 
@@ -177,6 +177,7 @@ onMounted(() => {
   }
   .right {
     width: 48%;
+    padding: 1% 1%;
     border: #808080 1px solid;
     background-color: white;
     .menu {
@@ -187,7 +188,7 @@ onMounted(() => {
       .menu-item {
         height: 100px;
         width: 100px;
-        background-color: saddlebrown;
+        // background-color: saddlebrown;
         margin: 5px;
         padding: 10px;
         cursor: pointer;

@@ -23,17 +23,17 @@
               </template>
               <a-menu-item key="1">
                 <pie-chart-outlined />
-                <router-link :to="'/FillDailyTimeSheet'"> Fill </router-link>
+                <router-link :to="'/timeSheet/FillDailyTimeSheet'"> Fill </router-link>
               </a-menu-item>
               <a-menu-item key="2">
                 <desktop-outlined />
-                <router-link :to="'/ApprovalDailyTimeSheet'">
+                <router-link :to="'/timeSheet/ApprovalDailyTimeSheet'">
                   Approval
                 </router-link>
               </a-menu-item>
               <a-menu-item key="3">
                 <file-outlined />
-                <router-link :to="'/MyList'"> My Record </router-link>
+                <router-link :to="'/timeSheet/MyList'"> My Record </router-link>
               </a-menu-item>
             </a-sub-menu>
             <a-sub-menu key="overtime">
@@ -45,15 +45,15 @@
               </template>
               <a-menu-item key="4">
                 <pie-chart-outlined />
-                <router-link :to="'/FillOT'"> OT Claim</router-link>
+                <router-link :to="'/timeSheet/FillOT'"> OT Claim</router-link>
               </a-menu-item>
               <a-menu-item key="5">
                 <desktop-outlined />
-                <router-link :to="'/ApprovalOT'"> Approval </router-link>
+                <router-link :to="'/timeSheet/ApprovalOT'"> Approval </router-link>
               </a-menu-item>
               <a-menu-item key="6">
                 <file-outlined />
-                <router-link :to="'/OTHistory'"> My Record </router-link>
+                <router-link :to="'/timeSheet/OTHistory'"> My Record </router-link>
               </a-menu-item>
             </a-sub-menu>
           </a-menu>
