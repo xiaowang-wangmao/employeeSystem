@@ -1,9 +1,8 @@
 <template>
-  <TopBar />
-  <a-layout style="min-height: 100vh">
+  <div>
+ <TopBar />
+  <a-layout >
     <a-layout-sider
-      v-model:collapsed="collapsed"
-      collapsible
       style="background-color: #fff"
     >
       <a-menu v-model:selectedKeys="selectedKeys" theme="light" mode="inline">
@@ -19,10 +18,10 @@
           <file-outlined />
           <router-link :to="'/employeeMsg/EducationBackground'">教育背景</router-link>
         </a-menu-item>
-        <a-menu-item key="4">
+        <!-- <a-menu-item key="4">
           <file-outlined />
           <router-link :to="'/employeeMsg/Professional'"> 职业资格证书</router-link>
-        </a-menu-item>
+        </a-menu-item> -->
         <a-menu-item key="5">
           <file-outlined />
           <router-link :to="'/employeeMsg/BankAccount'">银行账户</router-link>
@@ -36,7 +35,7 @@
     <a-layout>
       <a-layout-content style="margin: 5px 16px">
         <div
-          :style="{ padding: '24px', background: '#fff', minHeight: '360px' }"
+          :style="{ padding: '24px', background: '#fff', minHeight: '400px' }"
         >
           <keep-alive>
             <router-view></router-view>
@@ -48,6 +47,8 @@
       </a-layout-footer>
     </a-layout>
   </a-layout>
+  </div>
+ 
 </template>
 <script lang="ts" setup>
 import {
@@ -60,20 +61,26 @@ const collapsed = ref<boolean>(false);
 const selectedKeys = ref<string[]>(['1']);
 const router = useRouter();
 
-function showContent(path:string) {
-  router.push({
-    path:path
-  })
-}
 </script>
 <style lang="less" scoped>
-:deep(.ant-layout-sider-trigger) {
-  background-color: #fff;
-  color: #4a4747;
-}
+// :deep(.ant-layout-sider-trigger) {
+//   background-color: #fff;
+//   color: #4a4747;
+// }
+
 .ant-layout {
-  .ant-layout-sider-trigger {
-    background-color: #fff !important;
+  .ant-layout-sider {
+    position: fixed;
+    height: 100vh;
+    // .ant-layout-sider-children {
+    //    background-color: #fff !important;
+    // }
   }
+  .ant-layout-content {
+    padding-left: 200px;
+  }
+  // .ant-layout-sider-trigger {
+  //   background-color: #fff !important;
+  // }
 }
 </style>

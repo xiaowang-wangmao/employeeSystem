@@ -61,7 +61,8 @@
         <div class="notification">
           <ListCard
             title="系统公告"
-            :columns="columns"
+            :columns="noticeColumns"
+            :api="{list:getSystemNoticeList}"
             :needParamsCache="true"
             :fixHeader="false"
             :fixFooter="false"
@@ -81,6 +82,7 @@ import { useRouter } from 'vue-router';
 // import { createFromIconfontCN } from '@ant-design/icons-vue';
 import { RedoOutlined } from '@ant-design/icons-vue';
 import { getSystemNoticeList } from '@/api/notice';
+import Time from '@/components/Time/index.vue';
 
 // const IconFont = createFromIconfontCN({
 //   scriptUrl: '//at.alicdn.com/t/font_8d5l8fzk5b87iudi.js',
@@ -95,7 +97,7 @@ const menuList = ref([
   },
   { title: 'Leave-Manangenment', link: () => router.push({ name: 'leave' }) },
   { title: 'Onboaring', link: () => router.push({ name: 'onboard' }) },
-  { title: 'person-mag', link: () => router.push({ name: 'onboard' }) },
+  // { title: 'person-mag', link: () => router.push({ name: 'onboard' }) },
 ]);
 const activeKey = ref('1');
 const columns = [
@@ -116,6 +118,40 @@ const columns = [
   },
 ];
 
+const noticeColumns = [
+  {
+    title: '单号',
+    dataIndex: 'id',
+    key:'id',
+  },
+  {
+    title: '主题',
+    dataIndex: 'activity',
+    key:'activity',
+  },
+  {
+    title: '内容',
+    dataIndex: 'content',
+    key:'content',
+  },
+  {
+    title: '发布日期',
+    dataIndex: 'date',
+    key:'date',
+    customRender: ({ text }) => {
+        if (text) {
+          return h(Time, { time: text, format: 'YYYY-MM-DD' });
+        }
+        return h('span', {}, '-');
+      },
+  },
+  {
+    title: '发布部门',
+    dataIndex: 'deptName',
+    key:'deptName',
+  },
+];
+
 const searchKey = ref<string>('');
 
 const onSearch = (searchValue: string) => {
@@ -124,10 +160,10 @@ const onSearch = (searchValue: string) => {
 };
 
 onMounted(() => {
-  getSystemNoticeList({ current: 1, size: 5 }).then((res) => {
-    console.log('notice-list',res);
+  // getSystemNoticeList({ current: 1, size: 5 }).then((res) => {
+  //   console.log('notice-list',res);
     
-  })
+  // })
 })
 </script>
 <style lang="less" scoped>
@@ -158,7 +194,7 @@ onMounted(() => {
     padding: 1% 1%;
     border: #808080 1px solid;
     // margin-right: 2px;
-    height: 90vh;
+    height: 85vh;
     background-color: white;
 
     .top-actions {
@@ -173,29 +209,32 @@ onMounted(() => {
         // border: 1px solid black;
         cursor: pointer;
       }
+      .search {
+        position: absolute;
+        top: 32px;
+        right: 0;
+      }
     }
+
   }
   .right {
     width: 48%;
-    padding: 1% 1%;
+    // padding: 1% 1%;
     border: #808080 1px solid;
     background-color: white;
     .menu {
       height: 20%;
       display: flex;
       justify-content: space-around;
-      margin-bottom: 50px;
+      // margin-bottom: 30px;
       .menu-item {
-        height: 100px;
-        width: 100px;
-        // background-color: saddlebrown;
+        // height: 100px;
+        // width: 100px;
+        background-color: saddlebrown;
         margin: 5px;
         padding: 10px;
         cursor: pointer;
       }
-    }
-    .notification {
-      height: 70%;
     }
   }
 }

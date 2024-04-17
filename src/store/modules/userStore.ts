@@ -8,6 +8,7 @@ export interface accountValue {
     // account: string;
     userName: string;
     staffCode: string;
+    roleId: number|undefined;
 }
 export interface loginStatus {
     isLogin: boolean;
@@ -33,7 +34,8 @@ export const accountStore = defineStore({
     id: 'app-account',
     state: (): accountValue => ({
         userName: '',
-        staffCode:'',
+        staffCode: '',
+        roleId:undefined,
     }),
     getters: {
         getAccount(): string {
@@ -41,6 +43,9 @@ export const accountStore = defineStore({
         },
         getStaffCode(): string{
             return this.staffCode;
+        },
+        getRole() :any{
+            return this.roleId;
         }
     },
     actions: {
@@ -49,6 +54,9 @@ export const accountStore = defineStore({
         },
         setStaffCode(code: string) {
             this.staffCode = code;
+        },
+        setRoleId(id: any) {
+            this.roleId = id; 
         }
     },
 });

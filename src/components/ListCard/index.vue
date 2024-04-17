@@ -270,6 +270,7 @@
         <Pagination
           v-model:page-number="state.pageNumber"
           v-model:page-size="state.pageSize"
+          :pageSizeOptions="state.pageSizeOptions"
           :total="state.total"
           @change="pageChange"
         />
@@ -306,23 +307,24 @@ const state = reactive({
   dataSource: [] as any[],
   pageSizeOptions: [
     {
+      value: 5,
+      label: '5',
+    },
+    {
       value: 10,
       label: '10',
     },
+
     {
       value: 20,
       label: '20',
-    },
-    {
-      value: 30,
-      label: '30',
     },
     {
       value: 40,
       label: '40',
     },
   ],
-  pageSize: 10,
+  pageSize: 5,
   pageNumber: 1,
   total: 0,
 });
@@ -472,10 +474,10 @@ async function fetch(operateLogType?: string, cache = props.needParamsCache) {
         ? operateLogType || props.params.operateLogType : undefined,
     };
     const res = await api.list(searchParams);
-    if (res.data && res.data.length === 0) {
+    if (res.records && res.records.length === 0) {
       state.isSubmit = true;
     }
-    state.dataSource = res.data;
+    state.dataSource = res.records;
     state.total = res.total;
     if (cache) {
       router.replace({
@@ -821,14 +823,15 @@ function createConfirm(arg0: { title: string | undefined; content: string | unde
   &-content {
     display: flex;
     flex-direction: column;
-    background-color: #f3f7fd;
+    // background-color: #1452B0;
+    // border: 2px solid black;
     &_header {
       order: 1;
       font-size: 20px;
       font-weight: 600;
       color: #262626;
       background-color: white;
-      padding: 0 15px 16px 15px;
+      // padding: 0 15px 16px 15px;
       margin-bottom: 0;
 
       &_title {
@@ -842,7 +845,6 @@ function createConfirm(arg0: { title: string | undefined; content: string | unde
 
     &_body {
       order: 3;
-      background-color: white;
       flex: 1;
       &_table {
         &_action {

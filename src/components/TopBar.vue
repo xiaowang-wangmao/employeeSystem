@@ -1,21 +1,30 @@
 <template>
   <div class="topBar">
     <div class="left">
-      <span @click="router.push({path:'/index'})">Deloitte</span>
+      <span @click="router.push({ path: '/index' })">Deloitte</span>
     </div>
     <div class="right">
       <div>wangmao</div>
-      <div>消息</div>
-      <div>帮助</div>
-      <div>退出</div>
+      <a-dropdown :trigger="['click']">
+        <DownOutlined style="margin-top:4px;margin-left:2px;" />
+        <template #overlay>
+          <a-menu>
+            <a-menu-item>
+              <a href="javascript:;">修改密码</a>
+            </a-menu-item>
+            <a-menu-item>
+              <div @click="logout">退出登录</div>
+            </a-menu-item>
+          </a-menu>
+        </template>
+      </a-dropdown>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
-// import { login, loginReq } from '../../api/user';
-import { tokenStore, accountStore, loginStore } from '../../store/modules/user';
+import { DownOutlined ,UserOutlined} from '@ant-design/icons-vue';
 const router = useRouter();
 </script>
 <style lang="less" scoped>
@@ -24,23 +33,25 @@ const router = useRouter();
   color: white;
   display: flex;
   justify-content: space-between;
-  // position: fixed;
+  position: sticky;
+  z-index: 999;
   top: 0;
   left: 0;
-  // width: 100%;
   padding: 10px;
-  // height: 30px;
+  margin: 0 auto;
+  height: 20px;
+  // width: 100%;
+  // overflow: hidden;
   .left {
     width: 10%;
     cursor: pointer;
     // background-color: aqua;
   }
   .right {
-    width: 25%;
+    width: 10%;
     display: flex;
-    justify-content: space-around;
-    
     // background-color: aqua;
+
   }
 }
 </style>
