@@ -4,12 +4,12 @@
 
     <div class="main">
       <div class="left">
-        <div>logo-----工作任务</div>
+        <div>工作任务</div>
         <div class="top-actions">
           <div class="refresh">
             刷新
-            <redo-outlined />
-            <icon-font type="icon-refresh" />
+            <!-- <redo-outlined /> -->
+            <!-- <icon-font type="icon-refresh" /> -->
           </div>
           <div class="search">
             <a-input-search

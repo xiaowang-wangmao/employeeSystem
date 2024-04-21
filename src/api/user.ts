@@ -8,6 +8,3 @@ export interface loginReq {
 export const login = (params: any) =>
     defHttp.post({ url: '/login', params });
 
-// //注册
-// export const register = (params: any) =>
-//     defHttp.post({ url: '/register', params });

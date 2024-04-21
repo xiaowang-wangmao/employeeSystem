@@ -60,7 +60,6 @@ import { login, loginReq } from '../../api/user';
 import {
   tokenStore,
   accountStore,
-  loginStore,
 } from '../../store/modules/userStore';
 const router = useRouter();
 
@@ -82,10 +81,10 @@ const onFinish = (values: any) => {
     console.log('11111', res);
 
     if (res.code == 0) {
-      tokenStore().setToken(res.data.token);
       accountStore().setAccount(res.data.user.account);
       accountStore().setStaffCode(res.data.user.code + '');
       localStorage.setItem('token', res.data.token);
+      localStorage.setItem('staffCode', res.data.user.code);
       router.push({
         name: 'index',
       });

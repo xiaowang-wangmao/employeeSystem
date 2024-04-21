@@ -24,8 +24,21 @@
 
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
-import { DownOutlined ,UserOutlined} from '@ant-design/icons-vue';
+import { DownOutlined, UserOutlined } from '@ant-design/icons-vue';
+import {
+  tokenStore,
+  accountStore,
+} from '@/store/modules/userStore';
 const router = useRouter();
+
+function logout() {
+  localStorage.removeItem('token');
+  tokenStore().setToken("");
+  accountStore().setStaffCode("");
+  router.push("/");
+}
+
+
 </script>
 <style lang="less" scoped>
 .topBar {

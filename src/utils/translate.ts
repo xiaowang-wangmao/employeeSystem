@@ -4,3 +4,28 @@ export const enumToObjArray = (enumObject: any): any[] => {
     value: enumObject[key]
   }));
 };
+
+/**
+ * 将源对象中的基础数据类型的数据，拷贝到目标对象
+  * @param target { Object } 目标对象
+    * @param source { Object } 源对象
+      * @param keys 拷贝的属性名组成的数组，默认取目标对象的所有属性名
+        * */
+export function pickBasicData<T extends Object>(
+  _target: T,
+  source: Object,
+  keys: string[] = Object.keys(_target),
+  replaceEmptyString = true,
+): T {
+  const target = _target;
+  keys.forEach((key) => {
+    if (source[key] === null || (typeof target[key] !== 'object' && typeof source[key] !== 'object')) {
+      if (source[key] === '' && replaceEmptyString) {
+        target[key] = undefined;
+      } else {
+        target[key] = source[key];
+      }
+    }
+  });
+  return target;
+}

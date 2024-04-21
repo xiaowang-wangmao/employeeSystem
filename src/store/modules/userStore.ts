@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import store  from '@/store/index';
 
 export interface tokenValue {
-    token: string;
+    token: string | null;
 }
 export interface accountValue {
     // account: string;
@@ -10,25 +10,22 @@ export interface accountValue {
     staffCode: string;
     roleId: number|undefined;
 }
-export interface loginStatus {
-    isLogin: boolean;
-}
 
 export const tokenStore = defineStore({
     id: 'app-token',
     state: (): tokenValue => ({
-        token: '',
+        token: localStorage.getItem('token'),
     }),
     getters: {
-        getToken(): string {
+        getToken(): any{
             return this.token;
         },
     },
-    actions: {
-        setToken(token: string) {
-            this.token = token;
-        },
-    },
+    // actions: {
+    //     setToken(token: string) {
+    //         this.token = token;
+    //     },
+    // },
 });
 export const accountStore = defineStore({
     id: 'app-account',
@@ -60,22 +57,6 @@ export const accountStore = defineStore({
         }
     },
 });
-export const loginStore = defineStore({
-    id: 'app-login',
-    state: (): loginStatus => ({
-        isLogin: null!,
-    }),
-    getters: {
-        getLoginStatus(): boolean {
-            return this.isLogin;
-        },
-    },
-    actions: {
-        setLoginStatus(isLogin: boolean) {
-            this.isLogin = isLogin;
-        },
-    },
-});
 
 // Need to be used outside the setup
 export function tokenStoreWidthOut() {
@@ -83,7 +64,4 @@ export function tokenStoreWidthOut() {
 }
 export function accountStoreWidthOut() {
     return accountStore(store);
-}
-export function loginStoreWidthOut() {
-    return loginStore(store);
 }

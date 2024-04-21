@@ -4,7 +4,11 @@ import App from './App.vue'
 import router from './router'
 import Particles from 'particles.vue3'
 import store from "./store/index";
-
+import { message } from 'ant-design-vue';
+import {
+  accountStore,
+  tokenStore,
+} from '@/store/modules/userStore';
 //挂载路由导航守卫
 router.beforeEach((to, from, next) => {
   //to 将要访问的路径
@@ -14,8 +18,10 @@ router.beforeEach((to, from, next) => {
     next();
   } else {
     const tokenStr = window.localStorage.getItem('token')
+    // const vuexData = tokenStore().getToken;
 
     if (!tokenStr) {
+      message.error("请先登录");
       return next('/login')
     }
     next();

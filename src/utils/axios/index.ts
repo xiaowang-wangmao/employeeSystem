@@ -237,7 +237,7 @@ function createAxios(opt?: Partial<CreateAxiosOptions>) {
         // headers: { 'Content-Type': ContentTypeEnum.JSON },
         // 如果是form-data格式
         headers: {
-          'content-type': ContentTypeEnum.FORM_URLENCODED,
+          'content-type': ContentTypeEnum.JSON,
           'x-requested-with': 'XMLHttpRequest',
           'x-ajax': 'json',
         },
