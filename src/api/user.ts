@@ -6,5 +6,5 @@ export interface loginReq {
 }
 //登录
 export const login = (params: any) =>
-    defHttp.post({ url: '/login', params });
+    defHttp.post({ url: '/login/index', params });
 

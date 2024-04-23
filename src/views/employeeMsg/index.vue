@@ -18,24 +18,20 @@
           <file-outlined />
           <router-link :to="'/employeeMsg/EducationBackground'">教育背景</router-link>
         </a-menu-item>
-        <!-- <a-menu-item key="4">
-          <file-outlined />
-          <router-link :to="'/employeeMsg/Professional'"> 职业资格证书</router-link>
-        </a-menu-item> -->
-        <a-menu-item key="5">
+        <a-menu-item key="4">
           <file-outlined />
           <router-link :to="'/employeeMsg/BankAccount'">银行账户</router-link>
         </a-menu-item>
-        <a-menu-item key="6">
+        <a-menu-item key="5">
           <file-outlined />
           <router-link :to="'/employeeMsg/Payslip'">工资条</router-link>
         </a-menu-item>
       </a-menu>
     </a-layout-sider>
-    <a-layout>
+    <a-layout >
       <a-layout-content style="margin: 5px 16px">
         <div
-          :style="{ padding: '24px', background: '#fff', minHeight: '400px' }"
+          :style="{ padding: '24px', background: '#fff', minHeight: '85vh'}"
         >
           <keep-alive>
             <router-view></router-view>

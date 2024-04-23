@@ -2,7 +2,7 @@
   <div style="border: 2px solid #fff">
     <div>
       <div style="display: flex; justify-content: space-between">
-        <div>银行信息：工资银行账户</div>
+        <div>工资信息</div>
         <a-button
           type="primary"
           v-if="DisableFlag"
@@ -17,40 +17,42 @@
           <a-button @click="DisableFlag = true">取消</a-button>
         </div>
       </div>
+      <div>！需要二次登录验证！</div>
       <a-divider />
       <a-form
-        ref="formRef"
+        :model="formState"
         :label-col="{ span: 2 }"
         :wrapper-col="{ span: 10 }"
-        :model="BankAccount"
+        autocomplete="off"
+        @finish="onFinish"
+        @finishFailed="onFinishFailed"
+        class="form"
       >
-        <a-form-item label="收款人" name="payee" required>
-          <a-input
-            v-model:value="BankAccount.payee"
-            :disabled="DisableFlag"
-            allowClear
-          />
+        <a-form-item
+          label="StaffCode"
+          name="code"
+          :rules="[{ required: true, message: 'Please input your staffCode!' }]"
+        >
+          <a-input v-model:value="formState.code" />
         </a-form-item>
-        <a-form-item label="银行名称" name="bankName" required>
-          <a-input
-            v-model:value="BankAccount.bankName"
-            :disabled="DisableFlag"
-            allowClear
-          />
+        <a-form-item
+          label="Account"
+          name="account"
+          :rules="[{ required: true, message: 'Please input your account!' }]"
+        >
+          <a-input v-model:value="formState.account" />
         </a-form-item>
-        <a-form-item label="银行账号" name="bankNumber" required>
-          <a-input
-            v-model:value="BankAccount.bankNumber"
-            :disabled="DisableFlag"
-            allowClear
-          />
+
+        <a-form-item
+          label="Password"
+          name="password"
+          :rules="[{ required: true, message: 'Please input your password!' }]"
+        >
+          <a-input-password v-model:value="formState.password" />
         </a-form-item>
-        <a-form-item label="备注" name="remark">
-          <a-input
-            v-model:value="BankAccount.remark"
-            :disabled="DisableFlag"
-            allowClear
-          />
+
+        <a-form-item :wrapper-col="{ offset: 6, span: 10 }">
+          <a-button type="primary" html-type="submit">Submit</a-button>
         </a-form-item>
       </a-form>
       <a-divider />
@@ -63,7 +65,9 @@ import { getStaffInfo, updateBank } from '@/api/basicInfo';
 import { pickBasicData } from '@/utils/translate';
 import dayjs, { Dayjs } from 'dayjs';
 
-const BankAccount = reactive({
+import { login} from '../../api/user';
+
+const formState = reactive({
   payee: '',
   bankName: '',
   bankNumber: '',
@@ -75,16 +79,30 @@ const id = localStorage.getItem('staffCode');
 
 function save() {
   formRef.value.validate().then((values:any) => {
-    updateBank({ bankAccount: { ...values }, id: id }).then((res) => {
+    updateBank({ formState: { ...values }, id: id }).then((res) => {
       console.log(res);
-      pickBasicData(BankAccount, res);
+      pickBasicData(formState, res);
       DisableFlag.value = true;
     });
   });
 }
+
+const onFinish = (values: any) => {
+  console.log('Success:', values);
+  login(values).then((res) => {
+    console.log('11111', res);
+    if (res.code == 0) {
+    }
+  });
+};
+
+const onFinishFailed = (errorInfo: any) => {
+  console.log('Failed:', errorInfo);
+};
+
 onMounted(() => {
   getStaffInfo({ id: id }).then((res) => {
-    pickBasicData(BankAccount, res.bankAccount);
+    pickBasicData(formState, res.formState);
   });
 });
 </script>

@@ -22,3 +22,18 @@ export const updateContact = (params: any) =>
   defHttp.post({ url: '/staffInfo/updateContact', params }).then((res) => {
     return res.data;
   });
+
+export const updateEducation = (params: any) =>
+  defHttp.post({ url: '/staffInfo/updateEducation', params }).then((res) => {
+    return res.data;
+  });
+
+export const deleteEducation = (params: any) =>
+  defHttp.get({ url: '/staffInfo/deleteEducation', params }).then((res) => {
+    return res.data;
+  });
+
+export const updateContactList = (params: any) =>
+  defHttp.post({ url: '/staffInfo/updateContactList', params }).then((res) => {
+    return res.data;
+  });

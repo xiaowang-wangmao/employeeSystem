@@ -16,18 +16,18 @@
         class="form"
       >
         <a-form-item
-          label="staffCode"
-          name="staffCode"
+          label="code"
+          name="code"
           :rules="[{ required: true, message: 'Please input your staffCode!' }]"
         >
-          <a-input v-model:value="formState.staffCode" />
+          <a-input v-model:value="formState.code" />
         </a-form-item>
         <a-form-item
-          label="Username"
-          name="username"
-          :rules="[{ required: true, message: 'Please input your username!' }]"
+          label="account"
+          name="account"
+          :rules="[{ required: true, message: 'Please input your account!' }]"
         >
-          <a-input v-model:value="formState.username" />
+          <a-input v-model:value="formState.account" />
         </a-form-item>
 
         <a-form-item
@@ -56,7 +56,7 @@
 <script setup lang="ts">
 import { reactive, ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { login, loginReq } from '../../api/user';
+import { login } from '../../api/user';
 import {
   tokenStore,
   accountStore,
@@ -64,14 +64,14 @@ import {
 const router = useRouter();
 
 interface FormState {
-  staffCode: string;
-  username: string;
+  code: string;
+  account: string;
   password: string;
   remember: boolean;
 }
 const formState = reactive<FormState>({
-  staffCode: '',
-  username: '',
+  code: '',
+  account: '',
   password: '',
   remember: true,
 });
@@ -96,18 +96,7 @@ const onFinishFailed = (errorInfo: any) => {
   console.log('Failed:', errorInfo);
 };
 
-// 这里存放数据
-const user = reactive<loginReq>({
-  account: '',
-  password: '',
-});
 
-// let imgUrl = ref(
-//   'http://localhost:5173/api/user/verifyCode?time=' + new Date()
-// );
-// const resetImg = () => {
-//   imgUrl.value = 'http://localhost:5173/api/user/verifyCode?time=' + new Date();
-// };
 
 const options = reactive({
   fpsLimit: 60,

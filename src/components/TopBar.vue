@@ -33,7 +33,6 @@ const router = useRouter();
 
 function logout() {
   localStorage.removeItem('token');
-  tokenStore().setToken("");
   accountStore().setStaffCode("");
   router.push("/");
 }
