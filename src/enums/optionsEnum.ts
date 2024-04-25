@@ -13,3 +13,11 @@ export enum MaritalStatusEnum {
 
 
 
+export enum OrderStatusEnum {
+  '已提交' = 0,
+  '审核中' = 1,
+  '审核通过' = 2,
+  '审核驳回' = 3,
+  '已完成' = 4,
+}
+

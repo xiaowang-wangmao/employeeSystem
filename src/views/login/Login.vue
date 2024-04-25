@@ -85,6 +85,7 @@ const onFinish = (values: any) => {
       accountStore().setStaffCode(res.data.user.code + '');
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('staffCode', res.data.user.code);
+      localStorage.setItem('userName', res.data.user.account);
       router.push({
         name: 'index',
       });

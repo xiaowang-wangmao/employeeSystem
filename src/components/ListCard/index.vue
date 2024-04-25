@@ -4,19 +4,14 @@
     :class="{
       'fix-header': props.fixHeader,
       'fix-footer': props.fixFooter,
-    }">
+    }"
+  >
     <div class="list-card-content">
       <h1 class="list-card-content_header">
         <a-row justify="space-between">
           <a-col style="display: flex; align-items: center">
-            <SvgRaw
-              v-if="props.icon"
-              :name="props.icon"
-            />
-            <span
-              v-if="props.title"
-              class="list-card-content_header_title"
-            >{{
+            <SvgRaw v-if="props.icon" :name="props.icon" />
+            <span v-if="props.title" class="list-card-content_header_title">{{
               props.title
             }}</span>
           </a-col>
@@ -26,11 +21,7 @@
         </a-row>
       </h1>
 
-      <div
-        v-if="filters"
-        ref="listCardHeaderRef"
-        class="list-card-filters"
-      >
+      <div v-if="filters" ref="listCardHeaderRef" class="list-card-filters">
         <a-form
           ref="formRef"
           :model="state.filtersFormState"
@@ -48,21 +39,22 @@
               >
                 <a-form-item
                   v-if="index < 4 || (index >= 4 && !state.showExpand)"
-                  :name="item.prop">
+                  :name="item.prop"
+                >
                   <a-input
                     v-if="item.type === 'input'"
                     v-model:value="state.filtersFormState[item.prop]"
-                    :placeholder="t(item.label)"
+                    :placeholder="item.label"
                     :maxlength="item.length"
                     allow-clear
-                    @change="e => searchInputChange(e, item.needLow)"
+                    @change="(e) => searchInputChange(e, item.needLow)"
                   />
                   <a-select
                     v-if="item.type === 'select'"
                     v-model:value="state.filtersFormState[item.prop]"
-                    :placeholder="t(item.label)"
+                    :placeholder="item.label"
                     style="width: 100%"
-                    :options="translateArrayProp(item.options, 'label')"
+                    :options="item.options"
                     :mode="item.mode || 'combobox'"
                     allow-clear
                     :show-search="item.showSearch"
@@ -70,7 +62,7 @@
                     option-filter-prop="label"
                     @search="item.onSearch"
                     @blur="handelBlur('', item.searchApi, item.mode)"
-                    @change="handleChange(item.prop,item.hasChange)"
+                    @change="handleChange(item.prop, item.hasChange)"
                   />
                   <a-date-picker
                     v-if="item.type === 'date'"
@@ -78,7 +70,7 @@
                     show-time
                     value-format="YYYY-MM-DDTHH:mm:ss"
                     format="YYYY-MM-DD HH:mm:ss"
-                    :placeholder="t(item.label)"
+                    :placeholder="item.label"
                     style="width: 100%"
                     allow-clear
                   />
@@ -88,13 +80,17 @@
                     v-model:value="state.filtersFormState[item.prop]"
                     value-format="YYYY-MM-DD"
                     format="YYYY-MM-DD"
-                    :placeholder="item.placeholder?[
-                      t(item.placeholder) + t('common.divider') + '（起）',
-                      t(item.placeholder) + t('common.divider') + '（止）'
-                    ] : [
-                      t(item.label) + t('common.divider') + t('common.timeStart'),
-                      t(item.label) + t('common.divider') + t('common.timeEnd')
-                    ]"
+                    :placeholder="
+                      item.placeholder
+                        ? [
+                            item.placeholder + '  ' + '（起）',
+                            item.placeholder + ' ' + '（止）',
+                          ]
+                        : [
+                            item.label + ' ' + '（起）',
+                            item.label + ' ' + '（止）',
+                          ]
+                    "
                     :disabled-date="item.disabledDate"
                     style="width: 100%"
                     allow-clear
@@ -105,7 +101,7 @@
                     :fieldNames="item.fieldNames"
                     expand-trigger="hover"
                     :options="item.cascaderOptions"
-                    :placeholder="t(item.label)"
+                    :placeholder="item.label"
                     :show-search="item.showSearch"
                     :disabled="item.disabled"
                     style="width: 100%"
@@ -116,15 +112,22 @@
             <div>
               <a-form-item>
                 <a-space>
-                  <a-button @click="resetForm">
-                    {{ t('component.cropper.btn_reset') }}
-                  </a-button>
+                  <a-button @click="resetForm"> 重置 </a-button>
                   <a-button
                     type="primary"
                     :disabled="!isCanSearch"
                     html-type="submit"
+                    v-if="handleListCardFooter"
                   >
-                    {{ t('common.searchText') }}
+                    搜索
+                  </a-button>
+                  <a-button
+                    v-else
+                    type="primary"
+                    :disabled="!isCanSearch"
+                    @click="searchList"
+                  >
+                    搜索
                   </a-button>
                 </a-space>
               </a-form-item>
@@ -137,7 +140,7 @@
           class="filters-expand"
           @click="handleExpandFilters"
         >
-          {{ t('component.form.expand') }}
+          展开
           <SvgRaw name="icon_drop_down" />
         </a>
 
@@ -146,24 +149,25 @@
           class="filters-expand"
           @click="handleCollapseFilters"
         >
-          {{ t('component.form.collapse') }}
+          收起
           <SvgRaw name="icon_up" />
         </a>
         <slot name="listCardHeaderRender"></slot>
       </div>
 
       <div class="list-card-content_body">
-        <a-row
-          class="table-top-render"
-          justify="space-between"
-        >
+        <a-row class="table-top-render" justify="space-between">
           <slot name="tableTopRender"></slot>
         </a-row>
 
         <a-table
           :locale="{ emptyText: 'common.notData' }"
           :sticky="{ offsetHeader: state.listCardHeaderHeight }"
-          :scroll="{ scrollToFirstRowOnChange: true, x: 'min-content', y: props.scrollY }"
+          :scroll="{
+            scrollToFirstRowOnChange: true,
+            x: 'min-content',
+            y: props.scrollY,
+          }"
           :data-source="state.dataSource"
           :columns="props.columns"
           :pagination="false"
@@ -190,72 +194,85 @@
               :image="toBeContinued"
               :image-style="imageStyle"
             />
-            <a-empty
-              v-else
-              :description="'暂无数据'"
-              :image="emptyImage"
-            />
+            <a-empty v-else :description="'暂无数据'" :image="emptyImage" />
           </template>
           <template #bodyCell="{ column, record }">
             <template v-if="column.key === 'action'">
               <div class="list-card-content_body_table_action">
-                <slot
-                  name="actionRender"
-                  :record="record"
-                >
-
+                <slot name="actionRender" :record="record">
                   <div v-if="btnInfo.length" class="btn-wrapper">
                     <span
-                      v-for="(item,index) in btnInfo.slice(0,showBtnNum)"
-                      :key="index">
+                      v-for="(item, index) in btnInfo.slice(0, showBtnNum)"
+                      :key="index"
+                    >
                       <a-popconfirm
-                        v-if="item.popconfirm && !checkButtonIfDisable(record,item)"
+                        v-if="
+                          item.popconfirm && !checkButtonIfDisable(record, item)
+                        "
                         placement="topLeft"
-                        :title="item.confirmTitle?item.confirmTitle:
-                          `请确认是否${item.text}？`"
+                        :title="
+                          item.confirmTitle
+                            ? item.confirmTitle
+                            : `请确认是否${item.text}？`
+                        "
                         @confirm="() => item.onClick(record)"
                       >
                         <a-button
                           type="link"
-                          :disabled="checkButtonIfDisable(record,item)"
-                          v-show="(item.visible?item.visible(record):true)"
-                        ><SvgRaw v-if="item.icon" :name="item.icon" />
-                          {{ item.text }}</a-button>
+                          :disabled="checkButtonIfDisable(record, item)"
+                          v-show="item.visible ? item.visible(record) : true"
+                          ><SvgRaw v-if="item.icon" :name="item.icon" />
+                          {{ item.text }}</a-button
+                        >
                       </a-popconfirm>
                       <a-button
                         v-else
                         type="link"
-                        v-show="(item.visible?item.visible(record):true)"
-                        :disabled="checkButtonIfDisable(record,item)"
-                        @click="handelOnClick(record,item)"
+                        v-show="item.visible ? item.visible(record) : true"
+                        :disabled="checkButtonIfDisable(record, item)"
+                        @click="handelOnClick(record, item)"
                       >
-                        <SvgRaw v-if="item.icon" :name="item.icon" class="btn-icon" />
+                        <SvgRaw
+                          v-if="item.icon"
+                          :name="item.icon"
+                          class="btn-icon"
+                        />
                         {{ item.text }}
                       </a-button>
                     </span>
-                    <span><a-popover placement="rightTop" v-if="props.btnInfo.length>showBtnNum">
-                      <template #content>
-                        <div>
-                          <div
-                            v-for="(item,index) in btnInfo" :key="index"
-                            >
-                            <a-button
-                              type="link"
-                              v-show="(item.visible?item.visible(record):true)"
-                              :disabled="checkButtonIfDisable(record,item)"
-                              @click="handelOnClick(record,item)"
-                            >
-                              <SvgRaw v-if="item.icon" :name="item.icon" class="btn-icon" />
-                              {{ item.text }}
-                            </a-button
-                            >
+                    <span
+                      ><a-popover
+                        placement="rightTop"
+                        v-if="props.btnInfo.length > showBtnNum"
+                      >
+                        <template #content>
+                          <div>
+                            <div v-for="(item, index) in btnInfo" :key="index">
+                              <a-button
+                                type="link"
+                                v-show="
+                                  item.visible ? item.visible(record) : true
+                                "
+                                :disabled="checkButtonIfDisable(record, item)"
+                                @click="handelOnClick(record, item)"
+                              >
+                                <SvgRaw
+                                  v-if="item.icon"
+                                  :name="item.icon"
+                                  class="btn-icon"
+                                />
+                                {{ item.text }}
+                              </a-button>
+                            </div>
                           </div>
-                        </div>
-                      </template>
-                      <a-button type="link" class="task-list-table_more-action">
-                        <SvgRaw name="icon_more_operation" />
-                      </a-button>
-                    </a-popover></span>
+                        </template>
+                        <a-button
+                          type="link"
+                          class="task-list-table_more-action"
+                        >
+                          <SvgRaw name="icon_more_operation" />
+                        </a-button> </a-popover
+                    ></span>
                   </div>
                 </slot>
               </div>
@@ -263,10 +280,7 @@
           </template>
         </a-table>
       </div>
-      <div
-        v-if="props.handleListCardFooter"
-        class="list-card-content_footer"
-      >
+      <div v-if="props.handleListCardFooter" class="list-card-content_footer">
         <Pagination
           v-model:page-number="state.pageNumber"
           v-model:page-size="state.pageSize"
@@ -288,15 +302,28 @@ import { BtnInfoType } from '@/enums/formEnum';
 import { message } from 'ant-design-vue';
 import { useRoute, useRouter } from 'vue-router';
 import Pagination from '@/components/Pagination/index.vue';
-import { computed, nextTick, onMounted, onUnmounted, reactive, ref, toRaw, watch } from 'vue';
+import {
+  computed,
+  nextTick,
+  onMounted,
+  onUnmounted,
+  reactive,
+  ref,
+  toRaw,
+  watch,
+} from 'vue';
+import { stat } from 'fs/promises';
 
 const listCardHeaderRef = ref();
-const emit = defineEmits(['update:selectedRowKeys', 'update:selectedRows', 'filterChange']);
+const emit = defineEmits([
+  'update:selectedRowKeys',
+  'update:selectedRows',
+  'filterChange',
+]);
 const router = useRouter();
 const route = useRoute();
 const imageStyle = { height: '150px' };
 const state = reactive({
-  
   isSubmit: false,
   listCardHeaderHeight: 0,
   loading: false,
@@ -324,7 +351,7 @@ const state = reactive({
       label: '40',
     },
   ],
-  pageSize: 5,
+  pageSize: 10,
   pageNumber: 1,
   total: 0,
 });
@@ -334,7 +361,10 @@ const props = withDefaults(
     title?: string;
     icon?: string;
     columns?: any[];
-    checkButtonDisabled?:(record: Record<string, any>, name: string) => boolean;
+    checkButtonDisabled?: (
+      record: Record<string, any>,
+      name: string
+    ) => boolean;
     btnInfo: BtnInfoType[];
     showBtnNum?: number;
     filters?: any[] | null;
@@ -343,6 +373,7 @@ const props = withDefaults(
     api?: {
       list?: Function;
       detail?: Function;
+      search?: Function;
       delete?: Function;
       export?: Function;
       downloadTemplate?: Function;
@@ -357,9 +388,9 @@ const props = withDefaults(
     rowKey?: string;
     selectedRowKeys?: string[];
     selectedRows?: [];
-    checkDisabled?:(record: Record<string, any>) => boolean;
+    checkDisabled?: (record: Record<string, any>) => boolean;
     needParamsCache: boolean;
-    scrollY?: number
+    scrollY?: number;
   }>(),
   {
     handleListCardFooter: true,
@@ -370,7 +401,12 @@ const props = withDefaults(
     btnInfo: () => [],
     params: () => ({}),
     hidden: false,
-    refreshProps: () => ['runStatus', 'deploymentStatus', 'runStatusName', 'deploymentStatusName'],
+    refreshProps: () => [
+      'runStatus',
+      'deploymentStatus',
+      'runStatusName',
+      'deploymentStatusName',
+    ],
     autoRefresh: true,
     isCanSearch: true,
     needRow: false,
@@ -378,10 +414,10 @@ const props = withDefaults(
     selectedRowKeys: () => [],
     selectedRows: () => [],
     needParamsCache: false,
-  },
+  }
 );
 
-function handelOnClick(record: any, btnInfoItem:BtnInfoType) {
+function handelOnClick(record: any, btnInfoItem: BtnInfoType) {
   if (btnInfoItem.modalconfirm) {
     createConfirm({
       title: btnInfoItem.confirmTitle,
@@ -396,7 +432,7 @@ function handelOnClick(record: any, btnInfoItem:BtnInfoType) {
 }
 
 // 检查按钮是否可用
-function checkButtonIfDisable(record, item):boolean {
+function checkButtonIfDisable(record, item): boolean {
   const globalDisabled = props.checkButtonDisabled
     ? props.checkButtonDisabled(record, item.operationType)
     : false;
@@ -406,35 +442,45 @@ function checkButtonIfDisable(record, item):boolean {
 async function loopFetch() {
   const { api, params } = props;
   if (
-    api
-    && api.refreshStatus
-    && !isEmpty(state.dataSource)
-    && route.path.includes('list')
+    api &&
+    api.refreshStatus &&
+    !isEmpty(state.dataSource) &&
+    route.path.includes('list')
   ) {
-    api.refreshStatus(
-      params.env,
-      (state.dataSource as any[]).map((i) => i.code),
-      params.colonyStatusCode,
-    ).then((res) => {
-      if (res) {
-        res.forEach((element) => {
-          const index = state.dataSource.findIndex(
-            (i: any) => i && i.code && element.code === i.code,
-          );
-          if (props.refreshProps) {
-            props.refreshProps.forEach((item) => {
-              state.dataSource[index][item] = element[item];
-            });
-          }
-        });
-      }
-    }).catch(() => message.error('请求错误'));
+    api
+      .refreshStatus(
+        params.env,
+        (state.dataSource as any[]).map((i) => i.code),
+        params.colonyStatusCode
+      )
+      .then((res) => {
+        if (res) {
+          res.forEach((element) => {
+            const index = state.dataSource.findIndex(
+              (i: any) => i && i.code && element.code === i.code
+            );
+            if (props.refreshProps) {
+              props.refreshProps.forEach((item) => {
+                state.dataSource[index][item] = element[item];
+              });
+            }
+          });
+        }
+      })
+      .catch(() => message.error('请求错误'));
   }
 }
 
 // 复杂度拆分
 function filterTime(filtersFormState: any) {
-  const arr = ['createTime', 'lastUpdateTime', 'operationTime', 'runTime', 'expectedTime', 'submissionTime'];
+  const arr = [
+    'createTime',
+    'lastUpdateTime',
+    'operationTime',
+    'runTime',
+    'date',
+    'submissionTime',
+  ];
   const newFilters = filtersFormState;
   if (isArray(newFilters.runDetailTime) && newFilters.runDetailTime[0]) {
     newFilters.startTime = `${newFilters.runDetailTime[0]} 00:00:00`;
@@ -471,14 +517,20 @@ async function fetch(operateLogType?: string, cache = props.needParamsCache) {
       pageNumber: state.pageNumber,
       pageSize: state.pageSize,
       operateLogType: props.params.operateLogType
-        ? operateLogType || props.params.operateLogType : undefined,
+        ? operateLogType || props.params.operateLogType
+        : undefined,
     };
     const res = await api.list(searchParams);
     if (res.records && res.records.length === 0) {
       state.isSubmit = true;
     }
-    state.dataSource = res.records;
-    state.total = res.total;
+    if (props.handleListCardFooter) {
+      state.dataSource = res.records;
+      state.total = res.total;
+    } else {
+      state.dataSource = res;
+    }
+
     if (cache) {
       router.replace({
         query: {
@@ -495,7 +547,7 @@ const loopFetchInterval = ref();
  * @description Parameter change
  * @description 参数变化
  */
-function paramsChange(isSearch? : boolean) {
+function paramsChange(isSearch?: boolean) {
   if (loopFetchInterval.value) {
     clearInterval(loopFetchInterval.value);
   }
@@ -529,7 +581,9 @@ function defaultSelectedStyle() {
 
 // 重置搜索内容
 const resetForm = () => {
-  formRef.value.resetFields(props.filters?.filter((i) => !i.disabled).map((i) => i.prop));
+  formRef.value.resetFields(
+    props.filters?.filter((i) => !i.disabled).map((i) => i.prop)
+  );
   defaultSelectedStyle();
   emit('update:selectedRowKeys', []);
   emit('update:selectedRows', []);
@@ -551,12 +605,16 @@ function handelSearch(name: string, api?: Function) {
   if (isFunction(api)) api(name);
 }
 
-const mappedFilters = computed(() => (props.filters || []).map((filter) => ({
-  ...filter,
-  onSearch: filter.showSearch
-    ? (val: string) => { handelSearch(val, filter.searchApi); }
-    : undefined,
-})));
+const mappedFilters = computed(() =>
+  (props.filters || []).map((filter) => ({
+    ...filter,
+    onSearch: filter.showSearch
+      ? (val: string) => {
+          handelSearch(val, filter.searchApi);
+        }
+      : undefined,
+  }))
+);
 
 function handelBlur(name: string, api?: Function, mode?: string) {
   if (isFunction(api) && mode === 'multiple') api(name);
@@ -575,7 +633,7 @@ const onSelectChange = (selectedRowKeys, selectedRows) => {
  * @param name
  * @param hasChange
  */
-function handleChange(name:string, hasChange:boolean) {
+function handleChange(name: string, hasChange: boolean) {
   if (hasChange) {
     if (name === 'templateType') {
       state.filtersFormState.cleaningType = undefined;
@@ -597,6 +655,29 @@ const onSubmit = () => {
     }
   } else {
     paramsChange(props.params.operateLogType);
+  }
+};
+
+const searchList = async () => {
+  const { api, params } = props;
+  setOriginFilterParams();
+  const filtersFormState = toRaw(state.originFilterParams);
+  const filterTimeValue = filterTime(filtersFormState);
+  Object.assign(filtersFormState, filterTimeValue);
+  state.loading = true;
+
+  if (props.isCanSearch) {
+    state.pageNumber = 1;
+    if (api && api.search) {
+      const searchParams = {
+        ...params,
+        ...filtersFormState,
+      };
+      const res = await api.search(searchParams);
+      state.dataSource = res;
+    }
+  } else {
+    state.dataSource = [];
   }
 };
 
@@ -713,7 +794,7 @@ watch(
     if (!isEqual(newValue, oldValue)) {
       paramsChange();
     }
-  },
+  }
 );
 
 // 监听过滤数据
@@ -723,7 +804,7 @@ watch(
     const filterParams = state.filtersFormState;
     emit('filterChange', filterParams);
   },
-  { deep: true },
+  { deep: true }
 );
 
 function setFiltersFormState(obj: Record<string, any>) {
@@ -748,14 +829,18 @@ onUnmounted(() => {
   }
 });
 
-
-function createConfirm(arg0: { title: string | undefined; content: string | undefined; onOk: () => void; iconType: string; closable: boolean; }) {
+function createConfirm(arg0: {
+  title: string | undefined;
+  content: string | undefined;
+  onOk: () => void;
+  iconType: string;
+  closable: boolean;
+}) {
   throw new Error('Function not implemented.');
 }
 </script>
 
 <style lang="less">
-
 .list-card {
   width: 100%;
   background: #fff;
@@ -769,6 +854,7 @@ function createConfirm(arg0: { title: string | undefined; content: string | unde
       top: 0;
       margin: 0;
       background: #fff;
+      // border: 1px solid black;
       padding: 16px 24px 0;
       z-index: 9;
     }
@@ -807,7 +893,8 @@ function createConfirm(arg0: { title: string | undefined; content: string | unde
     }
   }
 
-  &.fix-header, &.fix-footer {
+  &.fix-header,
+  &.fix-footer {
     .list-card-content {
       min-height: calc(100vh - 48px);
     }
@@ -848,27 +935,28 @@ function createConfirm(arg0: { title: string | undefined; content: string | unde
       flex: 1;
       &_table {
         &_action {
-            .btn-wrapper {
+          .btn-wrapper {
+            display: flex;
+            align-items: center;
+            margin-left: -8px;
+            // background-color: #262626;
+            .btn-icon {
+              margin-right: 6px;
+            }
+            .ant-btn-link {
+              padding: 4px 8px;
               display: flex;
+              justify-content: center;
               align-items: center;
-              margin-left: -8px;
-              .btn-icon {
-                margin-right: 6px;
-              }
-              .ant-btn-link {
-                padding: 4px 8px;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-              }
-              .task-list-table_more-action {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                margin-left: -2px;
-              }
+            }
+            .task-list-table_more-action {
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              margin-left: -2px;
             }
           }
+        }
       }
     }
 

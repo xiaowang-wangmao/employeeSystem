@@ -4,39 +4,6 @@
 
     <div class="main">
       <div class="left">
-        <div>工作任务</div>
-        <div>
-          <ListCard
-            :columns="columns"
-            :needParamsCache="true"
-            :fixHeader="false"
-            :fixFooter="false"
-            ref="list"
-          >
-            <template #tableTopRender>
-              <a-tabs v-model:activeKey="tab.activeKey" @change="tabChange">
-                <a-tab-pane
-                  v-for="activeItem in tab.activeTabs"
-                  :key="activeItem.id"
-                >
-                  <template #tab>
-                    <span class="a-tab-pane-custom">
-                      <SvgRaw
-                        :name="activeItem.icon"
-                        class="a-tab-pane-custom-icon"
-                      />
-                      <span style="margin-left: 6px">{{
-                        activeItem.name
-                      }}</span>
-                    </span>
-                  </template>
-                </a-tab-pane>
-              </a-tabs>
-            </template>
-          </ListCard>
-        </div>
-      </div>
-      <div class="right">
         <div class="menu">
           <div
             v-for="(item, index) in menuList"
@@ -48,6 +15,8 @@
             {{ item.title }}
           </div>
         </div>
+      </div>
+      <div class="right">
         <div class="notification">
           <ListCard
             title="系统公告"
@@ -73,7 +42,6 @@ import { useRouter } from 'vue-router';
 import { RedoOutlined } from '@ant-design/icons-vue';
 import { getSystemNoticeList } from '@/api/notice';
 import Time from '@/components/Time/index.vue';
-
 
 const router = useRouter();
 const list = ref();
@@ -159,7 +127,6 @@ const onSearch = (searchValue: string) => {
   console.log('or use this.value', searchKey.value);
 };
 
-
 onMounted(() => {
   // getSystemNoticeList({ current: 1, size: 5 }).then((res) => {
   //   console.log('notice-list',res);
@@ -187,10 +154,10 @@ onMounted(() => {
   // padding: 1% 2%;
   margin: 5px 0;
   // justify-content: ;
-  // background-color: #eeeeee;
-  justify-content: space-between;
+  // background-color: #533232;
+  // justify-content: space-between;
   .left {
-    width: 48%;
+    width: 40vw;
     padding: 1% 1%;
     // border: #808080 1px solid;
     // margin-right: 2px;
@@ -216,27 +183,27 @@ onMounted(() => {
       }
     }
   }
+  .menu {
+    height: 20%;
+    display: flex;
+    justify-content: space-around;
+    // margin-bottom: 30px;
+    .menu-item {
+      // height: 100px;
+      // width: 100px;
+      // background-color: saddlebrown;
+      border: #808080 1px solid;
+      border-radius: 20px;
+      margin: 5px;
+      padding: 10px;
+      cursor: pointer;
+    }
+  }
   .right {
-    width: 48%;
+    width: 55vw;
     // padding: 1% 1%;
     // border: #808080 1px solid;
     background-color: white;
-    .menu {
-      height: 20%;
-      display: flex;
-      justify-content: space-around;
-      // margin-bottom: 30px;
-      .menu-item {
-        // height: 100px;
-        // width: 100px;
-        // background-color: saddlebrown;
-        border: #808080 1px solid;
-        border-radius: 20px;
-        margin: 5px;
-        padding: 10px;
-        cursor: pointer;
-      }
-    }
   }
 }
 </style>

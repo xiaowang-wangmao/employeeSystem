@@ -29,19 +29,9 @@
             allowClear
           />
         </a-form-item>
-        <a-form-item label="Target Hours" name="targetHours">
+        <a-form-item label="Total Actural Hours" name="overtimeHours">
           <a-input-number
-            :value="timeSheet.targetHours"
-            disabled
-            allowClear
-            :min="0"
-            :max="8"
-          />
-          Hours
-        </a-form-item>
-        <a-form-item label="Total Actural Hours" name="acturalHours">
-          <a-input-number
-            v-model:value="timeSheet.acturalHours"
+            v-model:value="timeSheet.overtimeHours"
             :disabled="DisableFlag"
             :min="0"
             :max="8"
@@ -64,7 +54,7 @@
           name="clientName"
           v-if="Number(timeSheet.projectId) !== 2"
         >
-          <a-input :value="selectedProject?.clientName" disabled allowClear />
+          <a-input v-model:value="timeSheet.clientName" disabled allowClear />
         </a-form-item>
         <a-form-item label="Client Name" name="clientName" v-else>
           <a-input
@@ -79,7 +69,7 @@
           v-if="Number(timeSheet.projectId) !== 2"
         >
           <a-select
-            :value="selectedProject?.responsibleCode"
+            v-model:value="timeSheet.approvalCode"
             :options="staffOptions"
             disabled
             allowClear
@@ -104,7 +94,12 @@
         </a-form-item>
 
         <a-form-item :wrapper-col="{ offset: 9, span: 9 }">
-          <a-button type="primary" html-type="submit">Submit</a-button>
+          <a-space>
+            <a-button v-if="editableFalg" @click="edit">Edit</a-button>
+            <a-button type="primary" html-type="submit" v-if="!DisableFlag"
+              >Submit</a-button
+            >
+          </a-space>
         </a-form-item>
       </a-form>
     </div>
@@ -120,25 +115,13 @@ import {
   getProjectList,
   getStaffList,
   getTimeSheetDetail,
+  editTimesheet,
 } from '@/api/timesheet';
 import { getDayList } from '@/api/common';
 import { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
 import { Modal, message } from 'ant-design-vue';
-import { log } from 'console';
 
-const timeSheet = reactive({
-  id: '',
-  staffCode: localStorage.getItem('staffCode'),
-  workLocation: '',
-  projectId: '',
-  clientName: '',
-  approvalCode: '',
-  targetHours: '8',
-  acturalHours: '',
-  remark: '',
-  date: Dayjs,
-});
 const DisableFlag = ref(true);
 const formRef = ref();
 const id = localStorage.getItem('staffCode');
@@ -148,6 +131,7 @@ const staffOptions = ref([]);
 const disabledDates = ref([]);
 //当前点击选中的日期
 const currentDate = ref();
+const editableFalg = ref(false);
 const selectedDates = ref([]);
 const attributes = computed(() => {
   return [
@@ -165,59 +149,122 @@ const attributes = computed(() => {
     },
   ];
 });
+const selectedProject = ref();
+let timeSheet = reactive({
+  id: '',
+  staffCode: localStorage.getItem('staffCode'),
+  staffName: localStorage.getItem('userName'),
+  workLocation: '',
+  projectId: '',
+  clientName: '',
+  approvalCode: '',
+  approvalName: '',
+  targetHours: '8',
+  overtimeFlag:1,
+  overtimeHours: undefined,
+  remark: '',
+  date: Dayjs,
+});
+
+const tomorrowTime = dayjs().subtract(-1, 'day').format('YYYY-MM-DD'); //获取后一天时间
+const yesterdayTime = dayjs().subtract(1, 'day').format('YYYY-MM-DD'); //获取前一天时间
 
 function chooseDay(calendarDay: any) {
+  editableFalg.value = false;
+  DisableFlag.value = true;
+  pickBasicData(timeSheet, {
+    staffCode: localStorage.getItem('staffCode'),
+    staffName: localStorage.getItem('userName'),
+    targetHours: '8',
+    overtimeFlag:1,
+  });
+  selectedProject.value = {
+    id: '',
+    name: '',
+    clientName: '',
+    responsibleCode: undefined,
+    responsibleName: undefined,
+  };
   const flag = disabledDates.value.some((i: Date) => {
     return i.getTime() == calendarDay.date.getTime();
   });
 
+  const nowTimeFlag =
+    dayjs(calendarDay.date).format('YYYY-MM-DD') > tomorrowTime;
   if (flag) {
-    console.log('节假日');
     message.info('非工作日不可提交工时！');
+  } else if (nowTimeFlag) {
+    message.info('可以延后申报，但只能提前一天进行申报，遇到周末不可提前');
   } else {
-    console.log('工作日');
     const todayFlag = selectedDates.value.some((i: Date) => {
-      return dayjs(i).format('YYYY-MM-DD') == dayjs(calendarDay.date).format('YYYY-MM-DD');
+      return (
+        dayjs(i).format('YYYY-MM-DD') ==
+        dayjs(calendarDay.date).format('YYYY-MM-DD')
+      );
     });
-    console.log(todayFlag);
     if (todayFlag) {
-      console.log('已经提交了要查看');
-      getTimeSheetDetail({ staffCode: id, date: dayjs(calendarDay.date).format('YYYY-MM-DD') }).then((res) => {
+      //是否已经选择过了，选择过的可以查看和编辑，未选择的可以填报
+
+      getTimeSheetDetail({
+        staffCode: id,
+        date: dayjs(calendarDay.date).format('YYYY-MM-DD'),
+      }).then((res) => {
         pickBasicData(timeSheet, res);
         selectedProject.value = res.project;
-        
-      })
+      });
+      //是否可以进行编辑
+      const edita =
+        dayjs(calendarDay.date).format('YYYY-MM-DD') ===
+        dayjs().format('YYYY-MM-DD');
+
+      if (edita) {
+        editableFalg.value = true;
+      } else {
+        message.info('只可以对当天的工时申报进行修改,其他日期只可查看');
+      }
     } else {
       DisableFlag.value = false;
+      editableFalg.value = false;
       timeSheet.date = dayjs(calendarDay.date).format('YYYY-MM-DD');
       currentDate.value = calendarDay.date;
     }
   }
 }
 const onFinish = (values: any) => {
-  delareTimesheet(timeSheet).then((res) => {
-    console.log('res', res);
-    DisableFlag.value = true;
-    selectedDates.value = res.map((item: any) => {
-      return new Date(item.date);
+
+  if (editableFalg.value) {
+    editTimesheet(timeSheet).then((res) => {
+      console.log('res', res);
+      DisableFlag.value = true;
+      selectedDates.value = res.map((item: any) => {
+        return new Date(item.date);
+      });
+      // window.location.reload();
     });
-    window.location.reload();
-  });
+  } else {
+    delareTimesheet(timeSheet).then((res) => {
+      console.log('res', res);
+      DisableFlag.value = true;
+      selectedDates.value = res.map((item: any) => {
+        return new Date(item.date);
+      });
+      // window.location.reload();
+    });
+  }
 };
 
-const selectedProject = ref({
-  id: undefined,
-  name: '',
-  clientName: '',
-  responsibleCode: undefined,
-});
+function edit() {
+  DisableFlag.value = false;
+}
+
 function change() {
-  console.log(timeSheet.projectId);
-  console.log(projectOptions.value);
   selectedProject.value = findObjById(
     Number(timeSheet.projectId),
     projectOptions.value
   )[0];
+  timeSheet.clientName = selectedProject.value.clientName;
+  timeSheet.approvalCode = selectedProject.value.responsibleCode;
+  timeSheet.approvalName = selectedProject.value.responsibleName;
 }
 function findObjById(id: number, arr: any[]) {
   const obj = arr.filter((item) => {
@@ -264,22 +311,7 @@ function getStaffListData() {
     });
   });
 }
-const currentYear = ref(2024);
 const disabledDate = ref([]);
-// 请求指定年份的节假日
-// function getDate() {
-//   axios
-// .get(
-// `https://api.apihubs.cn/holiday/get?field=date,weekend&year=${currentYear}&workday=2&order_by=1&cn=1&page=1&size=500`
-// )
-// .then((res) => {
-// console.log(res);
-// localStorage.setItem('disableList', res.data.list);
-// disabledDate.value = res.data.list.map((item:any) => {
-//   return formattedDate(item.date);
-// });
-// });
-// }
 
 onMounted(() => {
   // getDate();

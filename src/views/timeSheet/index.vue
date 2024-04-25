@@ -14,16 +14,13 @@
             mode="inline"
             v-model:openKeys="openKeys"
           >
-            <a-sub-menu key="daily">
-              <template #title>
-                <span>
-                  <user-outlined />
-                  <span>Daily TimeSheet</span>
-                </span>
-              </template>
-              <a-menu-item key="1">
+          <a-menu-item key="1">
                 <pie-chart-outlined />
-                <router-link :to="'/timeSheet/FillDailyTimeSheet'"> Fill </router-link>
+                <router-link :to="'/timeSheet/FillDailyTimeSheet'">Daily TimeSheet Fill </router-link>
+              </a-menu-item>
+              <a-menu-item key="4">
+                <pie-chart-outlined />
+                <router-link :to="'/timeSheet/FillOT'">OverTime Claim</router-link>
               </a-menu-item>
               <a-menu-item key="2">
                 <desktop-outlined />
@@ -35,27 +32,10 @@
                 <file-outlined />
                 <router-link :to="'/timeSheet/MyList'"> My Record </router-link>
               </a-menu-item>
-            </a-sub-menu>
-            <a-sub-menu key="overtime">
-              <template #title>
-                <span>
-                  <user-outlined />
-                  <span>Overtime TimeSheet</span>
-                </span>
-              </template>
-              <a-menu-item key="4">
-                <pie-chart-outlined />
-                <router-link :to="'/timeSheet/FillOT'"> OT Claim</router-link>
-              </a-menu-item>
-              <a-menu-item key="5">
-                <desktop-outlined />
-                <router-link :to="'/timeSheet/ApprovalOT'"> Approval </router-link>
-              </a-menu-item>
-              <a-menu-item key="6">
+            <a-menu-item key="7">
                 <file-outlined />
-                <router-link :to="'/timeSheet/OTHistory'"> My Record </router-link>
+                <router-link :to="'/timeSheet/AllTimeSheetList'"> All TimeSheet </router-link>
               </a-menu-item>
-            </a-sub-menu>
           </a-menu>
         </a-layout-sider>
         <a-layout>
@@ -64,7 +44,7 @@
               :style="{
                 padding: '24px',
                 background: '#fff',
-                minHeight: '360px',
+                minHeight: '85vh',
               }"
             >
               <router-view></router-view>

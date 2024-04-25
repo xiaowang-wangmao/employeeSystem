@@ -34,15 +34,15 @@ const routes: Array<RouteRecordRaw> = [
                 meta: {
                     title: ''
                 },
-                component: () => import('@/views/timeSheet/Daily/FillTable.vue'),
+                component: () => import('@/views/timeSheet/FillTable.vue'),
             },
             {
-                path: 'ApprovalDailyTimeSheet',
-                name: 'approvalDaily',
+                path: 'Approval,',
+                name: 'approval',
                 meta: {
                     title: ''
                 },
-                component: () => import('@/views/timeSheet/Daily/Approval.vue'),
+                component: () => import('@/views/timeSheet/Approval.vue'),
             },
             {
                 path: 'MyList',
@@ -50,7 +50,7 @@ const routes: Array<RouteRecordRaw> = [
                 meta: {
                     title: ''
                 },
-                component: () => import('@/views/timeSheet/Daily/MyRecord.vue'),
+                component: () => import('@/views/timeSheet/MyRecord.vue'),
             },
             {
                 path: 'FillOT',
@@ -58,23 +58,15 @@ const routes: Array<RouteRecordRaw> = [
                 meta: {
                     title: ''
                 },
-                component: () => import('@/views/timeSheet/Overtime/FillTable.vue'),
+                component: () => import('@/views/timeSheet/FillOT.vue'),
             },
             {
-                path: 'ApprovalOT',
-                name: 'approvalOT',
+                path: 'AllTimeSheetList',
+                name: 'AllTimeSheetList',
                 meta: {
                     title: ''
                 },
-                component: () => import('@/views/timeSheet/Overtime/Approval.vue'),
-            },
-            {
-                path: 'OTHistory',
-                name: 'OTHistory',
-                meta: {
-                    title: ''
-                },
-                component: () => import('@/views/timeSheet/Overtime/MyRecord.vue'),
+                component: () => import('@/views/timeSheet/AllTimeSheet.vue'),
             },
 
         ],
@@ -136,7 +128,7 @@ const routes: Array<RouteRecordRaw> = [
                 },
                 component: () => import('@/views/employeeMsg/Payslip.vue'),
             },
-            
+
         ]
     },
     {

@@ -4,7 +4,7 @@
       <span @click="router.push({ path: '/index' })">DDDDDD</span>
     </div>
     <div class="right">
-      <div>wangmao</div>
+      <div>{{ userName }}</div>
       <a-dropdown :trigger="['click']">
         <DownOutlined style="margin-top:4px;margin-left:2px;" />
         <template #overlay>
@@ -31,6 +31,7 @@ import {
 } from '@/store/modules/userStore';
 const router = useRouter();
 
+const userName = localStorage.getItem('userName');
 function logout() {
   localStorage.removeItem('token');
   accountStore().setStaffCode("");
