@@ -1,7 +1,7 @@
 <template>
   <div class="topBar">
     <div class="left">
-      <span @click="router.push({ path: '/index' })">Deloitte</span>
+      <span @click="router.push({ path: '/index' })">DDDDDD</span>
     </div>
     <div class="right">
       <div>wangmao</div>

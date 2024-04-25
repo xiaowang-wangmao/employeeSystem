@@ -1,3 +1,5 @@
+import { log } from "console";
+
 export const enumToObjArray = (enumObject: any): any[] => {
   return Object.keys(enumObject).filter((v) => (isNaN(Number(v)))).map(key => ({
     label: key,
@@ -29,3 +31,21 @@ export function pickBasicData<T extends Object>(
   });
   return target;
 }
+
+
+//格式如20200303的日记 创建Date对象
+export function formattedDate(dateString:string) {
+  const year = dateString.slice(0, 4);
+  
+  const month: number = Number(dateString.slice(4, 6)) - 1; // JS中的月份是从0开始的
+  
+  const day = dateString.slice(6, 8);
+  
+  return new Date(Number(year), month, Number(day) );
+}
+
+
+
+
+
+

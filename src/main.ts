@@ -5,10 +5,8 @@ import router from './router'
 import Particles from 'particles.vue3'
 import store from "./store/index";
 import { message } from 'ant-design-vue';
-import {
-  accountStore,
-  tokenStore,
-} from '@/store/modules/userStore';
+import 'v-calendar/style.css';
+import VCalendar from 'v-calendar';
 //挂载路由导航守卫
 router.beforeEach((to, from, next) => {
   //to 将要访问的路径
@@ -32,4 +30,5 @@ const app = createApp(App)
 app.use(Particles)
 app.use(router)
 app.use(store);
+app.use(VCalendar, {});
 app.mount('#app')

@@ -1,8 +1,12 @@
 <template>
   <a-table
     class="app-edit-table"
-    :scroll="{ scrollToFirstRowOnChange: true, x: 'max-content', y: props.scrollY }"
-    style="width: 100%;"
+    :scroll="{
+      scrollToFirstRowOnChange: true,
+      x: 'max-content',
+      y: props.scrollY,
+    }"
+    style="width: 100%"
     :columns="props.columns"
     :data-source="dataSource"
     :pagination="false"
@@ -17,21 +21,18 @@
           disabled: getResult(props.disableSelect, record, false),
         }),
       } : undefined"
-    :locale="{emptyText: 'common.notData'}"
+    :locale="{ emptyText: 'common.notData' }"
   >
     <template #emptyText>
-      <a-empty
-        :description="'22'"
-        :image="emptyImage"
-      />
+      <a-empty :description="'22'" :image="emptyImage" />
     </template>
-    <template #headerCell="{column}">
+    <template #headerCell="{ column }">
       <template v-if="column.needCustomHeader">
         <a-tooltip placement="topRight">
           <template #title>
             {{ column.tip }}
           </template>
-          <div style="cursor: pointer;">
+          <div style="cursor: pointer">
             {{ column.title }}
           </div>
           <!-- <SvgRaw name="icon_doubt" class="label-icon" /> -->
@@ -41,62 +42,73 @@
     <template #bodyCell="{ column, text, record, index }">
       <template v-if="column.key === 'action'">
         <div class="edit_card_body_table_action">
-          <slot
-            name="actionRender"
-            :record="record"
-          >
+          <slot name="actionRender" :record="record">
             <div v-if="btnInfo?.length" class="btn-wrapper">
               <span
-                v-for="(item,index) in btnInfo.slice(0,showBtnNum)"
-                :key="index" >
+                v-for="(item, index) in btnInfo.slice(0, showBtnNum)"
+                :key="index"
+              >
                 <a-popconfirm
-                  v-if="item.popconfirm && !checkButtonIfDisable(record,item)"
+                  v-if="item.popconfirm && !checkButtonIfDisable(record, item)"
                   placement="topLeft"
-                  :title="item.confirmTitle?item.confirmTitle:
-                    `请确认是否${item.code?t(item.code):item.text}？`"
+                  :title="
+                    item.confirmTitle
+                      ? item.confirmTitle
+                      : `请确认是否${item.code ? t(item.code) : item.text}？`
+                  "
                   @confirm="() => item.onClick(record)"
                 >
                   <a-button
                     type="link"
-                    :disabled="checkButtonIfDisable(record,item)"
-                    v-show="(item.visible?item.visible(record):true)"
-                  ><SvgRaw v-if="item.icon" :name="item.icon" />
-                    {{ item.code?t(item.code):item.text }}</a-button>
+                    :disabled="checkButtonIfDisable(record, item)"
+                    v-show="item.visible ? item.visible(record) : true"
+                    ><SvgRaw v-if="item.icon" :name="item.icon" />
+                    {{ item.code ? t(item.code) : item.text }}</a-button
+                  >
                 </a-popconfirm>
                 <a-button
                   v-else
                   type="link"
-                  v-show="(item.visible?item.visible(record):true)"
-                  :disabled="checkButtonIfDisable(record,item)"
-                  @click="handelOnClick(record,item)"
+                  v-show="item.visible ? item.visible(record) : true"
+                  :disabled="checkButtonIfDisable(record, item)"
+                  @click="handelOnClick(record, item)"
                 >
                   <SvgRaw v-if="item.icon" :name="item.icon" class="btn-icon" />
-                  {{ item.code?t(item.code):item.text }}
+                  {{ item.code ? t(item.code) : item.text }}
                 </a-button>
               </span>
-              <span><a-popover placement="rightTop" v-if="btnInfo?.length>showBtnNum">
-                <template #content>
-                  <div>
-                    <div
-                      v-for="(item,i) in btnInfo" :key="i"
-                      v-auth="item.auth">
-                      <a-button
-                        type="link"
-                        v-show="(item.visible?item.visible(record):true)"
-                        :disabled="checkButtonIfDisable(record,item)"
-                        @click="handelOnClick(record,item)"
+              <span
+                ><a-popover
+                  placement="rightTop"
+                  v-if="btnInfo?.length > showBtnNum"
+                >
+                  <template #content>
+                    <div>
+                      <div
+                        v-for="(item, i) in btnInfo"
+                        :key="i"
+                        v-auth="item.auth"
                       >
-                        <SvgRaw v-if="item.icon" :name="item.icon" class="btn-icon" />
-                        {{ item.code?t(item.code):item.text }}
-                      </a-button
-                      >
+                        <a-button
+                          type="link"
+                          v-show="item.visible ? item.visible(record) : true"
+                          :disabled="checkButtonIfDisable(record, item)"
+                          @click="handelOnClick(record, item)"
+                        >
+                          <SvgRaw
+                            v-if="item.icon"
+                            :name="item.icon"
+                            class="btn-icon"
+                          />
+                          {{ item.code ? t(item.code) : item.text }}
+                        </a-button>
+                      </div>
                     </div>
-                  </div>
-                </template>
-                <a-button type="link" class="task-list-table_more-action">
-                  <SvgRaw name="icon_more_operation" />
-                </a-button>
-              </a-popover></span>
+                  </template>
+                  <a-button type="link" class="task-list-table_more-action">
+                    <SvgRaw name="icon_more_operation" />
+                  </a-button> </a-popover
+              ></span>
             </div>
           </slot>
         </div>
@@ -113,7 +125,7 @@
               style="margin-bottom: 0"
               :rules="getResult(props.rulesMap[column.dataIndex], record, [])"
               :class="{'hide-msg': getResult(props.rulesMap[column.dataIndex], record, []).some(
-                (rule: { message: string; }: { message: string; }: { message: string; }) => rule.message === '',
+                (rule:any) => rule.message === '',
               )}"
             >
               <a-select
@@ -121,12 +133,14 @@
                 :value="record[column.dataIndex]"
                 :disabled="getResult(column.disabled, record, false)"
                 show-search
-                :mode="column.needOtherOptions? 'tags': undefined "
+                :mode="column.needOtherOptions ? 'tags' : undefined"
                 option-filter-prop="label"
                 allowClear
-                :options="column.needOtherOptions
-                  ? customOptions
-                  : getResult(column.options, record, [])"
+                :options="
+                  column.needOtherOptions
+                    ? customOptions
+                    : getResult(column.options, record, [])
+                "
                 style="width: 100%"
                 @focus="column.needOtherOptions ? handleBlur(record) : ''"
                 @search="(val: string) => {handelSearch(val, column.searchApi)}"
@@ -152,7 +166,7 @@
                 v-else-if="column.type === 'radio'"
                 :value="record[column.dataIndex]"
                 :disabled="getResult(column.disabled, record, false)"
-                :options="translateArrayProp(column.options, 'label') as any"
+                :options="column.options"
                 @change="
                   (e: any) => {
                     handelFormItemChange(e, [ index, column.dataIndex]);
@@ -203,7 +217,7 @@
                 :maxlength="column.limit"
                 @change="
                   (e) => {
-                    handelFormItemChange(e, [ index, column.dataIndex]);
+                    handelFormItemChange(e, [index, column.dataIndex]);
                   }
                 "
               />
@@ -215,9 +229,7 @@
             v-if="column.customRender"
             :value="column.customRender({ column, text, record, index })"
           />
-          <span v-else>{{
-            format(text, column.type, translateArrayProp(column.options, 'label'))
-          }}</span>
+          <span v-else>{{ format(text, column.type, column.options) }}</span>
         </div>
       </div>
     </template>
@@ -231,8 +243,6 @@ import { isFunction } from '@/utils/is/is.ts';
 import { BtnInfoType } from '@/enums/formEnum';
 import emptyImage from '@/assets/images/customEmpty.png';
 import { Modal } from 'ant-design-vue';
-import { column } from 'element-plus/es/components/table-v2/src/common';
-import text from 'element-plus/es/components/text';
 import * as dayjs from 'dayjs';
 
 const CustomRender = defineComponent({
@@ -246,13 +256,16 @@ const props = withDefaults(
     isEdit: boolean;
     columns?: any[];
     dataSource?: any;
-    rulesMap: Record<string, RuleObject[]|((record: any) => RuleObject[])>;
+    rulesMap: Record<string, RuleObject[] | ((record: any) => RuleObject[])>;
     needRow?: boolean;
     selectedRowKeys?: string[];
     rowKey?: string;
     disableSelect: boolean | ((record: any) => boolean);
     childProp: string;
-    checkButtonDisabled?:(record: Record<string, any>, name: string) => boolean;
+    checkButtonDisabled?: (
+      record: Record<string, any>,
+      name: string
+    ) => boolean;
     btnInfo?: BtnInfoType[];
     showBtnNum?: number;
     scrollY?: number;
@@ -265,9 +278,10 @@ const props = withDefaults(
     disableSelect: false,
     childProp: '',
     showBtnNum: 3,
-  },
+    scrollY: 0,
+  }
 );
-function handelOnClick(record: any, btnInfoItem:BtnInfoType) {
+function handelOnClick(record: any, btnInfoItem: BtnInfoType) {
   if (btnInfoItem.modalconfirm) {
     Modal.confirm({
       title: btnInfoItem.confirmTitle,
@@ -281,7 +295,10 @@ function handelOnClick(record: any, btnInfoItem:BtnInfoType) {
   }
 }
 // 检查按钮是否可用
-function checkButtonIfDisable(record: Record<string, any>, item: { operationType: string; disabled: (arg0: any) => any; }):boolean {
+function checkButtonIfDisable(
+  record: Record<string, any>,
+  item: { operationType: string; disabled: (arg0: any) => any }
+): boolean {
   const globalDisabled = props.checkButtonDisabled
     ? props.checkButtonDisabled(record, item.operationType)
     : false;
@@ -290,16 +307,24 @@ function checkButtonIfDisable(record: Record<string, any>, item: { operationType
 }
 const customOptions = ref([]);
 
-const emit = defineEmits(['change', 'update:selectedRowKeys', 'update:selectedRow']);
+const emit = defineEmits([
+  'change',
+  'update:selectedRowKeys',
+  'update:selectedRow',
+]);
 
-function getResult(value: any | ((record: any) => any), record: any, defaultValue?: any) {
+function getResult(
+  value: any | ((record: any) => any),
+  record: any,
+  defaultValue?: any
+) {
   if (typeof value === 'function') {
     return value(record);
   }
   return value === undefined ? defaultValue : value;
 }
 
-function wrapWithDayjs(value: { format: any; }) {
+function wrapWithDayjs(value: { format: any }) {
   if (!value || value?.format) {
     return value;
   }
@@ -314,7 +339,10 @@ function onChangeOneRow(...args: any[]) {
   emit('update:selectedRow', ...args);
 }
 
-function handelFormItemChange(e: { target: { value: any; }; }, name: [number, string]) {
+function handelFormItemChange(
+  e: { target: { value: any } },
+  name: [number, string]
+) {
   const newNextValue = e?.target ? e.target.value : e;
   emit('change', {
     name,
@@ -327,7 +355,7 @@ function handelSearch(name: string, api?: Function) {
 }
 
 // 选项搜索
-const handleBlur = async (record: { databaseName: any; tableName: any; }) => {
+const handleBlur = async (record: { databaseName: any; tableName: any }) => {
   const fieldParams = {
     dataLevel: record.databaseName,
     tableName: record.tableName,
@@ -338,7 +366,7 @@ const handleBlur = async (record: { databaseName: any; tableName: any; }) => {
 
 function format(text: string, type?: string, options?: any) {
   if ((type === 'radio' && text === 'boolean') || type === 'select') {
-    return options.find((i: { value: any; }) => i.value === text)?.label;
+    return options.find((i: { value: any }) => i.value === text)?.label;
   }
   return text;
 }

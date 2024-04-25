@@ -5,45 +5,35 @@
     <div class="main">
       <div class="left">
         <div>工作任务</div>
-        <div class="top-actions">
-          <div class="refresh">
-            刷新
-            <!-- <redo-outlined /> -->
-            <!-- <icon-font type="icon-refresh" /> -->
-          </div>
-          <div class="search">
-            <a-input-search
-              v-model:value="searchKey"
-              placeholder="申请人/类型"
-              allow-clear
-              style="width: 200px"
-              @search="onSearch"
-            />
-          </div>
-        </div>
-
         <div>
-          <a-tabs v-model:activeKey="activeKey">
-            <a-tab-pane key="1" tab="待办">
-              <ListCard
-                :columns="columns"
-                :needParamsCache="true"
-                :fixHeader="false"
-                :fixFooter="false"
-                ref="list"
-              />
-            </a-tab-pane>
-            <a-tab-pane key="2" tab="已办" force-render>
-              <ListCard
-                :columns="columns"
-                :needParamsCache="true"
-                :fixHeader="false"
-                :fixFooter="false"
-                ref="list"
-              />
-              ></a-tab-pane
-            >
-          </a-tabs>
+          <ListCard
+            :columns="columns"
+            :needParamsCache="true"
+            :fixHeader="false"
+            :fixFooter="false"
+            ref="list"
+          >
+            <template #tableTopRender>
+              <a-tabs v-model:activeKey="tab.activeKey" @change="tabChange">
+                <a-tab-pane
+                  v-for="activeItem in tab.activeTabs"
+                  :key="activeItem.id"
+                >
+                  <template #tab>
+                    <span class="a-tab-pane-custom">
+                      <SvgRaw
+                        :name="activeItem.icon"
+                        class="a-tab-pane-custom-icon"
+                      />
+                      <span style="margin-left: 6px">{{
+                        activeItem.name
+                      }}</span>
+                    </span>
+                  </template>
+                </a-tab-pane>
+              </a-tabs>
+            </template>
+          </ListCard>
         </div>
       </div>
       <div class="right">
@@ -62,7 +52,7 @@
           <ListCard
             title="系统公告"
             :columns="noticeColumns"
-            :api="{list:getSystemNoticeList}"
+            :api="{ list: getSystemNoticeList }"
             :needParamsCache="true"
             :fixHeader="false"
             :fixFooter="false"
@@ -84,11 +74,9 @@ import { RedoOutlined } from '@ant-design/icons-vue';
 import { getSystemNoticeList } from '@/api/notice';
 import Time from '@/components/Time/index.vue';
 
-// const IconFont = createFromIconfontCN({
-//   scriptUrl: '//at.alicdn.com/t/font_8d5l8fzk5b87iudi.js',
-// });
-const router = useRouter();
 
+const router = useRouter();
+const list = ref();
 const menuList = ref([
   { title: 'Daily-TimeSheet', link: () => router.push({ path: '/timeSheet' }) },
   {
@@ -100,6 +88,18 @@ const menuList = ref([
   // { title: 'person-mag', link: () => router.push({ name: 'onboard' }) },
 ]);
 const activeKey = ref('1');
+const tab = reactive({
+  activeTabs: [
+    { id: 'todo', name: '待办', icon: 'icon_uat_env' },
+    { id: 'done', name: '已办', icon: 'icon_prod_env' },
+  ],
+  activeKey: 'todo',
+});
+function tabChange() {
+  // targetApi.list = tab.activeKey === 'tode' ? queryPagePrdApi : queryPageApi;
+  list.value.resetForm();
+  // getFilterData();
+}
 const columns = [
   {
     title: '单号',
@@ -122,33 +122,33 @@ const noticeColumns = [
   {
     title: '单号',
     dataIndex: 'id',
-    key:'id',
+    key: 'id',
   },
   {
     title: '主题',
     dataIndex: 'activity',
-    key:'activity',
+    key: 'activity',
   },
   {
     title: '内容',
     dataIndex: 'content',
-    key:'content',
+    key: 'content',
   },
   {
     title: '发布日期',
     dataIndex: 'date',
-    key:'date',
+    key: 'date',
     customRender: ({ text }) => {
-        if (text) {
-          return h(Time, { time: text, format: 'YYYY-MM-DD' });
-        }
-        return h('span', {}, '-');
-      },
+      if (text) {
+        return h(Time, { time: text, format: 'YYYY-MM-DD' });
+      }
+      return h('span', {}, '-');
+    },
   },
   {
     title: '发布部门',
     dataIndex: 'deptName',
-    key:'deptName',
+    key: 'deptName',
   },
 ];
 
@@ -159,12 +159,12 @@ const onSearch = (searchValue: string) => {
   console.log('or use this.value', searchKey.value);
 };
 
+
 onMounted(() => {
   // getSystemNoticeList({ current: 1, size: 5 }).then((res) => {
   //   console.log('notice-list',res);
-    
   // })
-})
+});
 </script>
 <style lang="less" scoped>
 .footer {
@@ -192,7 +192,7 @@ onMounted(() => {
   .left {
     width: 48%;
     padding: 1% 1%;
-    border: #808080 1px solid;
+    // border: #808080 1px solid;
     // margin-right: 2px;
     height: 85vh;
     background-color: white;
@@ -215,12 +215,11 @@ onMounted(() => {
         right: 0;
       }
     }
-
   }
   .right {
     width: 48%;
     // padding: 1% 1%;
-    border: #808080 1px solid;
+    // border: #808080 1px solid;
     background-color: white;
     .menu {
       height: 20%;
@@ -230,7 +229,9 @@ onMounted(() => {
       .menu-item {
         // height: 100px;
         // width: 100px;
-        background-color: saddlebrown;
+        // background-color: saddlebrown;
+        border: #808080 1px solid;
+        border-radius: 20px;
         margin: 5px;
         padding: 10px;
         cursor: pointer;
