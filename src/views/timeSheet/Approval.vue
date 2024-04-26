@@ -20,7 +20,7 @@
 import { getApprovalTimeSheetList } from '@/api/timesheet';
 import Time from '@/components/Time/index.vue';
 import { BtnInfoType } from '@/enums/formEnum';
-import { OrderStatusEnum } from '@/enums/optionsEnum';
+import { OrderStatusEnum,OverTimeFlagEnum } from '@/enums/optionsEnum';
 import { enumToObjArray, pickBasicData } from '@/utils/translate';
 
 const id = Number(localStorage.getItem('staffCode'));
@@ -56,6 +56,17 @@ const columns = [
     },
   },
   {
+    title: '加班工时',
+    dataIndex: 'overtimeHours',
+    key: 'overtimeHours',
+    customRender: ({ text }) => {
+      if (text) {
+        return h('span', {}, text + '   h');
+      }
+      return h('span', {}, '-');
+    },
+  },
+  {
     title: '状态',
     dataIndex: 'status',
     key: 'status',
@@ -67,12 +78,23 @@ const columns = [
     },
   },
   {
+    title: '类型',
+    dataIndex: 'overtimeFlag',
+    key: 'overtimeFlag',
+    customRender: ({ text }) => {
+      if (text) {
+        return h('span', {}, OverTimeFlagEnum[text]);
+      }
+      return h('span', {}, '-');
+    },
+  },
+  {
     title: '工作地点',
     dataIndex: 'workLocation',
     key: 'workLocation',
   },
   {
-    title: '日报',
+    title: '摘要',
     dataIndex: 'remark',
     key: 'remark',
   },
@@ -124,6 +146,13 @@ const filters = [
     prop: 'status',
     showSearch: true,
     options: enumToObjArray(OrderStatusEnum),
+  },
+  {
+    label: '请选择工单类型',
+    type: 'select',
+    prop: 'overtimeFlag',
+    showSearch: true,
+    options: enumToObjArray(OverTimeFlagEnum),
   },
   {
     label: '提交时间',

@@ -1,49 +1,200 @@
 <template>
   <div>
-    <TopBar />
+    <a-layout style="min-height: 100vh">
+      
+      <a-layout-sider
+        v-model:collapsed="collapsed"
+        collapsible
+        style="background-color: #fff"
+      >
+      <div class="logo" >
+        XXX公司logo
+      </div>
+        <a-menu
+          v-model:selectedKeys="selectedKeys"
+          theme="light"
+          mode="inline"
+          v-model:openKeys="openKeys"
+        >
+          <a-sub-menu key="basic">
+            <template #title>
+              <span>
+                <team-outlined />
+                <span>个人信息管理</span>
+              </span>
+            </template>
+            <a-menu-item key="1">
+              <pie-chart-outlined />
+              <router-link :to="'/employeeMsg/BasicInformation'">
+                基础信息</router-link
+              >
+            </a-menu-item>
+            <a-menu-item key="2">
+              <desktop-outlined />
+              <router-link :to="'/employeeMsg/EmergencyContact'"
+                >紧急联系人</router-link
+              >
+            </a-menu-item>
+            <a-menu-item key="3">
+              <file-outlined />
+              <router-link :to="'/employeeMsg/EducationBackground'"
+                >教育背景</router-link
+              >
+            </a-menu-item>
+            <a-menu-item key="4">
+              <file-outlined />
+              <router-link :to="'/employeeMsg/BankAccount'"
+                >银行账户</router-link
+              >
+            </a-menu-item>
+          </a-sub-menu>
+          <a-sub-menu key="timesheet">
+            <template #title>
+              <span>
+                <team-outlined />
+                <span>工时申报管理</span>
+              </span>
+            </template>
+            <a-menu-item key="2-1">
+              <pie-chart-outlined />
+              <router-link :to="'/timeSheet/FillDailyTimeSheet'"
+                >Daily TimeSheet Fill
+              </router-link>
+            </a-menu-item>
 
-    <div class="main">
-      <div class="left">
-        <div class="menu">
-          <div
-            v-for="(item, index) in menuList"
-            :key="index"
-            @click="item.link"
-            class="menu-item"
-          >
-            <div>logo</div>
-            {{ item.title }}
+            <a-menu-item key="2-2">
+              <desktop-outlined />
+              <router-link :to="'/timeSheet/Approval'"> Approval </router-link>
+            </a-menu-item>
+            <a-menu-item key="2-3">
+              <file-outlined />
+              <router-link :to="'/timeSheet/MyList'"> My Record </router-link>
+            </a-menu-item>
+            <a-menu-item key="2-4">
+              <pie-chart-outlined />
+              <router-link :to="'/timeSheet/FillOT'"
+                >OverTime Claim</router-link
+              >
+            </a-menu-item>
+            <a-menu-item key="2-5">
+              <file-outlined />
+              <router-link :to="'/timeSheet/AllTimeSheetList'">
+                All TimeSheet
+              </router-link>
+            </a-menu-item>
+          </a-sub-menu>
+          <a-sub-menu key="leave">
+            <template #title>
+              <span>
+                <team-outlined />
+                <span>休假管理</span>
+              </span>
+            </template>
+            <a-menu-item key="1">
+              <pie-chart-outlined />
+              <router-link :to="'/timeSheet/FillDailyTimeSheet'"
+                >Daily TimeSheet Fill
+              </router-link>
+            </a-menu-item>
+
+          </a-sub-menu>
+          <a-menu-item key="4-1">
+              <pie-chart-outlined />
+              <router-link :to="'/systemNotice'"
+                >通知公告
+              </router-link>
+            </a-menu-item>
+            <a-menu-item key="5-1">
+              <pie-chart-outlined />
+              <router-link :to="'/timeSheet/FillDailyTimeSheet'"
+                >培训文件
+              </router-link>
+            </a-menu-item>
+          <a-sub-menu key="system">
+            <template #title>
+              <span>
+                <team-outlined />
+                <span>后台管理</span>
+              </span>
+            </template>
+            <a-menu-item key="41">
+              <pie-chart-outlined />
+              <router-link :to="'/timeSheet/FillDailyTimeSheet'"
+                >账号管理
+              </router-link>
+            </a-menu-item>
+            <a-menu-item key="61">
+              <pie-chart-outlined />
+              <router-link :to="'/timeSheet/FillDailyTimeSheet'"
+                >客户项目管理
+              </router-link>
+            </a-menu-item>
+
+          </a-sub-menu>
+        </a-menu>
+      </a-layout-sider>
+      <a-layout>
+        <a-layout-header style="background: #fff; padding: 0">
+          <div id="header">
+            <div id="left">
+              <span>内部员工事务自助工作平台</span>
+            </div>
+
+            <div id="right">
+              <a-avatar>
+                <template #icon>
+                  <UserOutlined />
+                </template>
+              </a-avatar>
+              {{ userName }}
+              <a-dropdown :trigger="['click']">
+                <DownOutlined />
+                <template #overlay>
+                  <a-menu>
+                    <a-menu-item>
+                      <a href="javascript:;">修改密码</a>
+                    </a-menu-item>
+                    <a-menu-item>
+                      <div @click="logout">退出登录</div>
+                    </a-menu-item>
+                  </a-menu>
+                </template>
+              </a-dropdown>
+            </div>
           </div>
-        </div>
-      </div>
-      <div class="right">
-        <div class="notification">
-          <ListCard
-            title="系统公告"
-            :columns="noticeColumns"
-            :api="{ list: getSystemNoticeList }"
-            :needParamsCache="true"
-            :fixHeader="false"
-            :fixFooter="false"
-            ref="list"
-          />
-        </div>
-      </div>
-    </div>
-
-    <div class="footer">View cookies|声明|联系我们 版权所有© 2017-2027.</div>
+        </a-layout-header>
+        <a-layout-content style="margin: 5px 16px">
+          <div
+            :style="{
+              padding: '24px',
+              background: '#fff',
+              minHeight: '85vh',
+            }"
+          >
+            <router-view></router-view>
+          </div>
+        </a-layout-content>
+        <a-layout-footer style="text-align: center">
+          Ant Design ©2018 Created by Ant UED
+        </a-layout-footer>
+      </a-layout>
+    </a-layout>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-// import { createFromIconfontCN } from '@ant-design/icons-vue';
-import { RedoOutlined } from '@ant-design/icons-vue';
 import { getSystemNoticeList } from '@/api/notice';
 import Time from '@/components/Time/index.vue';
+import { DownOutlined, UserOutlined } from '@ant-design/icons-vue';
+import { accountStore } from '@/store/modules/userStore';
 
 const router = useRouter();
+
+const collapsed = ref<boolean>(false);
+const selectedKeys = ref<string[]>(['4-1']);
+const openKeys = ref<string[]>(['timesheet', 'overtime']);
 const list = ref();
 const menuList = ref([
   { title: 'Daily-TimeSheet', link: () => router.push({ path: '/timeSheet' }) },
@@ -56,35 +207,15 @@ const menuList = ref([
   // { title: 'person-mag', link: () => router.push({ name: 'onboard' }) },
 ]);
 const activeKey = ref('1');
-const tab = reactive({
-  activeTabs: [
-    { id: 'todo', name: '待办', icon: 'icon_uat_env' },
-    { id: 'done', name: '已办', icon: 'icon_prod_env' },
-  ],
-  activeKey: 'todo',
-});
-function tabChange() {
-  // targetApi.list = tab.activeKey === 'tode' ? queryPagePrdApi : queryPageApi;
-  list.value.resetForm();
-  // getFilterData();
+
+const userName = localStorage.getItem('userName');
+function logout() {
+  localStorage.removeItem('token');
+  localStorage.removeItem('staffCode');
+  localStorage.removeItem('userName');
+  accountStore().setStaffCode('');
+  router.push('/');
 }
-const columns = [
-  {
-    title: '单号',
-  },
-  {
-    title: '主题',
-  },
-  {
-    title: '类型',
-  },
-  {
-    title: '申请日期',
-  },
-  {
-    title: '申请人',
-  },
-];
 
 const noticeColumns = [
   {
@@ -122,11 +253,6 @@ const noticeColumns = [
 
 const searchKey = ref<string>('');
 
-const onSearch = (searchValue: string) => {
-  console.log('use value', searchValue);
-  console.log('or use this.value', searchKey.value);
-};
-
 onMounted(() => {
   // getSystemNoticeList({ current: 1, size: 5 }).then((res) => {
   //   console.log('notice-list',res);
@@ -134,6 +260,57 @@ onMounted(() => {
 });
 </script>
 <style lang="less" scoped>
+:deep(.ant-layout-sider-trigger) {
+  background-color: #fff;
+  color: #4a4747;
+}
+.ant-layout .ant-layout-sider-trigger {
+  background-color: #fff !important;
+}
+ .logo {
+  text-align: center;
+  height: 32px;
+  margin: 16px;
+  border-radius: 20px;
+  padding-top: 7px;
+  background: rgba(143, 65, 65, 0.3);
+}
+
+.site-layout .site-layout-background {
+  background: #fff;
+}
+[data-theme='dark'] .site-layout .site-layout-background {
+  background: #141414;
+}
+
+#header {
+  display: flex;
+  height: 70px;
+  /*margin: 0;*/
+  padding: 0;
+}
+
+#left {
+  width: 80%;
+  /*height: 25px;*/
+  /*background-color: darksalmon;*/
+  justify-content: flex-start;
+  display: flex;
+  align-items: center;
+  margin-left: 16px;
+}
+
+#right {
+  flex: 1;
+  width: 20%;
+  /*background-color: coral;*/
+  /*height: 50px;*/
+  justify-content: flex-end;
+  display: flex;
+  align-items: center;
+  margin-right: 26px;
+}
+
 .footer {
   position: fixed;
   bottom: 0;

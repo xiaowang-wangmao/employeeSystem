@@ -1,6 +1,6 @@
 <template>
   <div>
-    <TopBar />
+    <!-- <TopBar /> -->
     <div>
       <a-layout style="min-height: 100vh">
         <a-layout-sider
@@ -14,28 +14,33 @@
             mode="inline"
             v-model:openKeys="openKeys"
           >
-          <a-menu-item key="1">
-                <pie-chart-outlined />
-                <router-link :to="'/timeSheet/FillDailyTimeSheet'">Daily TimeSheet Fill </router-link>
-              </a-menu-item>
-              <a-menu-item key="4">
-                <pie-chart-outlined />
-                <router-link :to="'/timeSheet/FillOT'">OverTime Claim</router-link>
-              </a-menu-item>
-              <a-menu-item key="2">
-                <desktop-outlined />
-                <router-link :to="'/timeSheet/ApprovalDailyTimeSheet'">
-                  Approval
-                </router-link>
-              </a-menu-item>
-              <a-menu-item key="3">
-                <file-outlined />
-                <router-link :to="'/timeSheet/MyList'"> My Record </router-link>
-              </a-menu-item>
+            <a-menu-item key="1">
+              <pie-chart-outlined />
+              <router-link :to="'/timeSheet/FillDailyTimeSheet'"
+                >Daily TimeSheet Fill
+              </router-link>
+            </a-menu-item>
+
+            <a-menu-item key="2">
+              <desktop-outlined />
+              <router-link :to="'/timeSheet/Approval'"> Approval </router-link>
+            </a-menu-item>
+            <a-menu-item key="3">
+              <file-outlined />
+              <router-link :to="'/timeSheet/MyList'"> My Record </router-link>
+            </a-menu-item>
+            <a-menu-item key="4">
+              <pie-chart-outlined />
+              <router-link :to="'/timeSheet/FillOT'"
+                >OverTime Claim</router-link
+              >
+            </a-menu-item>
             <a-menu-item key="7">
-                <file-outlined />
-                <router-link :to="'/timeSheet/AllTimeSheetList'"> All TimeSheet </router-link>
-              </a-menu-item>
+              <file-outlined />
+              <router-link :to="'/timeSheet/AllTimeSheetList'">
+                All TimeSheet
+              </router-link>
+            </a-menu-item>
           </a-menu>
         </a-layout-sider>
         <a-layout>

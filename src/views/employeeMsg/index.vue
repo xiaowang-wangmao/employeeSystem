@@ -22,10 +22,10 @@
           <file-outlined />
           <router-link :to="'/employeeMsg/BankAccount'">银行账户</router-link>
         </a-menu-item>
-        <a-menu-item key="5">
+        <!-- <a-menu-item key="5">
           <file-outlined />
           <router-link :to="'/employeeMsg/Payslip'">工资条</router-link>
-        </a-menu-item>
+        </a-menu-item> -->
       </a-menu>
     </a-layout-sider>
     <a-layout >

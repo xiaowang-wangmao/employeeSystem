@@ -17,120 +17,124 @@ const routes: Array<RouteRecordRaw> = [
         meta: {
             title: '首页'
         },
-        component: () => import('@/views/home/index.vue')
-    },
-    {
-        path: '/timeSheet',
-        name: 'timeSheet',
-        meta: {
-            title: '工时表'
-        },
-        component: () => import('@/views/timeSheet/index.vue'),
+        component: () => import('@/views/home/index.vue'),
         children: [
-            { path: '', redirect: '/timeSheet/FillDailyTimeSheet' },// 默认指向
             {
-                path: 'FillDailyTimeSheet',
-                name: 'fillDaily',
+                path: '/timeSheet',
+                name: 'timeSheet',
                 meta: {
-                    title: ''
+                    title: '工时表'
                 },
-                component: () => import('@/views/timeSheet/FillTable.vue'),
+                children: [
+                    { path: '', redirect: '/timeSheet/FillDailyTimeSheet' },// 默认指向
+                    {
+                        path: 'FillDailyTimeSheet',
+                        name: 'fillDaily',
+                        meta: {
+                            title: ''
+                        },
+                        component: () => import('@/views/timeSheet/FillTable.vue'),
+                    },
+                    {
+                        path: 'MyList',
+                        name: 'myList',
+                        meta: {
+                            title: ''
+                        },
+                        component: () => import('@/views/timeSheet/MyRecord.vue'),
+                    },
+                    {
+                        path: 'FillOT',
+                        name: 'fillOT',
+                        meta: {
+                            title: ''
+                        },
+                        component: () => import('@/views/timeSheet/FillOT.vue'),
+                    },
+                    {
+                        path: 'AllTimeSheetList',
+                        name: 'AllTimeSheetList',
+                        meta: {
+                            title: ''
+                        },
+                        component: () => import('@/views/timeSheet/AllTimeSheet.vue'),
+                    },
+                    {
+                        path: 'Approval',
+                        component: () => import('@/views/timeSheet/Approval.vue'),
+                    }
+
+                ],
             },
             {
-                path: 'Approval,',
-                name: 'approval',
+                path: '/employeeMsg',
+                name: 'employeeMsg',
                 meta: {
-                    title: ''
+                    title: '个人信息'
                 },
-                component: () => import('@/views/timeSheet/Approval.vue'),
-            },
-            {
-                path: 'MyList',
-                name: 'myList',
-                meta: {
-                    title: ''
-                },
-                component: () => import('@/views/timeSheet/MyRecord.vue'),
-            },
-            {
-                path: 'FillOT',
-                name: 'fillOT',
-                meta: {
-                    title: ''
-                },
-                component: () => import('@/views/timeSheet/FillOT.vue'),
-            },
-            {
-                path: 'AllTimeSheetList',
-                name: 'AllTimeSheetList',
-                meta: {
-                    title: ''
-                },
-                component: () => import('@/views/timeSheet/AllTimeSheet.vue'),
+                children: [
+                    { path: '', redirect: '/employeeMsg/BasicInformation' },// 默认指向
+                    {
+                        path: 'BasicInformation',
+                        name: 'BasicInformation',
+                        meta: {
+                            title: ''
+                        },
+                        component: () => import('@/views/employeeMsg/BasicInfo.vue'),
+                    },
+                    {
+                        path: 'EmergencyContact',
+                        name: 'EmergencyContact',
+                        meta: {
+                            title: ''
+                        },
+                        component: () => import('@/views/employeeMsg/EmergencyContact.vue'),
+                    },
+                    {
+                        path: 'EducationBackground',
+                        name: 'EducationBackground',
+                        meta: {
+                            title: ''
+                        },
+                        component: () => import('@/views/employeeMsg/EducationBg.vue'),
+                    },
+                    {
+                        path: 'Professional',
+                        name: 'Professional',
+                        meta: {
+                            title: ''
+                        },
+                        component: () => import('@/views/employeeMsg/Professional.vue'),
+                    },
+                    {
+                        path: 'BankAccount',
+                        name: 'BankAccount',
+                        meta: {
+                            title: ''
+                        },
+                        component: () => import('@/views/employeeMsg/BankAccount.vue'),
+                    },
+                    {
+                        path: 'Payslip',
+                        name: 'Payslip',
+                        meta: {
+                            title: ''
+                        },
+                        component: () => import('@/views/employeeMsg/Payslip.vue'),
+                    },
+
+                ]
             },
 
-        ],
-    },
-    {
-        path: '/employeeMsg',
-        name: 'employeeMsg',
-        meta: {
-            title: '个人信息'
-        },
-        component: () => import('@/views/employeeMsg/index.vue'),
-        children: [
-            { path: '', redirect: '/employeeMsg/BasicInformation' },// 默认指向
             {
-                path: 'BasicInformation',
-                name: 'BasicInformation',
-                meta: {
-                    title: ''
-                },
-                component: () => import('@/views/employeeMsg/BasicInfo.vue'),
-            },
-            {
-                path: 'EmergencyContact',
-                name: 'EmergencyContact',
-                meta: {
-                    title: ''
-                },
-                component: () => import('@/views/employeeMsg/EmergencyContact.vue'),
-            },
-            {
-                path: 'EducationBackground',
-                name: 'EducationBackground',
-                meta: {
-                    title: ''
-                },
-                component: () => import('@/views/employeeMsg/EducationBg.vue'),
-            },
-            {
-                path: 'Professional',
-                name: 'Professional',
-                meta: {
-                    title: ''
-                },
-                component: () => import('@/views/employeeMsg/Professional.vue'),
-            },
-            {
-                path: 'BankAccount',
-                name: 'BankAccount',
-                meta: {
-                    title: ''
-                },
-                component: () => import('@/views/employeeMsg/BankAccount.vue'),
-            },
-            {
-                path: 'Payslip',
-                name: 'Payslip',
-                meta: {
-                    title: ''
-                },
-                component: () => import('@/views/employeeMsg/Payslip.vue'),
-            },
-
+                path: '/systemNotice',
+                component:() => import('@/views/Notice.vue'),
+            }
         ]
+
     },
+    
+    
     {
         path: '/onboard',
         name: 'onboard',

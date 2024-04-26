@@ -21,3 +21,8 @@ export enum OrderStatusEnum {
   '已完成' = 4,
 }
 
+export enum OverTimeFlagEnum {
+  '加班' = 1,
+  '正常' = 0,
+}
+

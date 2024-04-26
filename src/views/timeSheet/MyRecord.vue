@@ -67,7 +67,7 @@ const columns = [
     key: 'workLocation',
   },
   {
-    title: '日报',
+    title: '摘要',
     dataIndex: 'remark',
     key: 'remark',
   },
