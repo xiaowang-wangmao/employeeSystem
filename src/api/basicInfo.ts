@@ -37,3 +37,13 @@ export const updateContactList = (params: any) =>
   defHttp.post({ url: '/staffInfo/updateContactList', params }).then((res) => {
     return res.data;
   });
+
+export const getStaffPage = (params: any) =>
+  defHttp.post({ url: '/staffInfo/page', params }).then((res) => {
+    return res.data;
+  });
+
+export const updateStaff = (params: any) =>
+  defHttp.post({ url: '/staffInfo/updateStaff', params }).then((res) => {
+    return res.data;
+  });

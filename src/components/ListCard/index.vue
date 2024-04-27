@@ -157,7 +157,12 @@
 
       <div class="list-card-content_body">
         <a-row class="table-top-render" justify="space-between">
-          <slot name="tableTopRender"></slot>
+          <slot name="tableTopRender"> </slot>
+          <div>
+            <a-button v-if="props.needExport" @click="exportExcel"
+              >导出</a-button
+            >
+          </div>
         </a-row>
 
         <a-table
@@ -295,6 +300,7 @@
 
 <script setup lang="ts">
 import { isArray, isEmpty, isFunction } from '@/utils/is/is.ts';
+import { utils, writeFileXLSX } from 'xlsx';
 import emptyImage from '@/assets/images/customEmpty.png';
 import toBeContinued from '@/assets/images/to-be-continued.png';
 import { cloneDeep, isEqual } from 'lodash-es';
@@ -312,7 +318,7 @@ import {
   toRaw,
   watch,
 } from 'vue';
-import { stat } from 'fs/promises';
+import { listToTree } from '@/utils/translate';
 
 const listCardHeaderRef = ref();
 const emit = defineEmits([
@@ -391,6 +397,8 @@ const props = withDefaults(
     checkDisabled?: (record: Record<string, any>) => boolean;
     needParamsCache: boolean;
     scrollY?: number;
+    treeFlag?: boolean;
+    needExport?: boolean;
   }>(),
   {
     handleListCardFooter: true,
@@ -414,6 +422,8 @@ const props = withDefaults(
     selectedRowKeys: () => [],
     selectedRows: () => [],
     needParamsCache: false,
+    treeFlag: false,
+    needExport: false,
   }
 );
 
@@ -525,8 +535,13 @@ async function fetch(operateLogType?: string, cache = props.needParamsCache) {
       state.isSubmit = true;
     }
     if (props.handleListCardFooter) {
-      state.dataSource = res.records;
-      state.total = res.total;
+      if (props.treeFlag) {
+        state.dataSource = listToTree(res.records);
+        state.total = res.total;
+      } else {
+        state.dataSource = res.records;
+        state.total = res.total;
+      }
     } else {
       state.dataSource = res;
     }
@@ -595,6 +610,38 @@ const resetForm = () => {
   }
 };
 
+//导出
+function exportExcel() {
+  // 获取要导出的业务数据
+  const data = state.dataSource;
+  // 表头英文字段key
+  const tableHeaderKeys = props.columns?.map((i) => i.dataIndex);
+  console.log(tableHeaderKeys, 'keys');
+
+  // 表头中文字段value
+  const tableHeaderValues = props.columns?.map((i) => i.title);
+  console.log(tableHeaderValues, 'chinease');
+  const list = data.map((item) => {
+    const obj = {};
+    tableHeaderKeys.forEach((key) => {
+      obj[key] = item[key];
+    });
+    return obj;
+  });
+  console.log('list', list);
+
+  // 创建一个新的工作簿
+  const workbook = utils.book_new();
+  // 创建一个工作表 要求一个对象数组格式
+  const worksheet = utils.json_to_sheet(list);
+
+  // 把工作表添加到工作簿  Data为工作表名称
+  utils.book_append_sheet(workbook, worksheet, 'Data');
+  // 改写表头
+  utils.sheet_add_aoa(worksheet, [tableHeaderValues], { origin: 'A1' });
+  // 导出方法进行导出
+  writeFileXLSX(workbook, `${props.title}导出文件.xlsx`);
+}
 function searchInputChange(e, needLow) {
   if (needLow) {
     e.target.value = e.target.value.toLowerCase();

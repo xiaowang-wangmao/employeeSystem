@@ -1,7 +1,7 @@
 <template>
   <div>
     <ListCard
-      title="申报记录"
+      :title="'申报记录'"
       :filters="filters"
       :columns="columns"
       :api="{ list: getTimeSheetPage }"
@@ -9,6 +9,7 @@
       :params="{
         staffCode: id,
       }"
+      :needExport="true"
       :btnInfo="btnInfo"
       ref="list"
     />
@@ -16,13 +17,14 @@
 </template>
 
 <script lang="ts" setup>
-import { getTimeSheetPage } from '@/api/timesheet';
+import { getProjectList, getTimeSheetPage } from '@/api/timesheet';
 import Time from '@/components/Time/index.vue';
 import { BtnInfoType } from '@/enums/formEnum';
 import { OrderStatusEnum } from '@/enums/optionsEnum';
 import { enumToObjArray, pickBasicData } from '@/utils/translate';
 
 const id = Number(localStorage.getItem('staffCode'));
+const projectOptions = ref([]);
 const columns = [
   {
     title: '单号',
@@ -36,7 +38,11 @@ const columns = [
   },
   {
     title: '项目名称',
-    dataIndex: ['project', 'name'],
+    dataIndex: 'projectName',
+  },
+  {
+    title: '负责人',
+    dataIndex: 'approvalName',
   },
 
   {
@@ -106,10 +112,11 @@ const filters = [
     prop: 'date',
   },
   {
-    label: '请输入项目编号',
-    type: 'input',
+    label: '请选择项目',
+    type: 'select',
     prop: 'projectId',
-    length: 10,
+    showSearch: true,
+    options: projectOptions,
   },
   {
     label: '请选择工单状态',
@@ -119,11 +126,6 @@ const filters = [
     options: enumToObjArray(OrderStatusEnum),
   },
 
-  // {
-  //   label: '更新时间',
-  //   type: 'date-range',
-  //   prop: 'lastUpdateTime',
-  // },
 ];
 const btnInfo: BtnInfoType[] = [
   // {
@@ -133,4 +135,18 @@ const btnInfo: BtnInfoType[] = [
   //   },
   // },
 ];
+function getProjectListData() {
+  getProjectList({}).then((res) => {
+    projectOptions.value = res.map((item: any) => {
+      return {
+        label: item.name,
+        value: item.id,
+        ...item,
+      };
+    });
+  });
+}
+onMounted(() => {
+  getProjectListData();
+})
 </script>

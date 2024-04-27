@@ -39,5 +39,15 @@ export const getTimeSheetPage = (params: any) =>
     return res.data;
   });
 
-
-  
+export const approvalPass = (params: any) =>
+  defHttp.get({ url: '/timesheet/approvalPass', params }).then((res) => {
+    return res.data;
+  });
+export const approvalOverruled = (params: any) =>
+  defHttp.get({ url: '/timesheet/approvalOverruled', params }).then((res) => {
+    return res.data;
+  });
+export const approvalDelete = (params: any) =>
+  defHttp.get({ url: '/timesheet/approvalDelete', params }).then((res) => {
+    return res.data;
+  });

@@ -129,6 +129,10 @@ const routes: Array<RouteRecordRaw> = [
             {
                 path: '/systemNotice',
                 component:() => import('@/views/Notice.vue'),
+            },
+            {
+                path: '/systemStaff',
+                component: () => import('@/views/Staff.vue'),
             }
         ]
 

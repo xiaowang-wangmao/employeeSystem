@@ -117,13 +117,19 @@
                 <span>后台管理</span>
               </span>
             </template>
-            <a-menu-item key="41">
+            <a-menu-item key="6-1">
               <pie-chart-outlined />
               <router-link :to="'/timeSheet/FillDailyTimeSheet'"
                 >账号管理
               </router-link>
             </a-menu-item>
-            <a-menu-item key="61">
+            <a-menu-item key="6-2">
+              <pie-chart-outlined />
+              <router-link :to="'/systemStaff'"
+                >员工管理
+              </router-link>
+            </a-menu-item>
+            <a-menu-item key="6-3">
               <pie-chart-outlined />
               <router-link :to="'/timeSheet/FillDailyTimeSheet'"
                 >客户项目管理

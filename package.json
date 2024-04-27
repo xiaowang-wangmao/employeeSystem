@@ -26,7 +26,8 @@
     "v-calendar": "^3.1.2",
     "vue": "^3.3.4",
     "vue-router": "^4.2.5",
-    "vuex": "^4.1.0"
+    "vuex": "^4.1.0",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.0/xlsx-0.20.0.tgz"
   },
   "devDependencies": {
     "@types/lodash-es": "^4.17.10",

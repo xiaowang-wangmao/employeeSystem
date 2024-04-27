@@ -155,12 +155,13 @@ let timeSheet = reactive({
   staffCode: localStorage.getItem('staffCode'),
   staffName: localStorage.getItem('userName'),
   workLocation: '',
-  projectId: '',
+  projectId: undefined,
+  projectName: '',
   clientName: '',
   approvalCode: '',
   approvalName: '',
   targetHours: '8',
-  overtimeFlag:1,
+  overtimeFlag: 1,
   overtimeHours: undefined,
   remark: '',
   date: Dayjs,
@@ -176,7 +177,7 @@ function chooseDay(calendarDay: any) {
     staffCode: localStorage.getItem('staffCode'),
     staffName: localStorage.getItem('userName'),
     targetHours: '8',
-    overtimeFlag:1,
+    overtimeFlag: 1,
   });
   selectedProject.value = {
     id: '',
@@ -231,7 +232,6 @@ function chooseDay(calendarDay: any) {
   }
 }
 const onFinish = (values: any) => {
-
   if (editableFalg.value) {
     editTimesheet(timeSheet).then((res) => {
       console.log('res', res);
@@ -258,13 +258,10 @@ function edit() {
 }
 
 function change() {
-  selectedProject.value = findObjById(
-    Number(timeSheet.projectId),
-    projectOptions.value
-  )[0];
-  timeSheet.clientName = selectedProject.value.clientName;
-  timeSheet.approvalCode = selectedProject.value.responsibleCode;
-  timeSheet.approvalName = selectedProject.value.responsibleName;
+  timeSheet.projectName = option.name;
+  timeSheet.clientName = option.clientName;
+  timeSheet.approvalCode = option.responsibleCode;
+  timeSheet.approvalName = option.responsibleName;
 }
 function findObjById(id: number, arr: any[]) {
   const obj = arr.filter((item) => {

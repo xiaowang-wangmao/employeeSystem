@@ -19,10 +19,36 @@ export enum OrderStatusEnum {
   '审核通过' = 2,
   '审核驳回' = 3,
   '已完成' = 4,
+  '已作废' = 5,
 }
 
 export enum OverTimeFlagEnum {
   '加班' = 1,
   '正常' = 0,
+}
+
+
+
+
+export enum DepartmentEnum {
+  '超级管理员' = 0,
+  '后勤部' = 1,
+  '人力资源部' = 2,
+  '财务部' = 3,
+  '销售部' = 4,
+  '采购部' = 5,
+  '行政办公室' = 6,
+  '市场部' = 7,
+  '生产技术部' = 8,
+}
+
+export enum RoleRankEnum {
+  'system' = 0,
+  'partner' = 1,
+  'senior manager' = 2,
+  'manager' = 3,
+  'senior salesman' = 4,
+  'salesman' = 5,
+  'Intern' = 6,
 }
 

@@ -44,6 +44,27 @@ export function formattedDate(dateString:string) {
   return new Date(Number(year), month, Number(day) );
 }
 
+//把扁平化的数据转换成树结构方便展示
+export function listToTree(data) {
+  const cloneData = JSON.parse(JSON.stringify(data));
+  const tree = cloneData.filter((father: { id: number; key: number, children: any; isLeaf: boolean; pid: number; }) => {
+    father.key = father.id;
+    
+    const branchArr = cloneData.filter((child: { pid: any; }) => {
+      return father.id == child.pid;
+    });
+    
+    if (branchArr.length > 0) {
+      father.children = branchArr;
+      father.isLeaf = false;
+    }
+    return father.pid == 0;
+  });
+  console.log(tree);
+  
+  return tree;
+}
+
 
 
 
