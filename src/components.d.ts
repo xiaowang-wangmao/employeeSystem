@@ -7,7 +7,9 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    AAlert: typeof import('ant-design-vue/es')['Alert']
     AAvatar: typeof import('ant-design-vue/es')['Avatar']
+    ABadge: typeof import('ant-design-vue/es')['Badge']
     ABreadcrumb: typeof import('ant-design-vue/es')['Breadcrumb']
     ABreadcrumbItem: typeof import('ant-design-vue/es')['BreadcrumbItem']
     AButton: typeof import('ant-design-vue/es')['Button']
@@ -15,6 +17,8 @@ declare module 'vue' {
     ACheckbox: typeof import('ant-design-vue/es')['Checkbox']
     ACol: typeof import('ant-design-vue/es')['Col']
     ADatePicker: typeof import('ant-design-vue/es')['DatePicker']
+    ADescriptions: typeof import('ant-design-vue/es')['Descriptions']
+    ADescriptionsItem: typeof import('ant-design-vue/es')['DescriptionsItem']
     ADivider: typeof import('ant-design-vue/es')['Divider']
     ADropdown: typeof import('ant-design-vue/es')['Dropdown']
     AEmpty: typeof import('ant-design-vue/es')['Empty']
@@ -49,8 +53,11 @@ declare module 'vue' {
     ATabs: typeof import('ant-design-vue/es')['Tabs']
     ATextarea: typeof import('ant-design-vue/es')['Textarea']
     ATooltip: typeof import('ant-design-vue/es')['Tooltip']
+    AUpload: typeof import('ant-design-vue/es')['Upload']
     DCCascader: typeof import('./components/DCCascader/index.vue')['default']
+    DCUpload: typeof import('./components/DCUpload/index.vue')['default']
     EditTable: typeof import('./components/EditTable/index.vue')['default']
+    FileCollectUpload: typeof import('./components/DCUpload/FileCollectUpload.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     ListCard: typeof import('./components/ListCard/index.vue')['default']
     Pagination: typeof import('./components/Pagination/index.vue')['default']

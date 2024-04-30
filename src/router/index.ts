@@ -125,6 +125,31 @@ const routes: Array<RouteRecordRaw> = [
 
                 ]
             },
+            {
+                path: '/leave',
+                name: 'leave',
+                meta: {
+                    title: '休假'
+                },
+                children: [
+                    {
+                        path: 'index',
+                        component: () => import('@/views/leave/index.vue'),
+                    },
+                    {
+                        path: 'application',
+                        component: () => import('@/views/leave/Application.vue'),
+                    },
+                    {
+                        path: 'approval',
+                        component: () => import('@/views/leave/Approval.vue'),
+                    },
+                    {
+                        path: 'record',
+                        component: () => import('@/views/leave/Record.vue'),
+                    },
+                ]
+            },
 
             {
                 path: '/systemNotice',
@@ -136,24 +161,6 @@ const routes: Array<RouteRecordRaw> = [
             }
         ]
 
-    },
-    
-    
-    {
-        path: '/onboard',
-        name: 'onboard',
-        meta: {
-            title: '培训'
-        },
-        component: () => import('@/views/onboarding/index.vue')
-    },
-    {
-        path: '/leave',
-        name: 'leave',
-        meta: {
-            title: '休假'
-        },
-        component: () => import('@/views/leave/index.vue')
     },
 ]
 

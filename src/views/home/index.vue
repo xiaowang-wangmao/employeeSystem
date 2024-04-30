@@ -1,15 +1,12 @@
 <template>
   <div>
     <a-layout style="min-height: 100vh">
-      
       <a-layout-sider
         v-model:collapsed="collapsed"
         collapsible
         style="background-color: #fff"
       >
-      <div class="logo" >
-        XXX公司logo
-      </div>
+        <div class="logo">XXX公司logo</div>
         <a-menu
           v-model:selectedKeys="selectedKeys"
           theme="light"
@@ -90,26 +87,33 @@
                 <span>休假管理</span>
               </span>
             </template>
-            <a-menu-item key="1">
+            <a-menu-item key="3-1">
               <pie-chart-outlined />
-              <router-link :to="'/timeSheet/FillDailyTimeSheet'"
-                >Daily TimeSheet Fill
-              </router-link>
+              <router-link :to="'/leave/index'">汇总表格 </router-link>
             </a-menu-item>
-
+            <a-menu-item key="3-2">
+              <pie-chart-outlined />
+              <router-link :to="'/leave/application'">休假申请 </router-link>
+            </a-menu-item>
+            <a-menu-item key="3-3">
+              <pie-chart-outlined />
+              <router-link :to="'/leave/approval'">休假审批 </router-link>
+            </a-menu-item>
+            <!-- <a-menu-item key="3-4">
+              <pie-chart-outlined />
+              <router-link :to="'/leave/index'">休假记录 </router-link>
+            </a-menu-item> -->
           </a-sub-menu>
           <a-menu-item key="4-1">
-              <pie-chart-outlined />
-              <router-link :to="'/systemNotice'"
-                >通知公告
-              </router-link>
-            </a-menu-item>
-            <a-menu-item key="5-1">
-              <pie-chart-outlined />
-              <router-link :to="'/timeSheet/FillDailyTimeSheet'"
-                >培训文件
-              </router-link>
-            </a-menu-item>
+            <pie-chart-outlined />
+            <router-link :to="'/systemNotice'">通知公告 </router-link>
+          </a-menu-item>
+          <a-menu-item key="5-1">
+            <pie-chart-outlined />
+            <router-link :to="'/timeSheet/FillDailyTimeSheet'"
+              >培训文件
+            </router-link>
+          </a-menu-item>
           <a-sub-menu key="system">
             <template #title>
               <span>
@@ -125,9 +129,7 @@
             </a-menu-item>
             <a-menu-item key="6-2">
               <pie-chart-outlined />
-              <router-link :to="'/systemStaff'"
-                >员工管理
-              </router-link>
+              <router-link :to="'/systemStaff'">员工管理 </router-link>
             </a-menu-item>
             <a-menu-item key="6-3">
               <pie-chart-outlined />
@@ -135,7 +137,6 @@
                 >客户项目管理
               </router-link>
             </a-menu-item>
-
           </a-sub-menu>
         </a-menu>
       </a-layout-sider>
@@ -273,7 +274,7 @@ onMounted(() => {
 .ant-layout .ant-layout-sider-trigger {
   background-color: #fff !important;
 }
- .logo {
+.logo {
   text-align: center;
   height: 32px;
   margin: 16px;

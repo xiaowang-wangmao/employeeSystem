@@ -22,6 +22,12 @@ export enum OrderStatusEnum {
   '已作废' = 5,
 }
 
+export enum ProcessStatusEnum {
+  '待处理' = 0,
+  '处理中' = 1,
+  '已处理' = 2,
+}
+
 export enum OverTimeFlagEnum {
   '加班' = 1,
   '正常' = 0,
@@ -50,5 +56,15 @@ export enum RoleRankEnum {
   'senior salesman' = 4,
   'salesman' = 5,
   'Intern' = 6,
+}
+
+export enum HolidayTypeEnum {
+  '年假' = 0,
+  '调休假' = 1,
+  '事假' = 2,
+  '病假' = 3,
+  '婚假' = 4,
+  '产假' = 5,
+  '丧假' = 6,
 }
 

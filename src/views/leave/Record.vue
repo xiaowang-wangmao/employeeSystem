@@ -1,8 +1,5 @@
 <template>
-  <div>
-    <TopBar />
-    time
-  </div>
+  <div>time1</div>
 </template>
 
 <script lang="ts"></script>

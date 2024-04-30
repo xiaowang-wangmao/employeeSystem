@@ -156,7 +156,7 @@
       </div>
 
       <div class="list-card-content_body">
-        <a-row class="table-top-render" justify="space-between">
+        <a-row class="table-top-render" justify="end">
           <slot name="tableTopRender"> </slot>
           <div>
             <a-button v-if="props.needExport" @click="exportExcel"
