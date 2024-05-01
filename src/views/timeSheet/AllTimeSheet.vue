@@ -36,7 +36,7 @@
             allowClear
           />
         </a-form-item>
-        <a-form-item label="StaffCode" name="staffCode">
+        <a-form-item label="申报日期" name="date">
           <a-date-picker
             v-model:value="timeSheet.date"
             :placeholder="'请选择日期'"

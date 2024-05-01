@@ -13,18 +13,25 @@
       :btnInfo="btnInfo"
       ref="list"
     />
-     <a-modal v-model:visible="ApprovalVisible" title="审批意见" @ok="handleApproval">
-      <a-textarea v-model:value="approvalMsg" 
-      :rows="3"/>
+    <a-modal
+      v-model:visible="ApprovalVisible"
+      title="审批意见"
+      @ok="handleApproval"
+    >
+      <a-textarea v-model:value="approvalMsg" :rows="3" />
     </a-modal>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { getApprovalTimeSheetList,approvalPass,approvalOverruled } from '@/api/timesheet';
+import {
+  getApprovalTimeSheetList,
+  approvalPass,
+  approvalOverruled,
+} from '@/api/timesheet';
 import Time from '@/components/Time/index.vue';
 import { BtnInfoType } from '@/enums/formEnum';
-import { OrderStatusEnum,OverTimeFlagEnum } from '@/enums/optionsEnum';
+import { OrderStatusEnum, OverTimeFlagEnum } from '@/enums/optionsEnum';
 import { enumToObjArray, pickBasicData } from '@/utils/translate';
 import { message } from 'ant-design-vue';
 
@@ -168,15 +175,17 @@ const filters = [
     prop: 'date',
   },
 ];
-async function handleApproval(id:Number) {
-  const res = await approvalOverruled({ timesheetId: id ,msg:approvalMsg.value})
-      if (res === 'success') {
-        message.success("操作成功");
-        list.value.fetch();
-      } else {
-        message.error("操作失败，请重试");
-      }
-  
+async function handleApproval(id: Number) {
+  const res = await approvalOverruled({
+    timesheetId: id,
+    msg: approvalMsg.value,
+  });
+  if (res === 'success') {
+    message.success('操作成功');
+    list.value.fetch();
+  } else {
+    message.error('操作失败，请重试');
+  }
 }
 const btnInfo: BtnInfoType[] = [
   {
@@ -186,13 +195,16 @@ const btnInfo: BtnInfoType[] = [
       return row.status != 1;
     },
     async onClick(record) {
-      approvalMsg.value = 'aggree';//同意默认意见
-      const res = await approvalPass({ timesheetId: record.id ,msg:approvalMsg.value})
+      approvalMsg.value = 'aggree'; //同意默认意见
+      const res = await approvalPass({
+        timesheetId: record.id,
+        msg: approvalMsg.value,
+      });
       if (res === 'success') {
-        message.success("操作成功");
+        message.success('操作成功');
         list.value.fetch();
       } else {
-        message.error("操作失败，请重试");
+        message.error('操作失败，请重试');
       }
     },
   },
@@ -204,7 +216,7 @@ const btnInfo: BtnInfoType[] = [
     },
     async onClick(record) {
       ApprovalVisible.value = true;
-      handleApproval(record.id)
+      handleApproval(record.id);
     },
   },
 ];

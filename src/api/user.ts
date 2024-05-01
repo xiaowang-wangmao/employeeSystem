@@ -8,3 +8,5 @@ export interface loginReq {
 export const login = (params: any) =>
     defHttp.post({ url: '/login/index', params });
 
+export const updatePassword = (params: any) =>
+    defHttp.post({ url: '/login/update-password', params });

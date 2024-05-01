@@ -7,37 +7,37 @@
         :columns="columns"
         :api="{ list: approvalPage }"
         :params="{
-          staffCode:id
+          staffCode: id,
         }"
         :needParamsCache="true"
         :btnInfo="btnInfo"
         :needExport="true"
         ref="list"
       >
-        <!-- <template #tableTopRender>
-          <div style="margin-right: 20px">
-            <a-button type="primary" class="flex-items-center" @click="add">
-              <SvgRaw name="icon_add" />
-              发起申请
-            </a-button>
-          </div>
-        </template> -->
       </ListCard>
     </div>
 
-    <a-modal v-model:visible="visibleFlag" title="申请表单" @ok="handleOK">
+    <a-modal v-model:visible="visibleFlag" title="申请详情" width="600px">
       <a-form
         ref="formRef"
-        :label-col="{ span: 7 }"
-        :wrapper-col="{ span: 12 }"
+        :label-col="{ span: 5 }"
+        :wrapper-col="{ span: 16 }"
         :model="application"
       >
+        <a-form-item label="申请人" name="applicationStaffCode">
+          <a-select
+            v-model:value="application.applicationStaffCode"
+            :placeholder="'请选择职员'"
+            :options="staffOptions"
+            disabled
+          />
+        </a-form-item>
         <a-form-item label="休假类型" name="type">
           <a-select
             v-model:value="application.type"
             :placeholder="'请选择类型'"
             :options="enumToObjArray(HolidayTypeEnum)"
-            :disabled="DisableFlag"
+            disabled
             allowClear
             @change="typeChange"
           />
@@ -49,7 +49,7 @@
             allowClear
             value-format="YYYY-MM-DD HH:mm:ss"
             format="YYYY-MM-DD HH:mm:ss"
-            :disabled="DisableFlag"
+            disabled
             @change="rangeDateChange"
             :disabled-time="disabledRangeTime"
             :show-time="{
@@ -61,59 +61,49 @@
             }"
           />
         </a-form-item>
-        <a-form-item
-          label="DirectLeader"
-          name="directLeader"
-          v-if="application.processList[0].id !== 0"
-        >
+        <a-form-item label="需要主管审核" v-if="application.dayNumbers>=7">
+          <a-switch
+            :checked="true"
+            checked-children="是"
+            un-checked-children="否"
+            disabled
+          />
+        </a-form-item>
+         <a-form-item label="主管" v-if="processList.length>1">
           <a-select
-            v-model:value="application.processList[0].processorCode"
+            :value="processList[1].processorCode"
             :options="staffOptions"
             disabled
-            allowClear
-            @change="leaderChange"
           />
         </a-form-item>
-        <a-form-item
-          label="上级主管"
-          name="leader"
-          v-if="application.dayNumbers >= 7"
-        >
-          <a-select
-            v-model:value="application.processList[1].processorCode"
-            :options="staffOptions"
-            :disabled="DisableFlag"
-            allowClear
-            @change="leaderChange1"
-          />
-        </a-form-item>
-        <a-form-item label="上传文件" name="files" v-if="specialLeaveFlag">
-          <DCUpload
-            type="primary"
-            :ghost="false"
-            :showRouteButton="false"
-            icon="icon_upload"
-            :buttonText="'上传文件'"
-            :title="'上传文件'"
-            :tip="'注意：请下载模版后按照模版修改并上传。'"
-            accept=".csv"
-            :show-api-error-msg="true"
-            :uploadApi="add"
-            :limit-size="1"
-          >
-          </DCUpload>
-        </a-form-item>
-
-        <a-form-item label="Remark" name="remark">
+        <a-form-item label="申请理由" name="remark">
           <a-textarea
             v-model:value="application.remark"
-            :disabled="DisableFlag"
+            disabled
+            :rows="3"
+            :maxlength="100"
+            allowClear
+          />
+        </a-form-item>
+        <a-form-item label="附件图片" name="files" v-if="application.fileId">
+          <a-image-preview-group>
+            <a-image :width="200" v-bind:src="srcImg" />
+          </a-image-preview-group>
+        </a-form-item>
+        <a-form-item label="审批意见" name="extra">
+          <a-textarea
+            v-model:value="extra"
             :rows="3"
             :maxlength="100"
             allowClear
           />
         </a-form-item>
       </a-form>
+
+      <template #footer>
+        <a-button key="back" @click="handleCancel">驳回</a-button>
+        <a-button key="submit" type="primary" @click="handleOk">同意</a-button>
+      </template>
     </a-modal>
   </div>
 </template>
@@ -123,7 +113,6 @@ import dayjs from 'dayjs';
 import { Dayjs } from 'dayjs';
 import { getTimeSheetPage, getStaffList } from '@/api/timesheet';
 import Time from '@/components/Time/index.vue';
-import DCUpload from '@/components/DCUpload/index.vue';
 import { BtnInfoType } from '@/enums/formEnum';
 import {
   OrderStatusEnum,
@@ -132,12 +121,19 @@ import {
 } from '@/enums/optionsEnum';
 import { enumToObjArray, pickBasicData } from '@/utils/translate';
 import { message } from 'ant-design-vue';
-import { applicationOne ,approvalPage} from '@/api/application';
+import {
+  applicationOne,
+  approvalPage,
+  getApplicationOne,
+  getImage,
+  pass,
+  refuse,
+} from '@/api/application';
 import { getStaffInfo } from '@/api/basicInfo';
 
 const specialLeaveFlag = ref(false);
+const processList = ref([]);
 const staffOptions = ref([]);
-const DisableFlag = ref(false);
 const formRef = ref();
 const list = ref();
 const visibleFlag = ref(false);
@@ -167,8 +163,9 @@ const disabledDate = (current: Dayjs) =>
   current && current < dayjs().subtract(1, 'days').endOf('day');
 const directLeader = ref();
 const application = reactive({
-  applicationStaffCode: localStorage.getItem("staffCode"),
-  applicationStaffName: localStorage.getItem("userName"),
+  id: '',
+  applicationStaffCode: '',
+  applicationStaffName: '',
   processList: [
     { processorCode: undefined, processorName: '' },
     { processorCode: undefined, processorName: '' },
@@ -180,26 +177,28 @@ const application = reactive({
   startTime: '',
   dayNumbers: 0,
   remark: '',
-  files: '',
+  fileId: '',
 });
+const srcImg = ref();
+const extra = ref(); //审批意见
 const columns = [
   {
     title: '单号',
     dataIndex: 'id',
     key: 'id',
-    width:100,
+    width: 100,
   },
-{
+  {
     title: '申请人',
     dataIndex: 'applicationStaffName',
     key: 'applicationStaffName',
-    width:100,
+    width: 100,
   },
   {
     title: '状态',
     dataIndex: 'status',
     key: 'status',
-    width:100,
+    width: 100,
     customRender: ({ text }) => {
       return h('span', {}, OrderStatusEnum[text]);
     },
@@ -208,22 +207,22 @@ const columns = [
     title: '类型',
     dataIndex: 'type',
     key: 'type',
-    width:100,
+    width: 100,
     customRender: ({ text }) => {
-        return h('span', {}, HolidayTypeEnum[text]);
+      return h('span', {}, HolidayTypeEnum[text]);
     },
   },
   {
     title: '摘要',
     dataIndex: 'remark',
     key: 'remark',
-    width:200,
+    width: 200,
   },
-   {
+  {
     title: '请假天数',
     dataIndex: 'dayNumbers',
     key: 'dayNumbers',
-    width:100,
+    width: 100,
   },
   {
     title: '开始时间',
@@ -249,7 +248,7 @@ const columns = [
       return h('span', {}, '-');
     },
   },
-  
+
   {
     title: '提交时间',
     dataIndex: 'createdTime',
@@ -279,7 +278,7 @@ const columns = [
     title: '操作',
     key: 'action',
     fixed: 'right',
-    width: 200,
+    width: 100,
   },
 ];
 const filters = [
@@ -311,37 +310,51 @@ const filters = [
 ];
 const btnInfo: BtnInfoType[] = [
   {
-    operationType: 'edit',
-    text: '编辑',
-    onClick(record) {
-      // editableFalg.value = true;
-    },
-  },
-  {
-    operationType: 'delete',
-    text: '撤销',
-    // disabled(row) {
-    //   return row.status === 5;
-    // },
-    async onClick(record) {
-      //   const res = await approvalDelete({ applicationId: record.id });
-      //   if (res === 'success') {
-      //     message.success('操作成功');
-      //     list.value.fetch();
-      //   } else {
-      //     message.error('操作失败，请重试');
-      //   }
-    },
-  },
-  {
     operationType: 'view',
-    text: '查看',
+    text: '审核',
     onClick(record) {
-      // editableFalg.value = true;
+      getApplicationOne({ id: record.id }).then((res) => {
+        processList.value = res.processList;
+      })
+      pickBasicData(application, record);
+      application.rangeTime = [record.startTime, record.endTime];
+      visibleFlag.value = true;
+      if (record.fileId) {
+        getImage({ fileId: record.fileId }).then((res) => {
+          console.log(res);
+          srcImg.value = 'http://localhost:8088/files/' + res.fileName;
+        });
+      }
     },
   },
 ];
 
+const handleCancel = () => {
+  pass({ applicationId: application.id, staffCode: id, msg: extra.value }).then(
+    (res) => {
+      if (res === 'success') {
+        message.success('审核完成');
+      } else {
+        message.error('操作失败');
+      }
+      list.value.fetch();
+      visibleFlag.value = false;
+    }
+  );
+};
+const handleOk = () => {
+  pass({ applicationId: application.id, staffCode: id, msg: extra.value }).then(
+    (res) => {
+      if (res === 'success') {
+        message.success('审核完成');
+      } else {
+        message.error('操作失败');
+      }
+      list.value.fetch();
+      visibleFlag.value = false;
+    }
+  );
+};
 const id = localStorage.getItem('staffCode');
 
 onMounted(() => {
@@ -351,7 +364,6 @@ onMounted(() => {
   });
   getStaffListData();
 });
-
 
 function getStaffListData() {
   getStaffList({}).then((res) => {
@@ -386,7 +398,7 @@ function rangeDateChange(values: any[]) {
     application.dayNumbers = diffHour / 8;
   }
   // console.log('number', application.dayNumbers);
-  if (application.dayNumbers >=7 ) {
+  if (application.dayNumbers >= 7) {
     message.info('请向你的直属领导确认上级审批主管');
   }
 }
@@ -413,15 +425,15 @@ function leaderChange1(value, option) {
 
 const handleOK = () => {
   formRef.value.validate().then((values: any) => {
-    applicationOne({  ...application }).then((res) => {
+    applicationOne({ ...application }).then((res) => {
       visibleFlag.value = false;
       list.value.fetch();
       if (res === 'success') {
-        message.success("申请成功");
+        message.success('申请成功');
       } else {
-        message.error("操作失败");
+        message.error('操作失败');
       }
     });
   });
-}
+};
 </script>

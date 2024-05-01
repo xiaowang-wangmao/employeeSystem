@@ -19,6 +19,7 @@ const routes: Array<RouteRecordRaw> = [
         },
         component: () => import('@/views/home/index.vue'),
         children: [
+            { path: '', redirect: '/systemNotice' },// 默认指向
             {
                 path: '/timeSheet',
                 name: 'timeSheet',
@@ -150,15 +151,37 @@ const routes: Array<RouteRecordRaw> = [
                     },
                 ]
             },
+            {
+                path: '/system',
+                name: 'system',
+                meta: {
+                    title: '后台管理'
+                },
+                children: [
+                    // {
+                    //     path: 'index',
+                    //     component: () => import('@/views/leave/index.vue'),
+                    // },
+                    {
+                        path: 'systemStaff',
+                        component: () => import('@/views/system/Staff.vue'),
+                    },
+                    {
+                        path: 'account',
+                        component: () => import('@/views/system/Account.vue'),
+                    },
+                    {
+                        path: 'project',
+                        component: () => import('@/views/system/Project.vue'),
+                    },
+                ]
+            },
 
             {
                 path: '/systemNotice',
                 component:() => import('@/views/Notice.vue'),
             },
-            {
-                path: '/systemStaff',
-                component: () => import('@/views/Staff.vue'),
-            }
+            
         ]
 
     },

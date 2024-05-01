@@ -81,7 +81,6 @@ import { updateStaff } from '@/api/basicInfo';
 import { getStaffPage } from '@/api/basicInfo';
 import {
   OrderStatusEnum,
-  OverTimeFlagEnum,
   RoleRankEnum,
   DepartmentEnum,
 } from '@/enums/optionsEnum';
@@ -116,6 +115,9 @@ const columns = [
     title: '职级',
     dataIndex: 'roleId',
     key: 'roleId',
+    customRender: ({ text }) => {
+      return h('span', {}, RoleRankEnum[text]);
+    },
   },
   {
     title: '操作',

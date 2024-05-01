@@ -106,8 +106,9 @@
               <SvgRaw name="icon_file" />
               <span style="color: #1c69d4">{{ file.name }}</span>
             </a-col>
-            <a-col class="flex-items-center dc-ux-pointer" @click="remove">
+            <a-col class="flex-items-center dc-ux-pointer" @click="remove" style="cursor: pointer;">
               <SvgRaw name="icon_delete" />
+              删除
             </a-col>
           </a-row>
         </template>
@@ -192,7 +193,7 @@ async function handleUpload() {
         visible.value = false;
         message.success('上传成功');
         errorMsg.value = '';
-        emit('update', res);
+        emit('update', res.data);
       } else {
         uploading.value = false;
         if (props.showApiErrorMsg) {

@@ -13,6 +13,10 @@
           mode="inline"
           v-model:openKeys="openKeys"
         >
+          <a-menu-item key="4-1">
+            <pie-chart-outlined />
+            <router-link :to="'/systemNotice'">通知公告 </router-link>
+          </a-menu-item>
           <a-sub-menu key="basic">
             <template #title>
               <span>
@@ -73,7 +77,7 @@
                 >OverTime Claim</router-link
               >
             </a-menu-item>
-            <a-menu-item key="2-5">
+            <a-menu-item key="2-5" v-if="rank === '0'">
               <file-outlined />
               <router-link :to="'/timeSheet/AllTimeSheetList'">
                 All TimeSheet
@@ -99,22 +103,15 @@
               <pie-chart-outlined />
               <router-link :to="'/leave/approval'">休假审批 </router-link>
             </a-menu-item>
-            <!-- <a-menu-item key="3-4">
-              <pie-chart-outlined />
-              <router-link :to="'/leave/index'">休假记录 </router-link>
-            </a-menu-item> -->
           </a-sub-menu>
-          <a-menu-item key="4-1">
-            <pie-chart-outlined />
-            <router-link :to="'/systemNotice'">通知公告 </router-link>
-          </a-menu-item>
+
           <a-menu-item key="5-1">
             <pie-chart-outlined />
             <router-link :to="'/timeSheet/FillDailyTimeSheet'"
               >培训文件
             </router-link>
           </a-menu-item>
-          <a-sub-menu key="system">
+          <a-sub-menu key="system" v-if="rank === '0'">
             <template #title>
               <span>
                 <team-outlined />
@@ -123,17 +120,17 @@
             </template>
             <a-menu-item key="6-1">
               <pie-chart-outlined />
-              <router-link :to="'/timeSheet/FillDailyTimeSheet'"
+              <router-link :to="'/system/Account'"
                 >账号管理
               </router-link>
             </a-menu-item>
             <a-menu-item key="6-2">
               <pie-chart-outlined />
-              <router-link :to="'/systemStaff'">员工管理 </router-link>
+              <router-link :to="'/system/systemStaff'">员工管理 </router-link>
             </a-menu-item>
             <a-menu-item key="6-3">
               <pie-chart-outlined />
-              <router-link :to="'/timeSheet/FillDailyTimeSheet'"
+              <router-link :to="'/system/Account'"
                 >客户项目管理
               </router-link>
             </a-menu-item>
@@ -159,7 +156,7 @@
                 <template #overlay>
                   <a-menu>
                     <a-menu-item>
-                      <a href="javascript:;">修改密码</a>
+                      <div @click="update">修改密码</div>
                     </a-menu-item>
                     <a-menu-item>
                       <div @click="logout">退出登录</div>
@@ -186,84 +183,84 @@
         </a-layout-footer>
       </a-layout>
     </a-layout>
+
+    <a-modal v-model:visible="visibleFlag" title="个人账号" @ok="handleOk">
+      <a-form
+        :model="formState"
+        name="basic"
+        :label-col="{ span: 6 }"
+        :wrapper-col="{ span: 12 }"
+        autocomplete="off"
+        ref="form"
+      >
+        <a-form-item
+          label="员工号"
+          name="staffCode"
+          :rules="[{ required: true, message: 'Please input your staffCode!' }]"
+        >
+          <a-input v-model:value="formState.staffCode" />
+        </a-form-item>
+
+        <a-form-item
+          label="新密码"
+          name="newPassword"
+          :rules="[{ required: true, message: 'Please input your password!' }]"
+        >
+          <a-input-password v-model:value="formState.newPassword" />
+        </a-form-item>
+      </a-form>
+    </a-modal>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { getSystemNoticeList } from '@/api/notice';
-import Time from '@/components/Time/index.vue';
 import { DownOutlined, UserOutlined } from '@ant-design/icons-vue';
 import { accountStore } from '@/store/modules/userStore';
+import { updatePassword } from '@/api/user';
+import { message } from 'ant-design-vue';
 
 const router = useRouter();
-
+const visibleFlag = ref(false);
+const form = ref();
 const collapsed = ref<boolean>(false);
 const selectedKeys = ref<string[]>(['4-1']);
-const openKeys = ref<string[]>(['timesheet', 'overtime']);
+const openKeys = ref<string[]>([ 'leave']);
 const list = ref();
-const menuList = ref([
-  { title: 'Daily-TimeSheet', link: () => router.push({ path: '/timeSheet' }) },
-  {
-    title: 'Employee-SelfService',
-    link: () => router.push({ path: '/employeeMsg' }),
-  },
-  { title: 'Leave-Manangenment', link: () => router.push({ name: 'leave' }) },
-  { title: 'Onboaring', link: () => router.push({ name: 'onboard' }) },
-  // { title: 'person-mag', link: () => router.push({ name: 'onboard' }) },
-]);
-const activeKey = ref('1');
-
+const formState = reactive({
+  staffCode: '',
+  newPassword: '',
+});
 const userName = localStorage.getItem('userName');
+const rank = ref(localStorage.getItem('rank'));
+console.log(rank);
+
 function logout() {
   localStorage.removeItem('token');
   localStorage.removeItem('staffCode');
   localStorage.removeItem('userName');
+  localStorage.removeItem('rank');
   accountStore().setStaffCode('');
   router.push('/');
 }
+function update() {
+  visibleFlag.value = true;
+}
+const handleOk = () => {
 
-const noticeColumns = [
-  {
-    title: '单号',
-    dataIndex: 'id',
-    key: 'id',
-  },
-  {
-    title: '主题',
-    dataIndex: 'activity',
-    key: 'activity',
-  },
-  {
-    title: '内容',
-    dataIndex: 'content',
-    key: 'content',
-  },
-  {
-    title: '发布日期',
-    dataIndex: 'date',
-    key: 'date',
-    customRender: ({ text }) => {
-      if (text) {
-        return h(Time, { time: text, format: 'YYYY-MM-DD' });
-      }
-      return h('span', {}, '-');
-    },
-  },
-  {
-    title: '发布部门',
-    dataIndex: 'deptName',
-    key: 'deptName',
-  },
-];
-
-const searchKey = ref<string>('');
+  form.value.validate().then(() => {
+    updatePassword({
+      code: Number(formState.staffCode),
+      password: formState.newPassword,
+    }).then((res) => {
+      message.success(res.msg);
+      visibleFlag.value = false;
+    });
+  });
+};
 
 onMounted(() => {
-  // getSystemNoticeList({ current: 1, size: 5 }).then((res) => {
-  //   console.log('notice-list',res);
-  // })
 });
 </script>
 <style lang="less" scoped>

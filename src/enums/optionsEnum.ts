@@ -28,6 +28,11 @@ export enum ProcessStatusEnum {
   '已处理' = 2,
 }
 
+export enum ProcessResultEnum{
+  '同意' = 0,
+  '驳回' = 1,
+}
+
 export enum OverTimeFlagEnum {
   '加班' = 1,
   '正常' = 0,

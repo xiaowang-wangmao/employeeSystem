@@ -7,7 +7,7 @@
         :columns="columns"
         :api="{ list: applicationPage }"
         :params="{
-          staffCode:id
+          staffCode: id,
         }"
         :needParamsCache="true"
         :btnInfo="btnInfo"
@@ -25,7 +25,7 @@
       </ListCard>
     </div>
 
-    <a-modal v-model:visible="visibleFlag" title="申请表单" @ok="handleOK">
+    <a-modal v-model:visible="visibleFlag" title="申请表单" @ok="confirm">
       <a-form
         ref="formRef"
         :label-col="{ span: 7 }"
@@ -95,13 +95,26 @@
             icon="icon_upload"
             :buttonText="'上传文件'"
             :title="'上传文件'"
-            :tip="'注意：请下载模版后按照模版修改并上传。'"
-            accept=".csv"
+            :tip="'注意：'"
+            :max-count="3"
+            accept=".jpg"
             :show-api-error-msg="true"
-            :uploadApi="add"
+            :uploadApi="uploadApi"
             :limit-size="1"
+            @update="handleUploadSuccess"
           >
           </DCUpload>
+          <div
+            class="file-item"
+            v-if="application.files && application.files.length > 0"
+          >
+            <div class="file-item-name">
+              <a class="flex-items-center" style="text-decoration: underline">
+                <SvgRaw name="icon_file" />
+                {{ application.files[0].fileName }}
+              </a>
+            </div>
+          </div>
         </a-form-item>
 
         <a-form-item label="Remark" name="remark">
@@ -115,6 +128,39 @@
         </a-form-item>
       </a-form>
     </a-modal>
+
+    <a-modal v-model:visible="visibleProcess" title="流程信息" :footer="null">
+      <a-steps direction="vertical" :current="currentProcess">
+        <a-step title="提交申请">
+          <template #description>
+            <p>发起人：{{ currentApplication.applicationStaffName }}</p>
+            <p>创建时间：{{ currentApplication.createdTime }}</p>
+          </template></a-step
+        >
+        <a-step title="直属领导审批">
+          <template #description>
+            <p>处理人：{{ processList[0]?.processorName }}</p>
+            <p>状态：{{ ProcessStatusEnum[processList[0]?.status] }}</p>
+            <p>
+              结果：{{ ProcessResultEnum[processList[0]?.processingResult] }}
+            </p>
+            <p>审核意见：{{ processList[0]?.remark }}</p>
+            <p>完成时间：{{ processList[0]?.endTime }}</p>
+          </template>
+        </a-step>
+        <a-step title="上级主管审批" v-if="currentApplication.dayNumbers >= 7">
+          <template #description>
+            <p>处理人：{{ processList[1]?.processorName }}</p>
+            <p>状态：{{ ProcessStatusEnum[processList[1]?.status] }}</p>
+            <p>
+              结果：{{ ProcessResultEnum[processList[1]?.processingResult] }}
+            </p>
+            <p>审核意见：{{ processList[1]?.remark }}</p>
+            <p>完成时间：{{ processList[1]?.endTime }}</p>
+          </template>
+        </a-step>
+      </a-steps>
+    </a-modal>
   </div>
 </template>
 
@@ -127,17 +173,30 @@ import DCUpload from '@/components/DCUpload/index.vue';
 import { BtnInfoType } from '@/enums/formEnum';
 import {
   OrderStatusEnum,
-  OverTimeFlagEnum,
+  ProcessStatusEnum,
   HolidayTypeEnum,
+  ProcessResultEnum,
 } from '@/enums/optionsEnum';
-import { enumToObjArray, pickBasicData } from '@/utils/translate';
+import { enumToObjArray, pickBasicData, findObjById } from '@/utils/translate';
 import { message } from 'ant-design-vue';
-import { applicationOne ,applicationPage} from '@/api/application';
+import {
+  applicationOne,
+  applicationPage,
+  uploadApi,
+  getProcessList,
+  deleteApplicationOne,
+} from '@/api/application';
 import { getStaffInfo } from '@/api/basicInfo';
+import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
+import { createVNode, defineComponent } from 'vue';
+import { Modal } from 'ant-design-vue';
 
 const specialLeaveFlag = ref(false);
+const currentProcess = ref(1);
 const staffOptions = ref([]);
 const DisableFlag = ref(false);
+const visibleProcess = ref(false);
+const currentApplication = ref();
 const formRef = ref();
 const list = ref();
 const visibleFlag = ref(false);
@@ -167,8 +226,8 @@ const disabledDate = (current: Dayjs) =>
   current && current < dayjs().subtract(1, 'days').endOf('day');
 const directLeader = ref();
 const application = reactive({
-  applicationStaffCode: localStorage.getItem("staffCode"),
-  applicationStaffName: localStorage.getItem("userName"),
+  applicationStaffCode: localStorage.getItem('staffCode'),
+  applicationStaffName: localStorage.getItem('userName'),
   processList: [
     { processorCode: undefined, processorName: '' },
     { processorCode: undefined, processorName: '' },
@@ -180,21 +239,34 @@ const application = reactive({
   startTime: '',
   dayNumbers: 0,
   remark: '',
-  files: '',
+  files: [],
+  fileId: undefined,
 });
+
+watch(
+  () => staffOptions.value,
+  (values) => {
+    if (values[0]) {
+      application.processList[0].processorName = findObjById(
+        directLeader.value,
+        staffOptions.value
+      )[0].label;
+    }
+  }
+);
 const columns = [
   {
     title: '单号',
     dataIndex: 'id',
     key: 'id',
-    width:100,
+    width: 100,
   },
 
   {
     title: '状态',
     dataIndex: 'status',
     key: 'status',
-    width:100,
+    width: 100,
     customRender: ({ text }) => {
       return h('span', {}, OrderStatusEnum[text]);
     },
@@ -203,16 +275,16 @@ const columns = [
     title: '类型',
     dataIndex: 'type',
     key: 'type',
-    width:100,
+    width: 100,
     customRender: ({ text }) => {
-        return h('span', {}, HolidayTypeEnum[text]);
+      return h('span', {}, HolidayTypeEnum[text]);
     },
   },
   {
     title: '摘要',
     dataIndex: 'remark',
     key: 'remark',
-    width:200,
+    width: 200,
   },
   {
     title: '开始时间',
@@ -297,20 +369,41 @@ const filters = [
     prop: 'createdTime',
   },
 ];
+const processList = ref([]);
 const btnInfo: BtnInfoType[] = [
   {
     operationType: 'edit',
-    text: '编辑',
-    onClick(record) {
-      // editableFalg.value = true;
+    text: '取消申请',
+    disabled(row) {
+      return row.status !== 0;
+    },
+    async onClick(record) {
+      Modal.confirm({
+        title: '你确定要取消当前休假申请?',
+        icon: createVNode(ExclamationCircleOutlined),
+        content: createVNode(
+          'div',
+          { style: 'color:red;' },
+          '由于休假申请涉及到多个流程处理，改操作为不可逆操作，请谨慎选择'
+        ),
+        async onOk() {
+          const res = await deleteApplicationOne({ id: record.id });
+          if (res === 'success') {
+            message.success('取消成功');
+            list.value.fetch();
+          }
+        },
+        onCancel() {},
+        class: 'test',
+      });
     },
   },
   {
     operationType: 'delete',
     text: '撤销',
-    // disabled(row) {
-    //   return row.status === 5;
-    // },
+    disabled(row) {
+      return row.status === 1 || row.status === 2 || row.status===0 || row.status===5;
+    },
     async onClick(record) {
       //   const res = await approvalDelete({ applicationId: record.id });
       //   if (res === 'success') {
@@ -323,9 +416,20 @@ const btnInfo: BtnInfoType[] = [
   },
   {
     operationType: 'view',
-    text: '查看',
+    text: '查看流程',
     onClick(record) {
-      // editableFalg.value = true;
+      visibleProcess.value = true;
+      currentApplication.value = record;
+      getProcessList({ applicationId: record.id }).then((res) => {
+        processList.value = res;
+        console.log(res);
+
+        if (res.length > 1 && res[0].status === 2) {
+          currentProcess.value = 2;
+        } else {
+          currentProcess.value = 1;
+        }
+      });
     },
   },
 ];
@@ -333,13 +437,12 @@ const btnInfo: BtnInfoType[] = [
 const id = localStorage.getItem('staffCode');
 
 onMounted(() => {
+  getStaffListData();
   getStaffInfo({ id: id }).then((res) => {
     directLeader.value = res.pid;
     application.processList[0].processorCode = res.pid;
   });
-  getStaffListData();
 });
-
 
 function getStaffListData() {
   getStaffList({}).then((res) => {
@@ -356,6 +459,8 @@ function add() {
   visibleFlag.value = true;
 }
 function rangeDateChange(values: any[]) {
+  console.log(values);
+
   if (values.length > 1) {
     application.startTime = values[0];
     application.endTime = values[1];
@@ -373,8 +478,7 @@ function rangeDateChange(values: any[]) {
   } else {
     application.dayNumbers = diffHour / 8;
   }
-  // console.log('number', application.dayNumbers);
-  if (application.dayNumbers >=7 ) {
+  if (application.dayNumbers >= 7) {
     message.info('请向你的直属领导确认上级审批主管');
   }
 }
@@ -400,16 +504,42 @@ function leaderChange1(value, option) {
 }
 
 const handleOK = () => {
+  console.log(application);
   formRef.value.validate().then((values: any) => {
-    applicationOne({  ...application }).then((res) => {
+    applicationOne({ ...application }).then((res) => {
       visibleFlag.value = false;
       list.value.fetch();
       if (res === 'success') {
-        message.success("申请成功");
+        message.success('申请成功');
       } else {
-        message.error("操作失败");
+        message.error('操作失败');
       }
     });
   });
+};
+
+const confirm = () => {
+  Modal.confirm({
+    title: '你确定要按照当前填写数据发起申请?',
+    icon: createVNode(ExclamationCircleOutlined),
+    content: createVNode(
+      'div',
+      { style: 'color:red;' },
+      '由于休假申请涉及到多个流程处理，一旦提交后将不可再进行编辑'
+    ),
+    onOk() {
+      handleOK();
+    },
+    onCancel() {},
+    class: 'test',
+  });
+};
+
+// 文件上传成功后的回调函数
+function handleUploadSuccess(data: any) {
+  console.log(data);
+
+  application.files = [{ ...data }];
+  application.fileId = application.files[0].id;
 }
 </script>

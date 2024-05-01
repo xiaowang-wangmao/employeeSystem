@@ -276,12 +276,7 @@ function change() {
   timeSheet.approvalCode = selectedProject.value.responsibleCode;
   timeSheet.approvalName = selectedProject.value.responsibleName;
 }
-function findObjById(id: number, arr: any[]) {
-  const obj = arr.filter((item) => {
-    return item.id === id;
-  });
-  return obj;
-}
+
 function fetchData() {
   getTimeSheetList({ staffCode: id }).then((res) => {
     selectedDates.value = res.map((item: any) => {
