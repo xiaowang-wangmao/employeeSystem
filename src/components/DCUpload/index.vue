@@ -8,7 +8,7 @@
     @click="showModal"
   >
     <SvgRaw :name="props.icon" />
-    选择文件
+    {{ showButtonText }}
   </a-button>
   <a-modal
     v-model:visible="visible"
@@ -128,6 +128,7 @@ const DEFAULTS = {
 const props = withDefaults(
   defineProps<{
     buttonText: string;
+    showButtonText: string;
     title: string;
     width: string;
     tip: string;
@@ -144,6 +145,7 @@ const props = withDefaults(
     showApiErrorMsg?: boolean; // 控制是否在弹窗内展示接口返回来错误提示
   }>(),
   {
+    showButtonText:'选择文件',
     hiddenMsg: false,
     ghost: true,
     icon: 'icon_import',

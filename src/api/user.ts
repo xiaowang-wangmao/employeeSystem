@@ -10,3 +10,14 @@ export const login = (params: any) =>
 
 export const updatePassword = (params: any) =>
     defHttp.post({ url: '/login/update-password', params });
+
+
+
+//账号信息导入
+export const uploadApi = (params: any = {}) => defHttp.post({
+    url: '/staffInfo/upload',
+    data: { ...params },
+    headers: {
+        'content-type': 'multipart/form-data',
+    },
+});

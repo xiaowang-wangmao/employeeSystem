@@ -180,6 +180,7 @@ import dayjs, { Dayjs } from 'dayjs';
 
 import { pickBasicData } from '@/utils/translate';
 import {
+  deleteContact,
   deleteEducation,
   getStaffInfo,
   updateContactList,
@@ -232,7 +233,7 @@ function deleteCurrent(index: number) {
 
     contactList.value.splice(index + 1, 1);
   } else {
-    deleteEducation({ staffCode: id, code: value.code }).then((res) => {
+    deleteContact({ staffCode: id, code: value.code }).then((res) => {
       console.log('delete', res);
       contactList.value = res;
     });

@@ -107,7 +107,7 @@
 </template>
 
 <script lang="ts" setup>
-import { formattedDate } from '@/utils/translate';
+import { findObjById, formattedDate } from '@/utils/translate';
 import { pickBasicData } from '@/utils/translate';
 import {
   delareTimesheet,
@@ -136,13 +136,13 @@ const selectedDates = ref([]);
 const attributes = computed(() => {
   return [
     {
-      highlight: 'green',
+      highlight: 'blue',
 
       dates: selectedDates.value,
     },
     {
       highlight: {
-        color: 'green',
+        color: 'blue',
         fillMode: 'outline',
       },
       dates: currentDate.value,
@@ -155,14 +155,14 @@ let timeSheet = reactive({
   staffCode: localStorage.getItem('staffCode'),
   staffName: localStorage.getItem('userName'),
   workLocation: '',
-  projectId: undefined,
-  projectName: '',
+  projectId: '',
   clientName: '',
   approvalCode: '',
   approvalName: '',
   targetHours: '8',
+  overtimeHours:'',
   overtimeFlag: 1,
-  overtimeHours: undefined,
+  actualHours: undefined,
   remark: '',
   date: Dayjs,
 });
@@ -193,7 +193,7 @@ function chooseDay(calendarDay: any) {
   const nowTimeFlag =
     dayjs(calendarDay.date).format('YYYY-MM-DD') > tomorrowTime;
   if (flag) {
-    message.info('非工作日不可提交工时！');
+    message.info('以选择日期不可申请加班工时！');
   } else if (nowTimeFlag) {
     message.info('可以延后申报，但只能提前一天进行申报，遇到周末不可提前');
   } else {
@@ -239,7 +239,7 @@ const onFinish = (values: any) => {
       selectedDates.value = res.map((item: any) => {
         return new Date(item.date);
       });
-      // window.location.reload();
+      window.location.reload();
     });
   } else {
     delareTimesheet(timeSheet).then((res) => {
@@ -248,7 +248,7 @@ const onFinish = (values: any) => {
       selectedDates.value = res.map((item: any) => {
         return new Date(item.date);
       });
-      // window.location.reload();
+      window.location.reload();
     });
   }
 };
@@ -258,19 +258,17 @@ function edit() {
 }
 
 function change() {
-  timeSheet.projectName = option.name;
-  timeSheet.clientName = option.clientName;
-  timeSheet.approvalCode = option.responsibleCode;
-  timeSheet.approvalName = option.responsibleName;
+  selectedProject.value = findObjById(
+    Number(timeSheet.projectId),
+    projectOptions.value
+  )[0];
+  timeSheet.clientName = selectedProject.value.clientName;
+  timeSheet.approvalCode = selectedProject.value.responsibleCode;
+  timeSheet.approvalName = selectedProject.value.responsibleName;
 }
-function findObjById(id: number, arr: any[]) {
-  const obj = arr.filter((item) => {
-    return item.id === id;
-  });
-  return obj;
-}
+
 function fetchData() {
-  getTimeSheetList({ staffCode: id }).then((res) => {
+  getTimeSheetList({ staffCode: id,overtimeFlag:timeSheet.overtimeFlag  }).then((res) => {
     selectedDates.value = res.map((item: any) => {
       return new Date(item.date);
     });
@@ -280,7 +278,7 @@ function fetchData() {
 const getDateList = () => {
   getDayList({}).then((res) => {
     disabledDates.value = res
-      .filter((i) => i.type === 1 || i.type === 2)
+      .filter((i) => i.type === 0)
       .map((item) => {
         return formattedDate(item.day + '');
       });
@@ -308,6 +306,7 @@ function getStaffListData() {
     });
   });
 }
+const currentYear = ref(2024);
 const disabledDate = ref([]);
 
 onMounted(() => {

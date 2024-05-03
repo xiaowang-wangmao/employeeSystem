@@ -185,6 +185,7 @@ import {
   uploadApi,
   getProcessList,
   deleteApplicationOne,
+  ApplicationRevocation,
 } from '@/api/application';
 import { getStaffInfo } from '@/api/basicInfo';
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
@@ -387,7 +388,7 @@ const btnInfo: BtnInfoType[] = [
           '由于休假申请涉及到多个流程处理，改操作为不可逆操作，请谨慎选择'
         ),
         async onOk() {
-          const res = await deleteApplicationOne({ id: record.id });
+          const res = await deleteApplicationOne({ id: record.id ,staffCode:id});
           if (res === 'success') {
             message.success('取消成功');
             list.value.fetch();
@@ -402,16 +403,19 @@ const btnInfo: BtnInfoType[] = [
     operationType: 'delete',
     text: '撤销',
     disabled(row) {
-      return row.status === 1 || row.status === 2 || row.status===0 || row.status===5;
+      return row.status === 1 || row.status === 4 || row.status===0 || row.status===5;
     },
     async onClick(record) {
-      //   const res = await approvalDelete({ applicationId: record.id });
-      //   if (res === 'success') {
-      //     message.success('操作成功');
-      //     list.value.fetch();
-      //   } else {
-      //     message.error('操作失败，请重试');
-      //   }
+      record.remark = "请求撤销申请";
+      ApplicationRevocation({ ...record }).then((res) => {
+      visibleFlag.value = false;
+      list.value.fetch();
+      if (res === 'success') {
+        message.success('申请成功');
+      } else {
+        message.error('操作失败');
+      }
+    });
     },
   },
   {

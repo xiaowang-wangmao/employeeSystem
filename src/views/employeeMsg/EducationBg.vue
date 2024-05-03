@@ -231,6 +231,7 @@ let EducationList = ref([
     degree: '',
     startTime: '',
     endTime: '',
+    staffCode:id,
   },
 ]);
 const DisableFlag = ref(true);
@@ -245,10 +246,15 @@ function add() {
     degree: '',
     startTime: '',
     endTime: '',
+    staffCode:id,
   };
   EducationList.value.push(t);
+
+  console.log(EducationList.value,'trete');
+  
 }
 function save() {
+    console.log(EducationList.value,'fhthr');
   updateEducation({ id, educationBackList: EducationList.value }).then(
     (res) => {
       console.log('update', res);
@@ -287,7 +293,6 @@ onMounted(() => {
   getStaffInfo({ id }).then((res) => {
     if (res.educationBackList.length > 0) {
       EducationList.value = res.educationBackList;
-    console.log(EducationList.value);
     }
   });
 });

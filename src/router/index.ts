@@ -158,17 +158,9 @@ const routes: Array<RouteRecordRaw> = [
                     title: '后台管理'
                 },
                 children: [
-                    // {
-                    //     path: 'index',
-                    //     component: () => import('@/views/leave/index.vue'),
-                    // },
                     {
                         path: 'systemStaff',
                         component: () => import('@/views/system/Staff.vue'),
-                    },
-                    {
-                        path: 'account',
-                        component: () => import('@/views/system/Account.vue'),
                     },
                     {
                         path: 'project',
@@ -179,9 +171,13 @@ const routes: Array<RouteRecordRaw> = [
 
             {
                 path: '/systemNotice',
-                component:() => import('@/views/Notice.vue'),
+                component: () => import('@/views/Notice.vue'),
             },
-            
+            {
+                path: '/systemFile',
+                component: () => import('@/views/onboarding/index.vue'),
+            },
+
         ]
 
     },

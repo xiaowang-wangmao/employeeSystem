@@ -117,7 +117,7 @@
 </template>
 
 <script lang="ts" setup>
-import { formattedDate } from '@/utils/translate';
+import { findObjById, formattedDate } from '@/utils/translate';
 import { pickBasicData } from '@/utils/translate';
 import {
   delareTimesheet,
@@ -221,6 +221,7 @@ function chooseDay(calendarDay: any) {
       }).then((res) => {
         pickBasicData(timeSheet, res);
         selectedProject.value = res.project;
+        timeSheet.clientName = res.project.clientName;
       });
       //是否可以进行编辑
       const edita =
@@ -249,7 +250,7 @@ const onFinish = (values: any) => {
       selectedDates.value = res.map((item: any) => {
         return new Date(item.date);
       });
-      // window.location.reload();
+      window.location.reload();
     });
   } else {
     delareTimesheet(timeSheet).then((res) => {
@@ -258,7 +259,7 @@ const onFinish = (values: any) => {
       selectedDates.value = res.map((item: any) => {
         return new Date(item.date);
       });
-      // window.location.reload();
+      window.location.reload();
     });
   }
 };
@@ -267,18 +268,20 @@ function edit() {
   DisableFlag.value = false;
 }
 
-function change() {
+function change(value) {
   selectedProject.value = findObjById(
     Number(timeSheet.projectId),
     projectOptions.value
   )[0];
+  console.log(selectedProject.value);
+  
   timeSheet.clientName = selectedProject.value.clientName;
   timeSheet.approvalCode = selectedProject.value.responsibleCode;
   timeSheet.approvalName = selectedProject.value.responsibleName;
 }
 
 function fetchData() {
-  getTimeSheetList({ staffCode: id }).then((res) => {
+  getTimeSheetList({ staffCode: id,overtimeFlag:timeSheet.overtimeFlag }).then((res) => {
     selectedDates.value = res.map((item: any) => {
       return new Date(item.date);
     });

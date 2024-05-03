@@ -4,7 +4,7 @@
       <a-layout-sider
         v-model:collapsed="collapsed"
         collapsible
-        style="background-color: #fff"
+        style="background-color: #AAD176"
       >
         <div class="logo">XXX公司logo</div>
         <a-menu
@@ -107,7 +107,7 @@
 
           <a-menu-item key="5-1">
             <pie-chart-outlined />
-            <router-link :to="'/timeSheet/FillDailyTimeSheet'"
+            <router-link :to="'/systemFile'"
               >培训文件
             </router-link>
           </a-menu-item>
@@ -118,19 +118,13 @@
                 <span>后台管理</span>
               </span>
             </template>
-            <a-menu-item key="6-1">
-              <pie-chart-outlined />
-              <router-link :to="'/system/Account'"
-                >账号管理
-              </router-link>
-            </a-menu-item>
             <a-menu-item key="6-2">
               <pie-chart-outlined />
-              <router-link :to="'/system/systemStaff'">员工管理 </router-link>
+              <router-link :to="'/system/systemStaff'">员工账号管理 </router-link>
             </a-menu-item>
             <a-menu-item key="6-3">
               <pie-chart-outlined />
-              <router-link :to="'/system/Account'"
+              <router-link :to="'/system/Project'"
                 >客户项目管理
               </router-link>
             </a-menu-item>
@@ -138,7 +132,7 @@
         </a-menu>
       </a-layout-sider>
       <a-layout>
-        <a-layout-header style="background: #fff; padding: 0">
+        <a-layout-header style="background: #738958; padding: 0">
           <div id="header">
             <div id="left">
               <span>内部员工事务自助工作平台</span>
@@ -265,11 +259,11 @@ onMounted(() => {
 </script>
 <style lang="less" scoped>
 :deep(.ant-layout-sider-trigger) {
-  background-color: #fff;
+  background-color: #738958;
   color: #4a4747;
 }
-.ant-layout .ant-layout-sider-trigger {
-  background-color: #fff !important;
+:deep(.ant-menu){
+  background-color: #b5e3ac;
 }
 .logo {
   text-align: center;
@@ -280,12 +274,12 @@ onMounted(() => {
   background: rgba(143, 65, 65, 0.3);
 }
 
-.site-layout .site-layout-background {
-  background: #fff;
-}
-[data-theme='dark'] .site-layout .site-layout-background {
-  background: #141414;
-}
+// .site-layout .site-layout-background {
+//   background: #630b0b;
+// }
+// [data-theme='dark'] .site-layout .site-layout-background {
+//   background: #9a0e0e;
+// }
 
 #header {
   display: flex;
@@ -363,28 +357,6 @@ onMounted(() => {
         right: 0;
       }
     }
-  }
-  .menu {
-    height: 20%;
-    display: flex;
-    justify-content: space-around;
-    // margin-bottom: 30px;
-    .menu-item {
-      // height: 100px;
-      // width: 100px;
-      // background-color: saddlebrown;
-      border: #808080 1px solid;
-      border-radius: 20px;
-      margin: 5px;
-      padding: 10px;
-      cursor: pointer;
-    }
-  }
-  .right {
-    width: 55vw;
-    // padding: 1% 1%;
-    // border: #808080 1px solid;
-    background-color: white;
   }
 }
 </style>

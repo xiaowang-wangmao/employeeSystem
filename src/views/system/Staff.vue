@@ -1,24 +1,43 @@
 <template>
   <div>
     <ListCard
-      title="员工职级管理"
+      title="员工账号管理"
       :columns="columns"
+      :filters="filters"
       :api="{ list: getStaffPage }"
       :needParamsCache="true"
       :btnInfo="btnInfo"
-      :treeFlag="true"
+      :needExport="true"
       ref="list"
     >
-      <!-- <template #tableTopRender>
-        <a-col />
-        <a-col>
-          <a-button type="primary" class="flex-items-center" @click="add">
-            <SvgRaw name="icon_add" />
-            新增记录
-          </a-button>
-        </a-col>
-      </template> -->
-      1
+     <template #tableTopRender>
+          <div style="margin-right: 20px">
+            <DCUpload
+                  type="primary"
+                  :ghost="false"
+                  :showRouteButton="false"
+                  icon="icon_upload"
+                  :buttonText="'上传文件'"
+                  :showButtonText="'导入'"
+                  :title="'上传文件'"
+                  :tip="'注意：请下载模版后按照模版修改并上传。'"
+                  accept=".xls,.xlsx"
+                  :show-api-error-msg="true"
+                  :uploadApi="uploadApi"
+                  @update="handleUploadSuccess"
+                  :limit-size="1"
+                >
+                  <template #templateDownload>
+                    <a
+                      class="flex-items-center" @click="templateDownload"
+                      style="text-decoration: underline;">
+                      <SvgRaw name="icon_file" />
+                      文件模板.xlsx
+                    </a>
+                  </template>
+                </DCUpload>
+          </div>
+        </template>
     </ListCard>
     <a-modal v-model:visible="visibleFlag" title="调整" @ok="handleOK">
       <a-form
@@ -64,7 +83,6 @@
 </template>
 
 <script lang="ts" setup>
-import { getTimeSheetPage } from '@/api/timesheet';
 import Time from '@/components/Time/index.vue';
 import { BtnInfoType } from '@/enums/formEnum';
 import { Dayjs } from 'dayjs';
@@ -72,11 +90,8 @@ import dayjs from 'dayjs';
 import {
   getProjectList,
   getStaffList,
-  delareTimesheet,
-  getTimeSheetDetail,
-  editTimesheet,
-  approvalDelete,
 } from '@/api/timesheet';
+import { updatePassword ,uploadApi} from '@/api/user';
 import { updateStaff } from '@/api/basicInfo';
 import { getStaffPage } from '@/api/basicInfo';
 import {
@@ -84,7 +99,8 @@ import {
   RoleRankEnum,
   DepartmentEnum,
 } from '@/enums/optionsEnum';
-import { enumToObjArray, pickBasicData } from '@/utils/translate';
+import { enumToObjArray, findObjById, pickBasicData } from '@/utils/translate';
+import { handleExportTemplate } from '@/utils/common';
 import { message } from 'ant-design-vue';
 
 const currentStaff = ref({});
@@ -111,6 +127,11 @@ const columns = [
     dataIndex: 'deptName',
     key: 'deptName',
   },
+   {
+    title: '直属领导',
+    dataIndex: 'pname',
+    key: 'pname',
+  },
   {
     title: '职级',
     dataIndex: 'roleId',
@@ -126,37 +147,33 @@ const columns = [
   },
 ];
 const filters = [
-  // {
-  //   label: '请输入单号',
-  //   type: 'input',
-  //   prop: 'id',
-  //   length: 10,
-  // },
   {
-    label: '请选择工单状态',
+    label: '请选择员工',
     type: 'select',
-    prop: 'status',
-    showSearch: true,
-    options: enumToObjArray(OrderStatusEnum),
-  },
-  {
-    label: '请选择职员',
-    type: 'select',
-    prop: 'staffCode',
+    prop: 'id',
     showSearch: true,
     options: staffOptions,
   },
-  {
-    label: '提交时间',
-    type: 'date-range',
-    prop: 'date',
+   {
+    label: '请选择部门',
+    type: 'select',
+    prop: 'deptId',
+    showSearch: true,
+    options: enumToObjArray(DepartmentEnum),
+  },
+   {
+    label: '请选择职级',
+    type: 'select',
+    prop: 'roleId',
+    showSearch: true,
+    options: enumToObjArray(RoleRankEnum),
   },
 ];
 const staff = ref({
   id: '',
   userName: '',
   pid: undefined,
-  pidName: undefined,
+  pname: undefined,
   roleId: undefined,
   roleName: undefined,
   deptName: undefined,
@@ -172,7 +189,24 @@ const btnInfo: BtnInfoType[] = [
       staff.value = record;
     },
   },
+  {
+    operationType: 'reset',
+    text: '重置密码',
+    onClick(record) {
+      staff.value = record;
+      updatePassword({
+      code: record.id,
+      password: "11111",
+    }).then((res) => {
+      message.success(res.msg);
+    });
+    },
+  },
 ];
+
+function templateDownload() {
+  handleExportTemplate('/导入模板.xlsx', '导入模板.xlsx');
+}
 
 function deptChange(value, option) {
   staff.value.deptName = option.label;
@@ -182,7 +216,9 @@ function rankChange(value, option) {
 }
 
 function staffChange(value, option) {
-  staff.value.pidName = option.label;
+  console.log(option);
+  
+  staff.value.pname = option.label;
 }
 const handleOK = async () => {
   const res = await updateStaff(staff.value);
@@ -194,6 +230,13 @@ const handleOK = async () => {
     message.error('操作失败，请重试');
   }
 };
+
+// 文件上传成功后的回调函数
+function handleUploadSuccess(data: any) {
+  console.log(data);
+  list.value.fetch();
+}
+
 function getStaffListData() {
   getStaffList({}).then((res) => {
     staffOptions.value = res.map((item: any) => {
