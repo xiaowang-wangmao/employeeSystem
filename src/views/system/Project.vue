@@ -1,138 +1,132 @@
 <template>
   <div>
     <ListCard
-      title="审批清单"
-      :filters="filters"
+      title="项目管理"
       :columns="columns"
-      :api="{ list: getApprovalTimeSheetList }"
+      :filters="filters"
+      :api="{ list: projectPage }"
       :needParamsCache="true"
-      :params="{
-        staffCode: id,
-      }"
-      :handleListCardFooter="false"
       :btnInfo="btnInfo"
+      :needExport="true"
       ref="list"
-    />
-    <a-modal
-      v-model:visible="ApprovalVisible"
-      title="审批意见"
-      @ok="handleApproval"
     >
-      <a-textarea v-model:value="approvalMsg" :rows="3" />
+      <template #tableTopRender>
+        <div style="margin-right: 20px">
+          <a-button type="primary" @click="add">新增</a-button>
+        </div>
+      </template>
+    </ListCard>
+    <a-modal v-model:visible="visibleFlag" title="调整" @ok="handleOK">
+      <a-form
+        ref="formRef"
+        :label-col="{ span: 7 }"
+        :wrapper-col="{ span: 12 }"
+        :model="project"
+      >
+        <a-form-item label="项目名称" name="name">
+          <a-input
+            v-model:value="project.name"
+            :placeholder="'请输入'"
+            :disabled="DisableFlag"
+            allowClear
+          />
+        </a-form-item>
+        <a-form-item label="客户公司" name="clientName">
+          <a-input
+            v-model:value="project.clientName"
+            :placeholder="'请输入'"
+            :disabled="DisableFlag"
+            allowClear
+          />
+        </a-form-item>
+        <a-form-item label="负责人" name="pid">
+          <a-select
+            v-model:value="project.responsibleCode"
+            :placeholder="'请选择'"
+            :options="staffOptions"
+            :disabled="DisableFlag"
+            @change="staffChange"
+            allowClear
+          />
+        </a-form-item>
+        <a-form-item label="项目类型" name="type">
+          <a-select
+            v-model:value="project.type"
+            :placeholder="'请选择'"
+            :options="enumToObjArray(ProjectTypeEnum)"
+            :disabled="DisableFlag"
+            allowClear
+          />
+        </a-form-item>
+      </a-form>
     </a-modal>
   </div>
 </template>
 
 <script lang="ts" setup>
-import {
-  getApprovalTimeSheetList,
-  approvalPass,
-  approvalOverruled,
-} from '@/api/timesheet';
-import Time from '@/components/Time/index.vue';
 import { BtnInfoType } from '@/enums/formEnum';
-import { OrderStatusEnum, OverTimeFlagEnum } from '@/enums/optionsEnum';
-import { enumToObjArray, pickBasicData } from '@/utils/translate';
+import { getProjectList, getStaffList } from '@/api/timesheet';
+import { projectPage, updateProject, deleteProject } from '@/api/common';
+import { RoleRankEnum, ProjectTypeEnum } from '@/enums/optionsEnum';
+import { enumToObjArray, findObjById, pickBasicData } from '@/utils/translate';
 import { message } from 'ant-design-vue';
 
+const currentStaff = ref({});
+const staffOptions = ref([]);
+const editableFalg = ref(false);
+const DisableFlag = ref(false);
+const formRef = ref();
 const list = ref();
-const ApprovalVisible = ref(false);
-const approvalMsg = ref();
+const visibleFlag = ref(false);
 const id = Number(localStorage.getItem('staffCode'));
+const statusOptions = [
+  {
+    label: '正常',
+    value: 0,
+  },
+  {
+    label: '异常',
+    value: 1,
+  },
+];
 const columns = [
   {
-    title: '单号',
+    title: '项目编号',
     dataIndex: 'id',
     key: 'id',
   },
   {
-    title: '项目编号',
-    dataIndex: 'projectId',
-    key: 'projectId',
-  },
-  {
     title: '项目名称',
-    dataIndex: 'projectName',
+    dataIndex: 'name',
+    key: 'name',
   },
   {
-    title: '申请人',
-    dataIndex: 'staffName',
-    key: 'staffName',
+    title: '客户名称',
+    dataIndex: 'clientName',
+    key: 'clientName',
   },
   {
-    title: '工时',
-    dataIndex: 'actualHours',
-    key: 'actualHours',
+    title: '负责人',
+    dataIndex: 'responsibleName',
+    key: 'responsibleName',
+  },
+  {
+    title: '项目类型',
+    dataIndex: 'type',
+    key: 'type',
     customRender: ({ text }) => {
-      if (text) {
-        return h('span', {}, text + '   h');
-      }
-      return h('span', {}, '-');
+      return h('span', {}, ProjectTypeEnum[text]);
     },
   },
   {
-    title: '加班工时',
-    dataIndex: 'overtimeHours',
-    key: 'overtimeHours',
-    customRender: ({ text }) => {
-      if (text) {
-        return h('span', {}, text + '   h');
-      }
-      return h('span', {}, '-');
-    },
-  },
-  {
-    title: '状态',
+    title: '项目状态',
     dataIndex: 'status',
     key: 'status',
     customRender: ({ text }) => {
-      if (text) {
-        return h('span', {}, OrderStatusEnum[text]);
+      if (text === 0) return h('span', {}, '正常');
+      else {
+        return h('span', {}, '异常');
       }
-      return h('span', {}, '-');
-    },
-  },
-  {
-    title: '类型',
-    dataIndex: 'overtimeFlag',
-    key: 'overtimeFlag',
-    customRender: ({ text }) => {
-      if (text) {
-        return h('span', {}, OverTimeFlagEnum[text]);
-      }
-      return h('span', {}, '-');
-    },
-  },
-  {
-    title: '工作地点',
-    dataIndex: 'workLocation',
-    key: 'workLocation',
-  },
-  {
-    title: '摘要',
-    dataIndex: 'remark',
-    key: 'remark',
-  },
-  {
-    title: '提交时间',
-    dataIndex: 'date',
-    key: 'date',
-    customRender: ({ text }) => {
-      if (text) {
-        return h(Time, { time: text, format: 'YYYY-MM-DD' });
-      }
-      return h('span', {}, '-');
-    },
-  },
-  {
-    title: '更新时间',
-    dataIndex: 'updateTime',
-    key: 'updateTime',
-    customRender: ({ text }) => {
-      if (text) {
-        return h(Time, { time: text, format: 'YYYY-MM-DD' });
-      }
-      return h('span', {}, '-');
     },
   },
   {
@@ -143,74 +137,104 @@ const columns = [
 ];
 const filters = [
   {
-    label: '请输入项目编号',
-    type: 'input',
-    prop: 'projectId',
-    length: 10,
+    label: '请选择负责人',
+    type: 'select',
+    prop: 'staffCode',
+    showSearch: true,
+    options: staffOptions,
   },
   {
-    label: '请选择申请人',
+    label: '请选择项目状态',
     type: 'select',
     prop: 'status',
-    showSearch: true,
-    options: [],
+    options: statusOptions,
   },
   {
-    label: '请选择工单状态',
+    label: '请选择项目类型',
     type: 'select',
-    prop: 'status',
+    prop: 'type',
     showSearch: true,
-    options: enumToObjArray(OrderStatusEnum),
-  },
-  {
-    label: '提交时间',
-    type: 'date-range',
-    prop: 'date',
+    options: enumToObjArray(RoleRankEnum),
   },
 ];
-async function handleApproval(id: Number) {
-  const res = await approvalOverruled({
-    timesheetId: id,
-    msg: approvalMsg.value,
-  });
+const project = ref({
+  id: '',
+  name: '',
+  pid: undefined,
+  clientName: undefined,
+  responsibleCode: undefined,
+  responsibleName: undefined,
+  status: 0,
+  type: undefined,
+});
+const btnInfo: BtnInfoType[] = [
+  {
+    operationType: 'edit',
+    text: '调整',
+    onClick(record) {
+      visibleFlag.value = true;
+      project.value = record;
+    },
+  },
+  {
+    operationType: 'delete',
+    text: '删除',
+    onClick(record) {
+      project.value = record;
+      deleteProject({ id: record.id }).then((res) => {
+        if (res === 'success') {
+          message.error('删除成功');
+          list.value.fetch();
+        }
+      });
+    },
+  },
+];
+
+function add() {
+  console.log(2);
+  
+  visibleFlag.value = true;
+  project.value = {
+    id: '',
+    name: '',
+    pid: undefined,
+    clientName: undefined,
+    responsibleCode: undefined,
+    responsibleName: undefined,
+    status: 0,
+    type: undefined,
+  };
+}
+
+function staffChange(value, option) {
+  console.log(option);
+
+  project.value.responsibleName = option.label;
+}
+const handleOK = async () => {
+  const res = await updateProject(project.value);
   if (res === 'success') {
     message.success('操作成功');
+    visibleFlag.value = false;
     list.value.fetch();
   } else {
     message.error('操作失败，请重试');
   }
+};
+
+function getStaffListData() {
+  getStaffList({}).then((res) => {
+    staffOptions.value = res.map((item: any) => {
+      return {
+        label: item.userName,
+        value: item.id,
+      };
+    });
+  });
 }
-const btnInfo: BtnInfoType[] = [
-  {
-    operationType: 'aggree',
-    text: '通过',
-    disabled(row) {
-      return row.status != 1;
-    },
-    async onClick(record) {
-      approvalMsg.value = 'aggree'; //同意默认意见
-      const res = await approvalPass({
-        timesheetId: record.id,
-        msg: approvalMsg.value,
-      });
-      if (res === 'success') {
-        message.success('操作成功');
-        list.value.fetch();
-      } else {
-        message.error('操作失败，请重试');
-      }
-    },
-  },
-  {
-    operationType: 'disagrre',
-    text: '驳回',
-    disabled(row) {
-      return row.status != 1;
-    },
-    async onClick(record) {
-      ApprovalVisible.value = true;
-      handleApproval(record.id);
-    },
-  },
-];
+
+onMounted(() => {
+  getStaffListData();
+});
 </script>

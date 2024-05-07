@@ -73,3 +73,9 @@ export enum HolidayTypeEnum {
   '丧假' = 6,
 }
 
+export enum ProjectTypeEnum {
+  '内部项目' = 0,
+  '合作项目' = 1,
+  '客户项目' = 2,
+}
+

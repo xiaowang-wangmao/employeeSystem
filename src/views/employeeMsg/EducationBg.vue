@@ -56,7 +56,7 @@
                 show-search
                 :disabled="DisableFlag"
                 optionFilterProp="label"
-                :options="enumToObjArray(GenderEnum)"
+                :options="professionalCategoryOptions"
               />
             </a-form-item>
           </a-col>
@@ -77,7 +77,7 @@
                 allowClear
                 show-search
                 optionFilterProp="label"
-                :options="enumToObjArray(GenderEnum)"
+                :options="degreeOptions"
               />
             </a-form-item>
           </a-col>
@@ -137,7 +137,7 @@
                   :disabled="DisableFlag"
                   show-search
                   optionFilterProp="label"
-                  :options="enumToObjArray(GenderEnum)"
+                  :options="professionalCategoryOptions"
                 />
               </a-form-item>
             </a-col>
@@ -158,7 +158,7 @@
                   :disabled="DisableFlag"
                   show-search
                   optionFilterProp="label"
-                  :options="enumToObjArray(GenderEnum)"
+                  :options="degreeOptions"
                 />
               </a-form-item>
             </a-col>
@@ -235,7 +235,12 @@ let EducationList = ref([
   },
 ]);
 const DisableFlag = ref(true);
-
+const professionalCategoryOptions = [
+  '哲学', '经济学', '法学', '教育学', '文学', '历史学', '理学', '工学', '农学', '医学', '管理学', '艺术学'
+].map((i) => ({ label: i, value: i }));
+const degreeOptions = [
+  '学士','硕士','博士'
+].map((i) => ({ label: i, value: i }));
 function add() {
   const t = {
     code: '',

@@ -23,3 +23,19 @@ export const deleteFile = (params: any) =>
   defHttp.get({ url: '/files/delete', params }).then((res) => {
     return res.data;
   });
+
+
+export const projectPage = (params: any) =>
+  defHttp.post({ url: '/project/page', params }).then((res) => {
+    return res.data;
+  });
+
+export const updateProject = (params: any) =>
+  defHttp.post({ url: '/project/updateProject', params }).then((res) => {
+    return res.data;
+  });
+
+export const deleteProject = (params: any) =>
+  defHttp.get({ url: '/project/delete', params }).then((res) => {
+    return res.data;
+  });

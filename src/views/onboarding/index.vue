@@ -18,17 +18,18 @@
       >
       </DCUpload>
     </div>
-    <a-list :grid="{ gutter: 16, column: 4 }" :data-source="data">
+    <a-list :grid="{ gutter: 16, column: 3 }" :data-source="data">
       <template #renderItem="{ item }">
         <a-list-item>
           <a-card>
             <template #title>
-              <div style="display: flex; justify-content: space-between">
-                <div>{{ item.title }}</div>
+              <div style="display: flex; justify-content: space-between;max-width: 650px;">
+                <div style="max-width: 400px;overflow: hidden; text-overflow: ellipsis;">{{ item.title }}</div>
                 <a-button danger @click=deleteItem(item.id) v-if="rank==='0'">删除</a-button>
               </div>
             </template>
 
+        
             <a-tooltip>
               <template #title>点击即可下载至本地</template>
               <div style="cursor: pointer; color: #0764E6;" @click="download(item)">{{ item.fileName }}</div>
