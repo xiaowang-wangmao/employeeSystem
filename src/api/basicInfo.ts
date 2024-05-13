@@ -51,3 +51,8 @@ export const updateStaff = (params: any) =>
   defHttp.post({ url: '/staffInfo/updateStaff', params }).then((res) => {
     return res.data;
   });
+
+export const deleteStaff = (params: any) =>
+  defHttp.get({ url: '/staffInfo/delete', params }).then((res) => {
+    return res.data;
+  });

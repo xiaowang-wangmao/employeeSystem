@@ -7,10 +7,9 @@
       :api="{ list: getStaffPage }"
       :needParamsCache="true"
       :btnInfo="btnInfo"
-      :needExport="true"
       ref="list"
     >
-      <template #tableTopRender>
+      <!-- <template #tableTopRender>
         <div style="margin-right: 20px">
           <DCUpload
             type="primary"
@@ -39,7 +38,7 @@
             </template>
           </DCUpload>
         </div>
-      </template>
+      </template> -->
     </ListCard>
     <a-modal v-model:visible="visibleFlag" title="调整" @ok="handleOK">
       <a-form
@@ -87,16 +86,15 @@
 <script lang="ts" setup>
 import { BtnInfoType } from '@/enums/formEnum';
 import { getStaffList } from '@/api/timesheet';
-import { updatePassword, uploadApi } from '@/api/user';
 import { updateStaff } from '@/api/basicInfo';
 import { getStaffPage, deleteStaff } from '@/api/basicInfo';
 import { RoleRankEnum, DepartmentEnum } from '@/enums/optionsEnum';
 import { enumToObjArray } from '@/utils/translate';
-import { handleExportTemplate } from '@/utils/common';
 import { message } from 'ant-design-vue';
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import { createVNode } from 'vue';
 import { Modal } from 'ant-design-vue';
+
 
 const router = useRouter();
 const staffOptions = ref([]);
@@ -184,28 +182,13 @@ const btnInfo: BtnInfoType[] = [
     },
   },
   {
-    operationType: 'edit',
+    operationType: 'details',
     text: '详情',
     onClick(record) {
-      // visibleFlag.value = true;
-      // currentStaff.value = record;
-      // staff.value = record;
-      router.push({
-        path: '/system/systemStaff/details',
-      });
-    },
-  },
-  {
-    operationType: 'reset',
-    text: '重置密码',
-    onClick(record) {
       staff.value = record;
-      updatePassword({
-        code: record.id,
-        password: '11111',
-      }).then((res) => {
-        message.success(res.msg);
-      });
+      router.push({
+        name:'details',
+      })
     },
   },
   {
@@ -236,9 +219,6 @@ const btnInfo: BtnInfoType[] = [
   },
 ];
 
-function templateDownload() {
-  handleExportTemplate('/导入模板.xlsx', '导入模板.xlsx');
-}
 
 function deptChange(value, option) {
   staff.value.deptName = option.label;
@@ -262,12 +242,6 @@ const handleOK = async () => {
     message.error('操作失败，请重试');
   }
 };
-
-// 文件上传成功后的回调函数
-function handleUploadSuccess(data: any) {
-  console.log(data);
-  list.value.fetch();
-}
 
 function getStaffListData() {
   getStaffList({}).then((res) => {

@@ -39,3 +39,17 @@ export const deleteProject = (params: any) =>
   defHttp.get({ url: '/project/delete', params }).then((res) => {
     return res.data;
   });
+
+export const noticePage = (params: any) =>
+  defHttp.post({ url: '/notice/page', params }).then((res) => {
+    return res.data;
+  });
+
+export const updateNotice = (params: any) =>
+  defHttp.post({ url: '/notice/updateNotice', params }).then((res) => {
+    return res.data;
+  });
+export const deleteNotice = (params: any) =>
+  defHttp.get({ url: '/notice/delete', params }).then((res) => {
+    return res.data;
+  });

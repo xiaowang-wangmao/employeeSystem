@@ -70,10 +70,11 @@ import { projectPage, updateProject, deleteProject } from '@/api/common';
 import { RoleRankEnum, ProjectTypeEnum } from '@/enums/optionsEnum';
 import { enumToObjArray, findObjById, pickBasicData } from '@/utils/translate';
 import { message } from 'ant-design-vue';
+import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
+import { createVNode, defineComponent } from 'vue';
+import { Modal } from 'ant-design-vue';
 
-const currentStaff = ref({});
 const staffOptions = ref([]);
-const editableFalg = ref(false);
 const DisableFlag = ref(false);
 const formRef = ref();
 const list = ref();
@@ -181,11 +182,24 @@ const btnInfo: BtnInfoType[] = [
     text: '删除',
     onClick(record) {
       project.value = record;
-      deleteProject({ id: record.id }).then((res) => {
-        if (res === 'success') {
-          message.error('删除成功');
-          list.value.fetch();
-        }
+      Modal.confirm({
+        title: '你确定要删除该项目组记录?',
+        icon: createVNode(ExclamationCircleOutlined),
+        content: createVNode(
+          'div',
+          { style: 'color:red;' },
+          '该操作为不可逆操作，请谨慎选择'
+        ),
+        onOk() {
+          deleteProject({ id: record.id }).then((res) => {
+            if (res === 'success') {
+              message.error('删除成功');
+              list.value.fetch();
+            }
+          });
+        },
+        onCancel() {},
+        class: 'test',
       });
     },
   },
@@ -193,7 +207,7 @@ const btnInfo: BtnInfoType[] = [
 
 function add() {
   console.log(2);
-  
+
   visibleFlag.value = true;
   project.value = {
     id: '',

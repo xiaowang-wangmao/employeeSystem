@@ -4,7 +4,7 @@
       <a-layout-sider
         v-model:collapsed="collapsed"
         collapsible
-        style="background-color: #AAD176"
+        style="background-color: #b5e3ac"
       >
         <div class="logo">XXX公司logo</div>
         <a-menu
@@ -21,9 +21,10 @@
             <template #title>
               <span>
                 <team-outlined />
-                <span>个人信息管理</span>
+                <span>信息管理</span>
               </span>
             </template>
+            
             <a-menu-item key="1">
               <pie-chart-outlined />
               <router-link :to="'/employeeMsg/BasicInformation'">
@@ -59,28 +60,27 @@
             <a-menu-item key="2-1">
               <pie-chart-outlined />
               <router-link :to="'/timeSheet/FillDailyTimeSheet'"
-                >Daily TimeSheet Fill
+                >日常工时申报
               </router-link>
+            </a-menu-item>
+            <a-menu-item key="2-4">
+              <pie-chart-outlined />
+              <router-link :to="'/timeSheet/FillOT'">加班工时申报</router-link>
             </a-menu-item>
 
             <a-menu-item key="2-2">
               <desktop-outlined />
-              <router-link :to="'/timeSheet/Approval'"> Approval </router-link>
+              <router-link :to="'/timeSheet/Approval'"> 审核清单 </router-link>
             </a-menu-item>
             <a-menu-item key="2-3">
               <file-outlined />
-              <router-link :to="'/timeSheet/MyList'"> My Record </router-link>
+              <router-link :to="'/timeSheet/MyList'">申报记录</router-link>
             </a-menu-item>
-            <a-menu-item key="2-4">
-              <pie-chart-outlined />
-              <router-link :to="'/timeSheet/FillOT'"
-                >OverTime Claim</router-link
-              >
-            </a-menu-item>
+
             <a-menu-item key="2-5" v-if="rank === '0'">
               <file-outlined />
               <router-link :to="'/timeSheet/AllTimeSheetList'">
-                All TimeSheet
+               总表管理
               </router-link>
             </a-menu-item>
           </a-sub-menu>
@@ -105,12 +105,23 @@
             </a-menu-item>
           </a-sub-menu>
 
-          <a-menu-item key="5-1">
+          
+           <a-sub-menu key="train">
+            <template #title>
+              <span>
+                <team-outlined />
+                <span>培训管理</span>
+              </span>
+            </template>
+            <a-menu-item key="5-1">
             <pie-chart-outlined />
-            <router-link :to="'/systemFile'"
-              >培训文件
-            </router-link>
+            <router-link :to="'/train/plan'">培训计划 </router-link>
           </a-menu-item>
+            <a-menu-item key="5-2">
+            <pie-chart-outlined />
+            <router-link :to="'/train/systemFile'">指导手册 </router-link>
+          </a-menu-item>
+          </a-sub-menu>
           <a-sub-menu key="system" v-if="rank === '0'">
             <template #title>
               <span>
@@ -120,14 +131,16 @@
             </template>
             <a-menu-item key="6-2">
               <pie-chart-outlined />
-              <router-link :to="'/system/systemStaff'">员工账号管理 </router-link>
-            </a-menu-item>
-            <a-menu-item key="6-3">
-              <pie-chart-outlined />
-              <router-link :to="'/system/Project'"
-                >客户项目管理
+              <router-link :to="'/system/systemStaff/list'"
+                >员工账号管理
               </router-link>
             </a-menu-item>
+            <!-- <a-menu-item key="6-3">
+              <pie-chart-outlined />
+              <router-link :to="'/employeeMsg/archives'">
+                员工档案</router-link
+              >
+            </a-menu-item> -->
           </a-sub-menu>
         </a-menu>
       </a-layout-sider>
@@ -220,7 +233,7 @@ const visibleFlag = ref(false);
 const form = ref();
 const collapsed = ref<boolean>(false);
 const selectedKeys = ref<string[]>(['4-1']);
-const openKeys = ref<string[]>([ 'leave']);
+const openKeys = ref<string[]>(['leave']);
 const list = ref();
 const formState = reactive({
   staffCode: '',
@@ -242,7 +255,6 @@ function update() {
   visibleFlag.value = true;
 }
 const handleOk = () => {
-
   form.value.validate().then(() => {
     updatePassword({
       code: Number(formState.staffCode),
@@ -254,15 +266,14 @@ const handleOk = () => {
   });
 };
 
-onMounted(() => {
-});
+onMounted(() => {});
 </script>
 <style lang="less" scoped>
 :deep(.ant-layout-sider-trigger) {
   background-color: #738958;
   color: #4a4747;
 }
-:deep(.ant-menu){
+:deep(.ant-menu) {
   background-color: #b5e3ac;
 }
 .logo {
@@ -273,13 +284,6 @@ onMounted(() => {
   padding-top: 7px;
   background: rgba(143, 65, 65, 0.3);
 }
-
-// .site-layout .site-layout-background {
-//   background: #630b0b;
-// }
-// [data-theme='dark'] .site-layout .site-layout-background {
-//   background: #9a0e0e;
-// }
 
 #header {
   display: flex;

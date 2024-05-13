@@ -100,14 +100,6 @@ const routes: Array<RouteRecordRaw> = [
                         component: () => import('@/views/employeeMsg/EducationBg.vue'),
                     },
                     {
-                        path: 'Professional',
-                        name: 'Professional',
-                        meta: {
-                            title: ''
-                        },
-                        component: () => import('@/views/employeeMsg/Professional.vue'),
-                    },
-                    {
                         path: 'BankAccount',
                         name: 'BankAccount',
                         meta: {
@@ -160,7 +152,19 @@ const routes: Array<RouteRecordRaw> = [
                 children: [
                     {
                         path: 'systemStaff',
-                        component: () => import('@/views/system/Staff.vue'),
+                        
+                        children: [
+                            {
+                                path: 'list',
+                                name: 'list',
+                                component: () => import('@/views/system/Staff.vue'),
+                            },
+                            {
+                                path: 'details',
+                                name: 'details',
+                                component: () => import('@/views/employeeMsg/ArchiveDetails.vue')
+                            }
+                        ]
                     },
                     {
                         path: 'project',
@@ -174,10 +178,19 @@ const routes: Array<RouteRecordRaw> = [
                 component: () => import('@/views/Notice.vue'),
             },
             {
-                path: '/systemFile',
-                component: () => import('@/views/onboarding/index.vue'),
+                path: '/train',
+                children: [
+                    {
+                        path: 'plan',
+                        component: () => import('@/views/onboarding/Plan.vue'),
+                    },
+                    {
+                        path: 'systemFile',
+                        component: () => import('@/views/onboarding/index.vue'),
+                    },
+                ]
             },
-
+            
         ]
 
     },

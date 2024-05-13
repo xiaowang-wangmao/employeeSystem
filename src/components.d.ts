@@ -65,6 +65,7 @@ declare module 'vue' {
     DCCascader: typeof import('./components/DCCascader/index.vue')['default']
     DCUpload: typeof import('./components/DCUpload/index.vue')['default']
     EditTable: typeof import('./components/EditTable/index.vue')['default']
+    Ellipsis: typeof import('./components/Ellipsis/index.vue')['default']
     FileCollectUpload: typeof import('./components/DCUpload/FileCollectUpload.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     ListCard: typeof import('./components/ListCard/index.vue')['default']

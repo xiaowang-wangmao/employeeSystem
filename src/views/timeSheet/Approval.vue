@@ -44,25 +44,30 @@ const columns = [
     title: '单号',
     dataIndex: 'id',
     key: 'id',
+    width:130,
   },
   {
     title: '项目编号',
     dataIndex: 'projectId',
     key: 'projectId',
+    width:130,
   },
   {
     title: '项目名称',
     dataIndex: 'projectName',
+    width:130,
   },
   {
     title: '申请人',
     dataIndex: 'staffName',
     key: 'staffName',
+    width:130,
   },
   {
     title: '工时',
     dataIndex: 'actualHours',
     key: 'actualHours',
+    width:130,
     customRender: ({ text }) => {
       if (text) {
         return h('span', {}, text + '   h');
@@ -74,6 +79,7 @@ const columns = [
     title: '加班工时',
     dataIndex: 'overtimeHours',
     key: 'overtimeHours',
+    width:130,
     customRender: ({ text }) => {
       if (text) {
         return h('span', {}, text + '   h');
@@ -85,17 +91,16 @@ const columns = [
     title: '状态',
     dataIndex: 'status',
     key: 'status',
+    width:130,
     customRender: ({ text }) => {
-      if (text) {
         return h('span', {}, OrderStatusEnum[text]);
-      }
-      return h('span', {}, '-');
     },
   },
   {
     title: '类型',
     dataIndex: 'overtimeFlag',
     key: 'overtimeFlag',
+    width:130,
     customRender: ({ text }) => {
       if (text) {
         return h('span', {}, OverTimeFlagEnum[text]);
@@ -107,16 +112,19 @@ const columns = [
     title: '工作地点',
     dataIndex: 'workLocation',
     key: 'workLocation',
+    width:130,
   },
   {
     title: '摘要',
     dataIndex: 'remark',
     key: 'remark',
+    width:230,
   },
   {
     title: '提交时间',
     dataIndex: 'date',
     key: 'date',
+    width:200,
     customRender: ({ text }) => {
       if (text) {
         return h(Time, { time: text, format: 'YYYY-MM-DD' });
@@ -128,6 +136,7 @@ const columns = [
     title: '更新时间',
     dataIndex: 'updateTime',
     key: 'updateTime',
+    width:200,
     customRender: ({ text }) => {
       if (text) {
         return h(Time, { time: text, format: 'YYYY-MM-DD' });
@@ -139,6 +148,7 @@ const columns = [
     title: '操作',
     key: 'action',
     fixed: 'right',
+    width:100,
   },
 ];
 const filters = [
@@ -192,7 +202,7 @@ const btnInfo: BtnInfoType[] = [
     operationType: 'aggree',
     text: '通过',
     disabled(row) {
-      return row.status != 1;
+      return row.status !==0 && row.status!==1;
     },
     async onClick(record) {
       approvalMsg.value = 'aggree'; //同意默认意见
@@ -212,7 +222,7 @@ const btnInfo: BtnInfoType[] = [
     operationType: 'disagrre',
     text: '驳回',
     disabled(row) {
-      return row.status != 1;
+     return row.status !==0 && row.status!==1;
     },
     async onClick(record) {
       ApprovalVisible.value = true;

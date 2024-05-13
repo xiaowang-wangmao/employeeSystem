@@ -30,25 +30,30 @@ const columns = [
     title: '单号',
     dataIndex: 'id',
     key: 'id',
+    width:130,
   },
   {
     title: '项目编号',
     dataIndex: 'projectId',
     key: 'projectId',
+    width:130,
   },
   {
     title: '项目名称',
     dataIndex: 'projectName',
+    width:130,
   },
   {
     title: '负责人',
     dataIndex: 'approvalName',
+    width:130,
   },
 
   {
     title: '工时',
     dataIndex: 'actualHours',
     key: 'actualHours',
+    width:130,
     customRender: ({ text }) => {
       if (text) {
         return h('span', {}, text + '   h');
@@ -60,6 +65,7 @@ const columns = [
     title: '状态',
     dataIndex: 'status',
     key: 'status',
+    width:130,
     customRender: ({ text }) => {
       if (text) {
         return h('span', {}, OrderStatusEnum[text]);
@@ -71,16 +77,19 @@ const columns = [
     title: '工作地点',
     dataIndex: 'workLocation',
     key: 'workLocation',
+    width:130,
   },
   {
     title: '摘要',
     dataIndex: 'remark',
     key: 'remark',
+    width:230,
   },
   {
     title: '提交时间',
     dataIndex: 'date',
     key: 'date',
+    width:200,
     customRender: ({ text }) => {
       if (text) {
         return h(Time, { time: text, format: 'YYYY-MM-DD' });
@@ -92,6 +101,7 @@ const columns = [
     title: '修改时间',
     dataIndex: 'date',
     key: 'date',
+    width:200,
     customRender: ({ text }) => {
       if (text) {
         return h(Time, { time: text, format: 'YYYY-MM-DD' });
