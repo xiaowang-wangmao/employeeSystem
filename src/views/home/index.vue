@@ -117,6 +117,10 @@
             <pie-chart-outlined />
             <router-link :to="'/train/plan'">培训计划 </router-link>
           </a-menu-item>
+           <a-menu-item key="5-3">
+            <pie-chart-outlined />
+            <router-link :to="'/train/task'">培训任务 </router-link>
+          </a-menu-item>
             <a-menu-item key="5-2">
             <pie-chart-outlined />
             <router-link :to="'/train/systemFile'">指导手册 </router-link>

@@ -275,7 +275,7 @@
                           type="link"
                           class="task-list-table_more-action"
                         >
-                          <SvgRaw name="icon_more_operation" />
+                          <MoreOutlined />
                         </a-button> </a-popover
                     ></span>
                   </div>
@@ -308,6 +308,7 @@ import { BtnInfoType } from '@/enums/formEnum';
 import { message } from 'ant-design-vue';
 import { useRoute, useRouter } from 'vue-router';
 import Pagination from '@/components/Pagination/index.vue';
+import { MoreOutlined} from '@ant-design/icons-vue';
 import {
   computed,
   nextTick,

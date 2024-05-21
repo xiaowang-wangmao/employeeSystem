@@ -185,6 +185,18 @@ const routes: Array<RouteRecordRaw> = [
                         component: () => import('@/views/onboarding/Plan.vue'),
                     },
                     {
+                        path: 'taskList',
+                        component: () => import('@/views/onboarding/TaskList.vue'),
+                    },
+                    {
+                        path: 'task',
+                        component: () => import('@/views/onboarding/Task.vue'),
+                    },
+                    {
+                        path: 'train',
+                        component: () => import('@/views/onboarding/Train.vue'),
+                    },
+                    {
                         path: 'systemFile',
                         component: () => import('@/views/onboarding/index.vue'),
                     },

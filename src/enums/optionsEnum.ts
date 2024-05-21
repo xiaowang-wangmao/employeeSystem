@@ -28,7 +28,7 @@ export enum ProcessStatusEnum {
   '已处理' = 2,
 }
 
-export enum ProcessResultEnum{
+export enum ProcessResultEnum {
   '同意' = 0,
   '驳回' = 1,
 }
@@ -77,5 +77,17 @@ export enum ProjectTypeEnum {
   '内部项目' = 0,
   '合作项目' = 1,
   '客户项目' = 2,
+}
+
+export enum TrainTypeEnum {
+  '入职培训' = 0,
+  '部门培训' = 1,
+  '职级培训' = 2,
+}
+
+export enum TrainStatusEnum {
+  '待完成' = 0,
+  '进行中' = 1,
+  '已完成' = 2,
 }
 
