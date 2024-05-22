@@ -312,6 +312,9 @@ const btnInfo: BtnInfoType[] = [
   {
     operationType: 'view',
     text: '审核',
+    disabled(row) {
+      return row.status !== 0;
+    },
     onClick(record) {
       getApplicationOne({ id: record.id }).then((res) => {
         processList.value = res.processList;

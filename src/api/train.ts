@@ -30,6 +30,10 @@ export const deletePlan = (params: any) =>
   defHttp.get({ url: '/train/deletePlan', params }).then((res) => {
     return res.data;
   });
+export const deleteTask = (params: any) =>
+  defHttp.get({ url: '/train/deleteTask', params }).then((res) => {
+    return res.data;
+  });
 
 export const planDetails = (params: any) =>
   defHttp.get({ url: '/train/planDetails', params }).then((res) => {

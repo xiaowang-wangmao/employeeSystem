@@ -200,6 +200,7 @@ const visibleProcess = ref(false);
 const currentApplication = ref();
 const formRef = ref();
 const list = ref();
+const rank = ref(localStorage.getItem('rank'));
 const visibleFlag = ref(false);
 const range = (start: number, end: number) => {
   const result = [];
@@ -226,7 +227,7 @@ const disabledRangeTime = (_: Dayjs, type: 'start' | 'end') => {
 const disabledDate = (current: Dayjs) =>
   current && current < dayjs().subtract(1, 'days').endOf('day');
 const directLeader = ref();
-const application = reactive({
+let application = reactive({
   applicationStaffCode: localStorage.getItem('staffCode'),
   applicationStaffName: localStorage.getItem('userName'),
   processList: [
@@ -252,6 +253,7 @@ watch(
         directLeader.value,
         staffOptions.value
       )[0].label;
+      console.log(application.processList[0].processorName, 'name');
     }
   }
 );
@@ -388,7 +390,10 @@ const btnInfo: BtnInfoType[] = [
           '由于休假申请涉及到多个流程处理，改操作为不可逆操作，请谨慎选择'
         ),
         async onOk() {
-          const res = await deleteApplicationOne({ id: record.id ,staffCode:id});
+          const res = await deleteApplicationOne({
+            id: record.id,
+            staffCode: id,
+          });
           if (res === 'success') {
             message.success('取消成功');
             list.value.fetch();
@@ -403,19 +408,24 @@ const btnInfo: BtnInfoType[] = [
     operationType: 'delete',
     text: '撤销',
     disabled(row) {
-      return row.status === 1 || row.status === 4 || row.status===0 || row.status===5;
+      return (
+        row.status === 1 ||
+        row.status === 4 ||
+        row.status === 0 ||
+        row.status === 5
+      );
     },
     async onClick(record) {
-      record.remark = "请求撤销申请";
+      record.remark = '请求撤销申请';
       ApplicationRevocation({ ...record }).then((res) => {
-      visibleFlag.value = false;
-      list.value.fetch();
-      if (res === 'success') {
-        message.success('申请成功');
-      } else {
-        message.error('操作失败');
-      }
-    });
+        visibleFlag.value = false;
+        list.value.fetch();
+        if (res === 'success') {
+          message.success('申请成功');
+        } else {
+          message.error('操作失败');
+        }
+      });
     },
   },
   {
@@ -460,6 +470,51 @@ function getStaffListData() {
 }
 
 function add() {
+  if (rank.value === '0') {
+    //清空表单
+    application = {
+      applicationStaffCode: localStorage.getItem('staffCode'),
+      applicationStaffName: localStorage.getItem('userName'),
+      processList: [
+        {
+          processorCode: directLeader.value,
+          processorName: '无',
+        },
+        { processorCode: undefined, processorName: '' },
+      ],
+      status: '',
+      type: undefined,
+      endTime: undefined,
+      rangeTime: ref<[Dayjs, Dayjs]>(),
+      startTime: '',
+      dayNumbers: 0,
+      remark: '',
+      files: [],
+      fileId: undefined,
+    };
+  } else {
+    application = {
+      applicationStaffCode: localStorage.getItem('staffCode'),
+      applicationStaffName: localStorage.getItem('userName'),
+      processList: [
+        {
+          processorCode: directLeader.value,
+          processorName: findObjById(directLeader.value, staffOptions.value)[0]
+            .label,
+        },
+        { processorCode: undefined, processorName: '' },
+      ],
+      status: '',
+      type: undefined,
+      endTime: undefined,
+      rangeTime: ref<[Dayjs, Dayjs]>(),
+      startTime: '',
+      dayNumbers: 0,
+      remark: '',
+      files: [],
+      fileId: undefined,
+    };
+  }
   visibleFlag.value = true;
 }
 function rangeDateChange(values: any[]) {

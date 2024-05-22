@@ -11,42 +11,67 @@
       ref="list"
     >
     </ListCard>
-    <a-modal
-      v-model:visible="visibleFlag"
-      title="详情"
-      @ok="handleOK"
-      width="700px"
-    >
+    <a-modal v-model:visible="visibleFlag" title="详情" width="600px">
       <a-form
         ref="formRef"
-        :label-col="{ span: 3 }"
-        :wrapper-col="{ span: 19 }"
-        :model="notice"
+        :label-col="{ span: 6 }"
+        :wrapper-col="{ span: 13 }"
+        :model="plan"
       >
-        <a-form-item label="主题" name="activity">
+        <a-form-item label="名称" name="name">
           <a-input
-            v-model:value="notice.activity"
+            v-model:value="plan.name"
             :placeholder="'请输入'"
             :disabled="DisableFlag"
             allowClear
           />
         </a-form-item>
-        <a-form-item label="标题" name="title">
-          <a-input
-            v-model:value="notice.title"
-            :placeholder="'请输入'"
-            :disabled="DisableFlag"
-            allowClear
-          />
-        </a-form-item>
-        <a-form-item label="发布部门" name="dept">
+        <a-form-item label="类型" name="type">
           <a-select
-            v-model:value="notice.publishDeptCode"
+            v-model:value="plan.type"
+            :placeholder="'请选择'"
+            :options="enumToObjArray(TrainTypeEnum)"
+            :disabled="DisableFlag"
+            allowClear
+          />
+        </a-form-item>
+        <a-form-item label="选择部门" name="dept" v-if="plan.type === 1">
+          <a-select
+            v-model:value="plan.chooseId"
             :placeholder="'请选择'"
             :options="enumToObjArray(DepartmentEnum)"
             :disabled="DisableFlag"
-            @change="deptChange"
             allowClear
+          />
+        </a-form-item>
+        <a-form-item label="选择职级" name="rank" v-if="plan.type === 2">
+          <a-select
+            v-model:value="plan.chooseId"
+            :placeholder="'请选择'"
+            :options="enumToObjArray(RoleRankEnum)"
+            :disabled="DisableFlag"
+            allowClear
+          />
+        </a-form-item>
+
+        <a-form-item label="描述" name="remark">
+          <a-textarea
+            v-model:value="plan.remark"
+            :disabled="DisableFlag"
+            :rows="3"
+            :maxlength="100"
+            allowClear
+          />
+        </a-form-item>
+        <a-form-item label="截止时间" name="endTime">
+          <a-date-picker
+            v-model:value="plan.endTime"
+            :placeholder="'请选择日期'"
+            style="width: 100%"
+            allowClear
+            value-format="YYYY-MM-DD"
+            format="YYYY-MM-DD"
+            :disabled="DisableFlag"
           />
         </a-form-item>
       </a-form>
@@ -64,10 +89,8 @@ import { nextTick } from 'vue';
 import { noticePage, updateNotice, deleteNotice } from '@/api/common';
 import {
   taskPage,
-  addPlan,
-  deletePlan,
-  bindTask,
-  uploadFile,
+  planDetails,
+  deleteTask,
 } from '@/api/train';
 import { DepartmentEnum, TrainStatusEnum } from '@/enums/optionsEnum';
 import { enumToObjArray } from '@/utils/translate';
@@ -80,13 +103,24 @@ const router = useRouter();
 const route = useRoute();
 const planId = ref();
 const staffOptions = ref([]);
-const DisableFlag = ref(false);
+const DisableFlag = ref(true);
 const formRef = ref();
 const list = ref();
 const visibleFlag = ref(false);
 const id = Number(localStorage.getItem('staffCode'));
 const rank = ref(localStorage.getItem('rank'));
-
+const plan = ref({
+  id: '',
+  name: '',
+  chooseId: '',
+  type: undefined,
+  status: '',
+  remark: '',
+  files: [],
+  videoId: undefined,
+  checkUpProblem: false,
+  endTime: '',
+});
 router.isReady().then(async () => {
   planId.value = route.query.planId;
 });
@@ -147,7 +181,7 @@ const columns = [
     title: '操作',
     key: 'action',
     fixed: 'right',
-    width: 130,
+    width: 150,
   },
 ];
 const filters = [
@@ -176,27 +210,28 @@ const notice = ref({
   content: '',
 });
 const btnInfo: BtnInfoType[] = [
-  {
-    operationType: 'edit',
-    text: '编辑',
-    visible() {
-      return rank.value === '0';
-    },
-    onClick(record) {
-      visibleFlag.value = true;
-      DisableFlag.value = false;
-      // editorConfig.value.readOnly = false;
-      notice.value = record;
-    },
-  },
+  // {
+  //   operationType: 'edit',
+  //   text: '编辑',
+  //   visible() {
+  //     return rank.value === '0';
+  //   },
+  //   disabled(row) {
+  //     return row.status !== 0;
+  //   },
+  //   onClick(record) {
+  //     visibleFlag.value = true;
+  //     DisableFlag.value = false;
+  //     notice.value = record;
+  //   },
+  // },
   {
     operationType: 'view',
     text: '查看',
-    onClick(record) {
+    async onClick(record) {
+      const res = await planDetails({ id: record.planId });
+      plan.value = res;
       visibleFlag.value = true;
-      DisableFlag.value = true;
-      notice.value = record;
-      // editorConfig.value.readOnly = true;
     },
   },
   {
@@ -204,6 +239,9 @@ const btnInfo: BtnInfoType[] = [
     text: '删除',
     visible() {
       return rank.value === '0';
+    },
+    disabled(row) {
+      return row.status !== 0;
     },
     onClick(record) {
       notice.value = record;
@@ -216,7 +254,7 @@ const btnInfo: BtnInfoType[] = [
           '该操作为不可逆操作，请谨慎选择'
         ),
         onOk() {
-          deleteNotice({ id: record.id }).then((res) => {
+          deleteTask({ id: record.id }).then((res) => {
             if (res === 'success') {
               message.error('删除成功');
               list.value.fetch();

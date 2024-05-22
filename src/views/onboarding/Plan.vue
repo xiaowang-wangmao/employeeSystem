@@ -225,6 +225,12 @@ const columns = [
       return h('span', {}, TrainTypeEnum[text]);
     },
   },
+   {
+    title: '负责人',
+    dataIndex: 'createdName',
+    key: 'createdName',
+    width: 120,
+  },
   {
     title: '状态',
     dataIndex: 'status',

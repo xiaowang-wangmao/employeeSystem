@@ -178,7 +178,7 @@ const columns = [
     title: '操作',
     key: 'action',
     fixed: 'right',
-    width: 130,
+    width: 150,
   },
 ];
 const filters = [

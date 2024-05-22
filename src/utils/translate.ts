@@ -67,9 +67,13 @@ export function listToTree(data) {
 
 //在数组对象中找到对应id的那个对象
 export function findObjById(id: number, arr: any[]) {
+  console.log(arr,'arr',id,'id');
+  
   const obj = arr.filter((item) => {
-    return item.id === id;
+    return item.value === id;
   });
+  console.log(obj,'obj');
+  
   return obj;
 }
 

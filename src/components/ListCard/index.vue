@@ -888,11 +888,12 @@ function createConfirm(arg0: {
 }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 .list-card {
   width: 100%;
   background: #fff;
   position: relative;
+  overflow: hidden;
 
   &.fix-header {
     .list-card-filters {

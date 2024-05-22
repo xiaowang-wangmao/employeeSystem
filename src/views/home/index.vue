@@ -4,7 +4,16 @@
       <a-layout-sider
         v-model:collapsed="collapsed"
         collapsible
-        style="background-color: #b5e3ac"
+        :style="{
+          overflow: 'auto',
+          height: '100vh',
+          backgroundColor: '#b5e3ac',
+          position: 'fixed',
+          left: 0,
+          top: 0,
+          bottom: 0,
+          zIndex: 2,
+        }"
       >
         <div class="logo">XXX公司logo</div>
         <a-menu
@@ -24,7 +33,7 @@
                 <span>信息管理</span>
               </span>
             </template>
-            
+
             <a-menu-item key="1">
               <pie-chart-outlined />
               <router-link :to="'/employeeMsg/BasicInformation'">
@@ -80,7 +89,7 @@
             <a-menu-item key="2-5" v-if="rank === '0'">
               <file-outlined />
               <router-link :to="'/timeSheet/AllTimeSheetList'">
-               总表管理
+                总表管理
               </router-link>
             </a-menu-item>
           </a-sub-menu>
@@ -105,8 +114,7 @@
             </a-menu-item>
           </a-sub-menu>
 
-          
-           <a-sub-menu key="train">
+          <a-sub-menu key="train">
             <template #title>
               <span>
                 <team-outlined />
@@ -114,17 +122,17 @@
               </span>
             </template>
             <a-menu-item key="5-1">
-            <pie-chart-outlined />
-            <router-link :to="'/train/plan'">培训计划 </router-link>
-          </a-menu-item>
-           <a-menu-item key="5-3">
-            <pie-chart-outlined />
-            <router-link :to="'/train/task'">培训任务 </router-link>
-          </a-menu-item>
+              <pie-chart-outlined />
+              <router-link :to="'/train/plan'">培训计划 </router-link>
+            </a-menu-item>
+            <a-menu-item key="5-3">
+              <pie-chart-outlined />
+              <router-link :to="'/train/task'">培训任务 </router-link>
+            </a-menu-item>
             <a-menu-item key="5-2">
-            <pie-chart-outlined />
-            <router-link :to="'/train/systemFile'">指导手册 </router-link>
-          </a-menu-item>
+              <pie-chart-outlined />
+              <router-link :to="'/train/systemFile'">指导手册 </router-link>
+            </a-menu-item>
           </a-sub-menu>
           <a-sub-menu key="system" v-if="rank === '0'">
             <template #title>
@@ -149,7 +157,9 @@
         </a-menu>
       </a-layout-sider>
       <a-layout>
-        <a-layout-header style="background: #738958; padding: 0">
+        <a-layout-header
+          style="background: #738958; padding: 0"
+        >
           <div id="header">
             <div id="left">
               <span>内部员工事务自助工作平台</span>
@@ -183,7 +193,9 @@
             :style="{
               padding: '24px',
               background: '#fff',
-              minHeight: '85vh',
+              zIndex: -11,
+              marginLeft: '200px',
+              // marginTop: '40px',
             }"
           >
             <router-view></router-view>
@@ -237,7 +249,7 @@ const visibleFlag = ref(false);
 const form = ref();
 const collapsed = ref<boolean>(false);
 const selectedKeys = ref<string[]>(['4-1']);
-const openKeys = ref<string[]>(['leave']);
+const openKeys = ref<string[]>([]);
 const list = ref();
 const formState = reactive({
   staffCode: '',

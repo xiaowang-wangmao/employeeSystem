@@ -99,7 +99,7 @@ import { createVNode } from 'vue';
 import { Modal } from 'ant-design-vue';
 
 const staffOptions = ref([]);
-const DisableFlag = ref(false);
+const DisableFlag = ref(true);
 const formRef = ref();
 const list = ref();
 const router = useRouter();
@@ -212,7 +212,7 @@ const btnInfo: BtnInfoType[] = [
       const res = await planDetails({ id: record.planId });
       plan.value = res;
       visibleFlag.value = true;
-      DisableFlag.value = false;
+      // DisableFlag.value = false;
     },
   },
 
